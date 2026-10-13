@@ -728,7 +728,7 @@ function cloudControls(){
  const root=document.getElementById('cloudBody'); if(!root)return;
  if(!cloudConfigured){cloudStatus('Setup needed');root.innerHTML='<p>Cloud files are prepared, but the Supabase project URL and publishable key still need to be connected. <strong>Your records remain local.</strong></p><p class="cloudHint">Continue using Export backup until setup is finished.</p>';return}
  if(!cloudClient){cloudStatus('Connecting…');root.innerHTML='<p>Connecting to the secure sign-in service…</p>';return}
- if(!cloudUser){cloudStatus('Not signed in');root.innerHTML=`<p>Sign in with your email to use the same records on all devices.</p><form id="cloudLogin" class="cloudLogin"><label>Email address<input type="email" name="email" placeholder="you@example.com" autocomplete="email" required></label><button class="btn primary" type="submit">Email me a sign-in link</button></form>${cloudMessage?'<p class="cloudHint">'+esc(cloudMessage)+'</p>':''}<p class="cloudHint">Use a secure hosted website (HTTPS). Your email address is never shared with other users.</p>`;return}
+ if(!cloudUser){cloudStatus('Not signed in');root.innerHTML=`<p>Sign in with your email to use the same records on all devices.</p><form id="cloudLogin" class="cloudLogin"><label>Email address<input type="email" name="email" placeholder="you@example.com" autocomplete="email" required></label><button class="btn primary" type="submit">Email me a sign-in link</button></form><p class="cloudHint" style="text-align:center;margin:10px 0">or</p><button type="button" class="btn quiet full" data-cloud="google" aria-label="Continue with Google">Continue with Google</button><p class="cloudHint">Google sign-in requires the Google provider to be enabled in Supabase. No login email is sent when using Google.</p>${cloudMessage?'<p class="cloudHint">'+esc(cloudMessage)+'</p>':''}<p class="cloudHint">Use a secure hosted website (HTTPS). Your email address is never shared with other users.</p>`;return}
  const email=esc(cloudUser.email||'your account');
  let top=`<p>Signed in as <strong>${email}</strong>. ${cloudMessage?esc(cloudMessage):''}</p>`;
  if(cloudMode==='choose' || cloudMode==='conflict'){
@@ -849,11 +849,21 @@ cloudPanel.addEventListener('submit',async e=>{
  const email=String(new FormData(e.target).get('email')||'').trim();if(!email)return;
  try{const {error}=await cloudClient.auth.signInWithOtp({email,options:{emailRedirectTo:window.location.origin+window.location.pathname}});if(error)throw error;
   cloudMessage='Check your inbox for a secure sign-in link. Return to this website afterwards.';
- }catch(err){cloudMessage='Could not send email: '+String(err.message||err)} cloudControls();
+ }catch(err){const msg=String(err.message||err);cloudMessage=/rate limit/i.test(msg)?'Email sending limit reached. Please wait before requesting another link, or use Google sign-in after setup.':'Could not send email: '+msg} cloudControls();
 });
 cloudPanel.addEventListener('click',async e=>{
  const button=e.target.closest('[data-cloud]');if(!button)return;
- const action=button.dataset.cloud; if(action==='download'||action==='upload')await cloudChoose(action);
+ const action=button.dataset.cloud;
+ if(action==='google'){
+  if(!cloudClient||cloudUser)return;
+  try{
+   cloudMessage='Opening Google sign-in…';cloudControls();
+   const {error}=await cloudClient.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+window.location.pathname}});
+   if(error)throw error;
+  }catch(err){cloudMessage='Google sign-in is not available yet: '+String(err.message||err)+'. Check the Google provider configuration in Supabase.';cloudControls()}
+  return;
+ }
+ if(action==='download'||action==='upload')await cloudChoose(action);
  else if(action==='signout')await cloudSignOut();
  else if(action==='refresh')await cloudRefresh();
  else if(action==='retry'){if(cloudDirty)await cloudFlush();else await cloudRefresh()}
