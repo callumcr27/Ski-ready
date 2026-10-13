@@ -1,0 +1,872 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#100b19" />
+  <meta name="description" content="Ski Ready: your personal workouts, meals and drinks tracker. Track workouts, meals, recipes, drinks, ski resorts and imported health metrics, with optional secure account syncing." />
+  <title>Ski Ready · Purple Edition — Resorts & Health</title>
+  <style>
+    :root{color-scheme:dark;--bg:#0a1424;--panel:#142238;--panel2:#192b43;--line:#2b3e56;--muted:#9aacbc;--text:#f2f7fa;--mint:#b2f4d1;--blue:#a9dafa;--gold:#ffd4a1;--rose:#ffc5b7;--focus:#fff;--shadow:0 14px 44px #02081755;--radius:19px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 85% -15%,#194c57 0,transparent 40%),var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.47;cursor:not-allowed}a{color:var(--mint)}a:hover{color:#fff}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--focus);outline-offset:3px}input,select,textarea{background:#0d1a2c;color:var(--text);border:1px solid #39506a;border-radius:11px;padding:12px;min-width:0;width:100%;accent-color:var(--mint)}input[type=checkbox]{width:20px;height:20px;flex:none}textarea{resize:vertical;min-height:58px}input::placeholder{color:#829aab}input[type=date]{color-scheme:dark}
+    .app{max-width:1120px;margin:0 auto;padding:23px 26px 125px}.topline{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:18px}.brand{display:flex;align-items:center;gap:11px;font-size:15px;font-weight:850;letter-spacing:.12em;text-transform:uppercase}.brandIcon{width:37px;height:37px;border-radius:12px;background:var(--mint);display:grid;place-items:center;color:#092235;font-weight:950;font-size:19px}.subdued{color:var(--muted)}.tiny{font-size:12px}.small{font-size:13px}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.15em;color:var(--mint);font-weight:800}.hero{position:relative;overflow:hidden;min-height:185px;border:1px solid #326075;border-radius:25px;padding:28px;background:linear-gradient(110deg,#153348 0%,#173446 43%,#0d2938 100%);box-shadow:var(--shadow);margin-bottom:21px}.hero:before,.hero:after{content:"";position:absolute;pointer-events:none;border-radius:100%}.hero:before{width:290px;height:290px;right:35px;bottom:-250px;background:#c6edec0b;border:38px solid #d4f8ef13}.hero:after{width:195px;height:195px;right:-36px;top:-90px;background:#86e7c71c}.hero h1{font-size:clamp(29px,4vw,43px);line-height:1.15;margin:7px 0 10px;font-weight:850;letter-spacing:-.035em;max-width:700px}.hero p{margin:0;max-width:690px;color:#c6d9e0}.heroText{position:relative;z-index:1}.heroMount{position:absolute;right:15px;bottom:-8px;opacity:.45;width:220px;pointer-events:none}.pill{display:inline-flex;align-items:center;gap:7px;background:#aaf2d21c;border:1px solid #81e8bf5b;color:#d9ffec;border-radius:40px;padding:5px 11px;font-size:12px;font-weight:700}.datebar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:19px}.datebar h2{margin:0;font-size:21px;line-height:1.25;letter-spacing:-.025em}.dateControl{display:flex;align-items:center;gap:7px}.iconbtn{border:1px solid #45566c;background:#1a2e42;color:var(--text);padding:8px 13px;border-radius:11px;font-size:18px}.dateControl input{max-width:153px;padding:9px;font-size:12px}.btn{display:inline-flex;justify-content:center;align-items:center;gap:7px;border-radius:12px;padding:10px 15px;border:1px solid #597089;background:#233a51;color:#fff;font-size:13px;font-weight:750;text-decoration:none;min-height:41px}.btn:hover{background:#2d4860}.btn.primary{background:var(--mint);color:#09273a;border-color:var(--mint)}.btn.primary:hover{background:#d0ffe4}.btn.quiet{background:transparent;border-color:#41566b}.btn.warn{border-color:#b16e6e;color:#ffd7d1;background:transparent}.btn.smallbtn{font-size:12px;padding:7px 10px;min-height:32px;border-radius:9px}.btn.full{width:100%}.panel{background:linear-gradient(135deg,#16283d,#142137);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:0 7px 32px #02081715;margin-bottom:16px}.panel.mint{background:linear-gradient(110deg,#163942,#19364c);border-color:#45757a}.panel h2,.panel h3{margin:0 0 10px;letter-spacing:-.025em}.panel h2{font-size:21px}.panel h3{font-size:17px}.grid{display:grid;gap:16px}.two{grid-template-columns:minmax(0,1.45fr) minmax(0,1fr)}.three{grid-template-columns:repeat(3,minmax(0,1fr))}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin-bottom:17px}.stat{border:1px solid #32475e;border-radius:16px;padding:15px;background:#13263a}.stat strong{font-size:23px;display:block;letter-spacing:-.04em;margin-top:2px}.stat label{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:750}.meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.meta span{border-radius:30px;padding:4px 9px;font-size:11px;font-weight:700;background:#29415a;color:#b9d3e7}.meta .minttag{background:#234f49;color:var(--mint)}.sectionhead{display:flex;justify-content:space-between;gap:15px;align-items:start;margin-bottom:13px}.sectionhead p{margin:3px 0 0}.progress{height:9px;background:#0b1b2b;border-radius:20px;overflow:hidden;border:1px solid #2a4055;margin:12px 0 7px}.progress>div{height:100%;background:linear-gradient(90deg,#80cfb6,#bbf5d3);border-radius:20px;max-width:100%;transition:width .2s}.exercise{display:grid;grid-template-columns:87px minmax(0,1fr);gap:13px;align-items:center;padding:13px 0;border-top:1px solid #2c3c50}.exercise:first-of-type{border-top:0}.eximage{height:85px;border-radius:13px;background:#0b2434;border:1px solid #285165;display:flex;align-items:center;justify-content:center;overflow:hidden}.eximage svg{width:100%;height:100%}.extext{min-width:0}.extext h4{margin:0 0 3px;font-size:15px;letter-spacing:-.015em}.extext p{margin:0;color:var(--muted);font-size:12px}.exacts{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:8px}.exacts label{display:inline-flex;gap:7px;align-items:center;font-size:12px;color:var(--mint);font-weight:750;cursor:pointer}.exacts .btn{min-height:28px;padding:5px 9px}.done h4{text-decoration:line-through;color:#9caebc}.notice{border-left:3px solid var(--gold);padding:10px 12px;background:#ffd4a10e;border-radius:8px;font-size:13px;color:#f6dec7;margin:12px 0}.notice.good{border-left-color:var(--mint);color:#d5f8e5;background:#b2f4d10c}.stack{display:grid;gap:10px}.fieldrow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.fieldrow.threecols{grid-template-columns:repeat(3,minmax(0,1fr))}label.field{display:grid;gap:5px;color:#c7d7e3;font-size:12px;font-weight:700}form .btn{margin-top:10px}.itemlist{display:grid;gap:9px;margin-top:12px}.listitem{display:flex;align-items:start;justify-content:space-between;gap:10px;padding:11px 12px;background:#0e1f31;border:1px solid #2c4257;border-radius:12px}.listitem strong{display:block;font-size:13px}.listitem .subdued{font-size:12px}.linkDelete{border:0;background:transparent;color:#ffbbaf;font-size:12px;text-decoration:underline;padding:2px 0}.tag{font-size:11px;font-weight:750;letter-spacing:.05em;padding:4px 9px;border-radius:9px;background:#253f50;color:#bde5db}.foodGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.food{border:1px solid #33485d;background:#101f32;border-radius:15px;padding:13px;display:flex;flex-direction:column;min-height:132px;justify-content:space-between;gap:11px}.food h4{margin:0;font-size:14px}.food p{margin:3px 0 0;color:var(--muted);font-size:12px}.food .btn{align-self:start}.foodActions{display:flex;flex-wrap:wrap;gap:6px}.foodActions .btn{align-self:auto}.btn.faved{color:#ffe2a4;border-color:#b99354}.foodHead{display:flex;gap:8px;justify-content:space-between;align-items:start}.listCheck{display:flex;align-items:start;gap:10px;padding:10px;border-bottom:1px solid #31495a}.listCheck:last-child{border-bottom:0}.listCheck.checked span{text-decoration:line-through;color:#89a5ac}.weekMeal{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.dayMealCard{border:1px solid #344e60;border-radius:12px;padding:10px;background:#0f2032}.dayMealCard select{font-size:12px;padding:8px;margin-top:5px}.notice a{color:#c2f6f1}.barcodeVideo{width:100%;max-height:300px;aspect-ratio:4/3;object-fit:cover;background:#07121e;border-radius:15px;border:1px solid #426d80}.barcodeResult{padding:12px;background:#102a3b;border-radius:13px;border:1px solid #3c6573}.barcodeResult strong{display:block}.compactBtn{width:auto!important}.starBtn{background:transparent;border:1px solid #5a6273;border-radius:9px;color:#ffdc99;padding:5px 10px;min-height:32px}.shoppingCols{columns:2;column-gap:18px}.shoppingGroup{break-inside:avoid;margin-bottom:14px}.mealType{margin:18px 0 10px;display:flex;justify-content:space-between;align-items:center}.mealType h3{margin:0}.waterButtons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:14px 0}.waterButton{padding:20px 6px;border:1px solid #4c8d96;border-radius:15px;background:linear-gradient(155deg,#164553,#173146);color:#d7fcff;font-size:20px;font-weight:850}.waterButton span{display:block;font-size:12px;font-weight:600;color:#abd6df}.waterButton:hover{background:#255b6b}.waterIcon{font-size:35px;line-height:1}.waterGlass{display:grid;place-items:center;width:126px;height:155px;margin:auto;position:relative;border:3px solid #80dce9;border-top:0;border-radius:8px 8px 23px 23px;transform:perspective(160px) rotateX(-7deg);overflow:hidden;background:#0b2233}.waterGlass:before{position:absolute;content:"";height:10px;left:0;right:0;top:0;border:3px solid #80dce9;border-radius:100%}.waterFill{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(180deg,#71d6e0,#319cab);transition:height .3s}.waterGlass strong{position:relative;z-index:1;background:#051c2f9f;padding:3px 8px;border-radius:8px}.bars{height:128px;display:flex;align-items:end;gap:10px;margin:22px 0 4px}.barCol{flex:1;min-width:0;text-align:center;font-size:11px;color:#a8bbca}.barTrack{height:100px;background:#0c1c2c;border-radius:9px;display:flex;align-items:end;overflow:hidden;margin-bottom:7px;border:1px solid #2d4b60}.barTrack div{width:100%;background:linear-gradient(#8de9ec,#3a91b7);border-radius:6px;min-height:0}.chart{width:100%;height:150px;display:block}.hidden{display:none!important}.bottomnav{position:fixed;bottom:0;left:0;right:0;z-index:20;background:#081422ec;backdrop-filter:blur(14px);border-top:1px solid #36516a;display:flex;justify-content:center;padding:9px max(12px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom))}.bottomnav .navwrap{display:grid;grid-template-columns:repeat(3,1fr);width:min(620px,100%);gap:8px}.navbtn{border:0;border-radius:12px;padding:9px 4px;background:transparent;color:#9eb0c0;font-weight:750;display:grid;justify-items:center;gap:2px;font-size:12px}.navbtn .navicon{font-size:22px}.navbtn.active{background:#27443e;color:var(--mint)}.navbtn:hover{background:#213647}.modalback{position:fixed;inset:0;background:#020911cc;z-index:50;display:grid;place-items:center;padding:16px}.modal{max-width:565px;width:100%;max-height:90vh;overflow:auto;background:#15283c;border:1px solid #658190;box-shadow:0 20px 70px #000b;border-radius:20px;padding:23px}.modalTop{display:flex;justify-content:space-between;gap:10px;align-items:start}.modal h2{margin:0}.howto{padding:0 0 0 20px;margin:14px 0;display:grid;gap:8px;color:#d0e0e8}.diagram{height:170px;border:1px solid #34586c;background:#0d2435;border-radius:14px;display:grid;place-items:center;margin:16px 0;overflow:hidden}.diagram svg{max-height:160px;max-width:100%}.coachBox{position:fixed;z-index:30;bottom:83px;left:50%;transform:translateX(-50%);width:min(750px,calc(100% - 22px));border:1px solid #7fc5b5;border-radius:20px;background:#19363f;box-shadow:0 15px 48px #000a;padding:15px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}.coachBox strong{display:block}.coachBox p{font-size:12px;margin:2px 0;color:#c9e0d9}.coachCtrl{display:flex;gap:7px;flex-wrap:wrap}.divider{border:0;border-top:1px solid #334b60;margin:20px 0}.mutedNote{font-size:12px;color:var(--muted);margin:9px 0}.weekStrip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin:14px 0 3px}.dayChip{border:1px solid #2b4860;border-radius:11px;background:#0d2437;color:#e3eff2;padding:8px 2px;text-align:center;font-size:10px;min-width:0;display:grid;gap:4px}.dayChip span{font-weight:850;font-size:12px}.dayChip small{font-size:9px;color:var(--muted)}.dayChip.away{border-color:#9b7654;background:#3c302b}.dayChip.selected{outline:2px solid var(--mint)}.dayChip.complete:after{content:"✓";color:var(--mint)}.tip{border-radius:12px;border:1px solid #3b5f67;background:#0e303a;padding:11px 13px;font-size:13px}.footer{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;padding:4px 0 20px;color:var(--muted);font-size:11px}.footer button{font-size:11px}.empty{color:var(--muted);padding:10px 0;font-size:13px}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media(max-width:790px){.two,.three{grid-template-columns:1fr}.heroMount{opacity:.19}.hero{min-height:176px}.stats{gap:7px}.stat{padding:12px}.stat strong{font-size:21px}.app{padding:16px 14px 122px}}
+    @media(max-width:460px){.topline{align-items:start}.brand{letter-spacing:.05em;font-size:13px}.topline .pill{font-size:10px}.datebar{align-items:start;flex-direction:column}.dateControl{width:100%}.dateControl input{max-width:none;flex:1}.foodGrid{grid-template-columns:1fr}.fieldrow.threecols{grid-template-columns:1fr 1fr}.waterButtons{gap:6px}.waterButton{font-size:16px;padding:17px 4px}.exercise{grid-template-columns:68px minmax(0,1fr)}.eximage{height:68px}.panel{padding:16px}.hero{padding:21px}.coachBox{flex-direction:column;align-items:start}.coachCtrl{width:100%}.coachCtrl .btn{flex:1}.weekStrip{gap:3px}.dayChip{padding:7px 1px;font-size:9px}.dayChip small{font-size:8px}}
+    @media(max-width:650px){.weekMeal{grid-template-columns:1fr}.shoppingCols{columns:1}.waterButtons{grid-template-columns:repeat(2,minmax(0,1fr))}.foodActions{gap:5px}}
+
+    /* Version 3 palette: deep black-violet, electric purple and warm yellow. */
+    :root{--bg:#0c0913;--panel:#1a1326;--panel2:#21182f;--line:#3a2d51;--muted:#b8aeca;--text:#f9f5ff;--mint:#ffe371;--blue:#cbb4ff;--gold:#ffe371;--rose:#ffbfb9;--focus:#c69aff;--shadow:0 14px 44px #04010999}
+    body{background:radial-gradient(circle at 85% -14%,#602a9e66 0,transparent 40%),radial-gradient(circle at 5% 30%,#3b206055 0,transparent 35%),var(--bg)}
+    input,select,textarea{background:#130e1e;border-color:#57436f;color:var(--text)}input::placeholder{color:#a295b7}
+    .brandIcon{background:linear-gradient(135deg,#ffe371,#ffcd4f);color:#1d1027}
+    .hero{border-color:#6947a1;background:linear-gradient(115deg,#301946,#27183d 48%,#171124 100%)}
+    .hero:before{background:#dcbbff10;border-color:#a675ee1c}.hero:after{background:#b77dff24}
+    .hero p{color:#e5d5f3}.pill{background:#7144a830;border-color:#8f66c17d;color:#f1daff}
+    .iconbtn{background:#241935;border-color:#543d70}.btn{background:#36264d;border-color:#705892;color:#fcf8ff}
+    .btn:hover{background:#50346e}.btn.primary{background:#ffe371;color:#23132a;border-color:#ffe371}
+    .btn.primary:hover{background:#ffeb98}.btn.quiet{border-color:#695081}.btn.warn{border-color:#9f536c;color:#ffbcbc}
+    .panel{background:linear-gradient(145deg,#20162e,#17111f);border-color:#3b2e52}
+    .panel.mint{background:linear-gradient(117deg,#3b2257,#241a36);border-color:#7e5ba5}
+    .stat{background:#21172f;border-color:#4a3664}.meta span{background:#302143;color:#dbc5ed}
+    .meta .minttag{background:#49345c;color:#ffec96}.progress{background:#120d1d;border-color:#453254}
+    .progress>div{background:linear-gradient(90deg,#9054e9,#ffe371)}
+    .exercise{border-color:#43324f}.eximage{background:#211530;border-color:#6a4a82}
+    .listitem{background:#181121;border-color:#433454}.notice{background:#ffe3710a;color:#ffe5a2}
+    .notice.good{background:#7b4dba20;color:#f4e2ff;border-left-color:#bc88ff}
+    .food{background:#1c1428;border-color:#4b3761}.food .btn.faved{color:#ffe371;border-color:#e0bc59}
+    .tag{background:#3c2950;color:#ead6f9}.listCheck{border-color:#443352}.listCheck.checked span{color:#b1a0c4}
+    .dayMealCard{background:#1b1427;border-color:#4f3a66}.barcodeVideo{background:#0b0713;border-color:#74569c}
+    .barcodeResult{background:#261a37;border-color:#614682}.waterButton{background:linear-gradient(150deg,#3c2159,#24172f);border-color:#7f5bad;color:#fff0b1}
+    .waterButton span{color:#e7cffa}.waterButton:hover{background:#50306d}.waterGlass{background:#21142c;border-color:#ad7df6}
+    .waterGlass:before{border-color:#b088f2}.waterFill{background:linear-gradient(180deg,#ba8bfb,#7541bd)}
+    .barTrack{background:#171020;border-color:#4b3662}.barTrack div{background:linear-gradient(#e3bf77,#8c52d1)}
+    .bottomnav{background:#100b19f4;border-top-color:#412d56}.navbtn{color:#cab6dd}.navbtn.active{background:#50317a;color:#ffe371}.navbtn:hover{background:#39244e}
+    .modal{background:#241830;border-color:#7955a0}.diagram{background:#191022;border-color:#584073}
+    .coachBox{background:#291c3d;border-color:#a47ade}.dayChip{background:#1d1329;border-color:#473058;color:#f6e9ff}
+    .dayChip.away{background:#3c2a3c;border-color:#99637c}.tip{background:#281a3b;border-color:#725394}
+    .drinkResult{border:1px solid #584274;background:#1b1228;border-radius:12px;padding:12px;margin-top:9px}
+    .drinkResult strong{display:block;font-size:13px}.drinkResult p{font-size:12px;margin:5px 0;color:var(--muted)}
+    .greeting{font-size:16px;font-weight:800;color:#ffe371;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .greeting button{border:1px solid #81639f;background:#2e1c44;color:#f4e2ff;font-size:11px;border-radius:8px;padding:4px 9px}
+    .weekMotivation{margin-top:12px!important;background:#4c307845;border-left:3px solid #ffe371;padding:9px 11px;border-radius:9px;color:#f8ecff!important;font-size:13px}
+    .readyMessage{margin-top:9px!important;color:#ffe371!important;font-weight:850;font-size:17px!important}
+    .foodReady{font-size:11px;font-weight:800;color:#ffe371;line-height:1.5}
+    .foodMissing{font-size:11px;color:#cbb7df;line-height:1.5}
+    .inventoryCard{display:grid;gap:8px;background:#20142e;border:1px solid #60457c;padding:13px;border-radius:13px;margin:10px 0}
+    .inventoryCard p{margin:0;font-size:12px;color:var(--muted)}
+    .inventoryGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+    .inventoryGrid span{font-size:12px;padding:6px 8px;border:1px solid #503966;border-radius:8px}
+    @media(max-width:650px){.inventoryGrid{grid-template-columns:1fr}}
+
+
+    .recipeModal{max-width:650px}.recipeStats{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.recipeStats span{border:1px solid #694987;border-radius:12px;padding:7px 10px;font-size:12px;background:#301e42;color:#f3e6ff}.recipeServings{max-width:180px;margin:10px 0 20px}.recipeModal h3{margin:19px 0 10px;color:#ffe371}.recipeIngredients{list-style:none;margin:0;padding:0;display:grid;gap:7px}.recipeIngredients li{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#1a1227;border:1px solid #52396b;border-radius:11px;padding:10px 12px;font-size:13px}.recipeIngredients li b{white-space:nowrap;color:#ffe371}.recipeSteps{margin:0;padding:0 0 0 27px;counter-reset:recipe-step;display:grid;gap:10px;list-style:none}.recipeSteps li{position:relative;background:#1d1529;padding:13px 12px;border-radius:11px;border:1px solid #4d3964;font-size:14px;line-height:1.6}.recipeSteps li:before{counter-increment:recipe-step;content:counter(recipe-step);position:absolute;left:-27px;top:13px;background:#ffe371;color:#201027;font-weight:850;border-radius:50%;width:21px;height:21px;text-align:center;line-height:21px;font-size:12px}.recipeActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.shoppingQuantity{font-size:12px;white-space:nowrap;color:#ffe371;margin-left:4px}.planRecipe{margin-top:5px;min-height:30px}.foodActions{gap:5px}
+    @media(max-width:420px){.foodActions .btn{font-size:11px;padding:6px 8px}.recipeModal{padding:16px}.recipeStats span{font-size:11px}}
+  
+    .discoverGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px}
+    .discoverCard{background:#1b1430;border:1px solid #594078;border-radius:14px;padding:13px;display:flex;flex-direction:column;gap:9px}
+    .discoverCard h4{font-size:14px;margin:0;line-height:1.3}.discoverCard p{color:var(--muted);font-size:12px;margin:0}
+    .discoverCard .foodActions{margin-top:auto}.discoverForm details{margin-top:14px}
+    .discoverForm summary{cursor:pointer;display:list-item;font-weight:750;color:#f5d56f}
+    .discoverForm .field{margin-top:10px}
+    @media(max-width:750px){.discoverGrid{grid-template-columns:1fr}}
+
+    /* Cloud tools follow the existing Ski Ready colour palette and are deliberately compact. */
+    .cloudBox{margin:-1px 0 18px;border-radius:14px;background:#23183c;border:1px solid #7154a0;box-shadow:0 6px 20px #0003}
+    .cloudBox summary{cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 15px;font-weight:750;list-style:none}
+    .cloudBox summary::-webkit-details-marker{display:none}
+    .cloudBadge{font-size:12px;color:#ffe371;font-weight:750;text-align:right}
+    .cloudBody{padding:3px 15px 14px;font-size:13px;border-top:1px solid #533c71}
+    .cloudBody p{margin:9px 0}.cloudBody .btn{margin:5px 7px 4px 0}
+    .cloudLogin{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:end}
+    .cloudLogin input{min-width:0}.cloudLogin label{display:block;font-size:12px;color:var(--muted)}
+    .cloudHint{color:#cfbce9;font-size:12px}.cloudWarning{padding:8px 10px;background:#563c3b;border-radius:9px;color:#fff4da}
+    @media(max-width:500px){.cloudLogin{grid-template-columns:1fr}.cloudBox summary{padding:10px 13px}}
+  
+/* Fourth tab and private health import, preserving the Purple Edition layout. */
+.bottomnav .navwrap{grid-template-columns:repeat(4,minmax(0,1fr));width:min(720px,100%)}
+.resort-toolbar{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:9px;margin:13px 0}
+.resort-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.resort-card{background:#1b1329;border:1px solid #553c70;border-radius:15px;padding:15px;display:grid;gap:10px}
+.resort-card h3{margin:0;font-size:17px}.resort-card p{margin:0}.resort-card .resort-actions{display:flex;gap:7px;flex-wrap:wrap}
+.resort-card .resort-actions .btn{padding:8px 11px;font-size:12px}
+.resort-status{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.resort-status div{border:1px solid #44345b;border-radius:11px;padding:10px;background:#21172f}
+.resort-status strong{font-size:17px;display:block;color:#ffe371}
+.resort-status span{font-size:11px;color:#cdb8e3}
+.resort-fave{border:1px solid #745295;border-radius:10px;background:#3c2950;color:#f7e3ff;padding:5px 9px;font-size:12px;white-space:nowrap}
+.resort-fave.saved{background:#533071;color:#ffe371;border-color:#b68bde}
+.healthSummary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}
+.healthSummary .stat{padding:11px}.healthSummary .stat strong{font-size:19px}
+.healthConnections{display:grid;gap:9px;margin-top:12px}.healthConnection{border:1px solid #523a68;background:#1a1327;border-radius:12px;padding:12px}
+.healthConnection strong{display:block}.healthConnection p{margin:4px 0;font-size:12px;color:var(--muted)}
+.resort-help{font-size:12px;color:#d2c3e4;line-height:1.5}
+@media(max-width:620px){.resort-list{grid-template-columns:1fr}.healthSummary{grid-template-columns:repeat(2,minmax(0,1fr))}.resort-toolbar{grid-template-columns:1fr}.bottomnav .navwrap{gap:2px}.navbtn{font-size:10px;padding:8px 2px}.navbtn .navicon{font-size:21px}}
+
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="topline"><div class="brand"><div class="brandIcon" aria-hidden="true">⛷</div> SKI READY <span class="subdued" style="font-size:11px;letter-spacing:0;font-weight:500;text-transform:none"> / 2027</span></div><span class="pill">Your February ski goal</span></header>
+  <section class="hero"><div class="heroText"><div class="greeting"><span id="greetingName">Hello there 👋</span><button type="button" data-action="editprofile">✎ Your name</button></div><div class="eyebrow" style="margin-top:11px">One small step every day</div><h1>Stronger legs. More mountain.</h1><p>Your ski fitness, meals, drinks, and mountain conditions in one place — with no weights required.</p><p id="weekMotivation" class="weekMotivation" aria-live="polite"></p><p id="tripReadyMessage" class="readyMessage" hidden></p></div><svg class="heroMount" viewBox="0 0 240 145" fill="none" aria-hidden="true"><path d="M1 137 68 43l34 43 39-73 98 124H1Z" fill="#9abfc2"/><path d="m53 65 15-22 15 20-12-6-7 8-4-8-7 8Zm68-18 20-34 26 35-18-9-8 8-7-8-13 8Z" fill="#e9fbf4"/></svg></section>
+  <section id="cloudPanel" class="cloudBox" aria-label="Cloud syncing">
+    <details id="cloudDetails" open><summary><span>☁️ Cloud sync</span><span id="cloudBadge" class="cloudBadge">Checking…</span></summary>
+    <div id="cloudBody" class="cloudBody"><p>Preparing cloud connection…</p></div></details>
+  </section>
+  <div class="datebar"><div><div class="eyebrow" id="dateEyebrow">Your daily dashboard</div><h2 id="dayTitle"></h2></div><div class="dateControl"><button class="iconbtn" type="button" data-action="prevday" aria-label="Previous day">‹</button><input type="date" id="activeDate" aria-label="Choose date"><button class="iconbtn" type="button" data-action="nextday" aria-label="Next day">›</button><button class="btn quiet smallbtn" data-action="today" type="button">Today</button></div></div>
+  <main id="appMain" aria-live="polite"></main>
+  <footer class="footer"><div>🔒 Your data is saved locally first. When signed in and syncing, cloud updates follow automatically. Export backups regularly.</div><div class="meta"><button type="button" class="btn quiet smallbtn" data-action="export">Export backup</button><button type="button" class="btn quiet smallbtn" data-action="import">Import backup</button><input type="file" id="importFile" accept="application/json,.json" class="hidden"></div></footer>
+</div>
+<nav class="bottomnav" aria-label="Main tabs"><div class="navwrap"><button class="navbtn" type="button" data-tab="meals"><span class="navicon" aria-hidden="true">🍽️</span>Meals</button><button class="navbtn" type="button" data-tab="workouts"><span class="navicon" aria-hidden="true">🏔️</span>Workouts</button><button class="navbtn" type="button" data-tab="drinks"><span class="navicon" aria-hidden="true">🥤</span>Drinks</button><button class="navbtn" type="button" data-tab="resorts"><span class="navicon" aria-hidden="true">🎿</span>Resorts</button></div></nav>
+<div id="modalRoot"></div><div id="coachRoot"></div><div id="toastRoot" aria-live="assertive"></div>
+<script src="cloud-config.js"></script>
+<script>
+(() => {
+'use strict';
+const STORAGE='ski-ready-app-v1';
+const START='2026-10-13';
+const HOLIDAY='2027-02-01';
+const STANLEY_ML=1180; // Stanley UK's nominal 40 US fl oz tumbler capacity: 1.18 L
+const OFF_API='https://world.openfoodfacts.org/api/v2/product/';
+const OFF_SEARCH='https://world.openfoodfacts.org/cgi/search.pl';
+const NHS_VIDEOS='https://www.nhs.uk/live-well/exercise/strength-and-flex-exercise-plan-how-to-videos/';
+const NHS_STRENGTH='https://www.nhs.uk/live-well/exercise/strength-exercises/';
+const NHS_SHEFFIELD='https://video.sth.nhs.uk/exercise';
+const foods=[
+ {id:'b1',meal:'Breakfast',name:'Greek yoghurt, oats & berries',cal:390,protein:28,desc:'Yoghurt, rolled oats, berries, a little honey'},
+ {id:'b2',meal:'Breakfast',name:'Scrambled eggs on wholemeal toast',cal:420,protein:25,desc:'2 eggs, wholemeal toast and tomatoes'},
+ {id:'b3',meal:'Breakfast',name:'Overnight oats & milk',cal:430,protein:23,desc:'Oats, milk, chia seeds and a banana'},
+ {id:'b4',meal:'Breakfast',name:'Cottage cheese & fruit toast',cal:360,protein:27,desc:'Cottage cheese, toast, berries'},
+ {id:'l1',meal:'Lunch',name:'Chicken & avocado wrap',cal:510,protein:38,desc:'Chicken, salad, avocado and wholemeal wrap'},
+ {id:'l2',meal:'Lunch',name:'Tuna jacket potato',cal:490,protein:36,desc:'Baked potato, tuna, light yoghurt dressing'},
+ {id:'l3',meal:'Lunch',name:'Lentil & feta grain bowl',cal:520,protein:24,desc:'Lentils, bulgur, salad, feta, lemon'},
+ {id:'l4',meal:'Lunch',name:'Turkey & salad sandwich',cal:445,protein:32,desc:'Wholegrain bread, turkey, salad, yoghurt'},
+ {id:'d1',meal:'Dinner',name:'Salmon, potatoes & greens',cal:640,protein:43,desc:'Baked salmon, baby potatoes, broccoli'},
+ {id:'d2',meal:'Dinner',name:'Chicken & vegetable stir-fry',cal:595,protein:47,desc:'Chicken, vegetables, rice, ginger and soy'},
+ {id:'d3',meal:'Dinner',name:'Lean beef chilli & rice',cal:625,protein:41,desc:'Lean mince, beans, tomatoes and rice'},
+ {id:'d4',meal:'Dinner',name:'Tofu & chickpea curry',cal:585,protein:29,desc:'Tofu, chickpeas, vegetables and rice'},
+ {id:'s1',meal:'Snack',name:'Apple & small handful of nuts',cal:220,protein:5,desc:'Fruit and unsalted mixed nuts'},
+ {id:'s2',meal:'Snack',name:'Skyr yoghurt pot',cal:130,protein:17,desc:'Plain high-protein yoghurt'},
+ {id:'s3',meal:'Snack',name:'Hummus & veggie sticks',cal:190,protein:6,desc:'Carrots, cucumber and hummus'},
+ {id:'s4',meal:'Snack',name:'Banana & milk',cal:225,protein:9,desc:'Banana and a glass of semi-skimmed milk'}
+];
+// Ingredient names are approximate shopping prompts for one typical serving, not exact gram weights.
+const foodIngredients={
+ b1:['Greek yoghurt','Rolled oats','Mixed berries','Honey'],b2:['Eggs','Wholemeal bread','Tomatoes'],b3:['Rolled oats','Milk','Chia seeds','Bananas'],b4:['Cottage cheese','Wholemeal bread','Berries'],
+ l1:['Cooked chicken slices','Avocados','Salad leaves','Wholemeal wraps'],l2:['Baking potatoes','Tinned tuna','Plain yoghurt'],l3:['Ready-to-eat lentils','Ready-cooked grains','Salad leaves','Feta','Lemons'],l4:['Wholegrain bread','Turkey slices','Salad leaves','Plain yoghurt'],
+ d1:['Salmon fillets','Baby potatoes','Broccoli'],d2:['Chicken breast','Stir-fry vegetables','Rice','Soy sauce','Ginger'],d3:['Lean beef mince','Kidney beans','Tinned tomatoes','Rice'],d4:['Tofu','Chickpeas','Mixed vegetables','Rice','Curry sauce'],
+ s1:['Apples','Mixed nuts'],s2:['Skyr yoghurt'],s3:['Hummus','Carrots','Cucumber'],s4:['Bananas','Milk'],
+ b5:['High-protein yoghurt','Bananas','Muesli'],l5:['Tinned tuna','Wholemeal wraps','Bagged salad'],
+ d5:['Ready-cooked chicken','Bagged salad','Wholemeal bread','Cherry tomatoes'],d6:['Supermarket sushi','Ready-to-eat edamame','Mandarins'],d7:['Tinned chickpeas','Feta','Cherry tomatoes','Cucumber','Olive oil']
+};
+for(const f of foods){f.ingredients=foodIngredients[f.id]||[]; f.noCook=['b1','b3','b4','l1','l3','l4','s1','s2','s3','s4'].includes(f.id)}
+foods.push(
+ {id:'b5',meal:'Breakfast',name:'Yoghurt, banana & muesli pot',cal:410,protein:25,desc:'No cooking, good for a hotel',noCook:true,ingredients:foodIngredients.b5},
+ {id:'l5',meal:'Lunch',name:'Tuna salad wrap',cal:470,protein:32,desc:'Ready-to-eat tuna, salad and wrap',noCook:true,ingredients:foodIngredients.l5},
+ {id:'d5',meal:'Dinner',name:'Chicken & salad plate',cal:570,protein:40,desc:'Ready-cooked chicken, salad, bread and tomatoes',noCook:true,ingredients:foodIngredients.d5},
+ {id:'d6',meal:'Dinner',name:'Sushi & edamame meal',cal:540,protein:26,desc:'Supermarket ready-to-eat meal, no reheating',noCook:true,ingredients:foodIngredients.d6},
+ {id:'d7',meal:'Dinner',name:'Chickpea & feta salad',cal:560,protein:24,desc:'Tinned chickpeas, feta, tomatoes and cucumber',noCook:true,ingredients:foodIngredients.d7}
+);
+const RECIPES={"b1":{"prep":5,"cook":0,"servings":1,"ingredients":[{"name":"Greek yoghurt","qty":200,"unit":"g"},{"name":"Rolled oats","qty":45,"unit":"g"},{"name":"Mixed berries","qty":100,"unit":"g"},{"name":"Honey","qty":7,"unit":"g"}],"steps":["Spoon the Greek yoghurt into a bowl or lidded pot.","Stir in the oats, then top with berries.","Drizzle with honey and eat straight away; for softer oats, refrigerate for 20 minutes."],"tip":"No-cook · Keep yoghurt chilled until you eat it."},"b2":{"prep":5,"cook":8,"servings":1,"ingredients":[{"name":"Eggs","qty":2,"unit":"each"},{"name":"Wholemeal bread","qty":2,"unit":"slices"},{"name":"Tomatoes","qty":100,"unit":"g"}],"steps":["Crack the eggs into a bowl and whisk with a fork.","Warm a non-stick frying pan over low-to-medium heat, add the eggs and stir gently until completely set.","Toast the bread and slice the tomatoes.","Serve the eggs on toast with tomatoes alongside."],"tip":"For fluffier eggs, stir gently and remove the pan from the heat as soon as the eggs are set."},"b3":{"prep":5,"cook":0,"servings":1,"ingredients":[{"name":"Rolled oats","qty":55,"unit":"g"},{"name":"Milk","qty":200,"unit":"ml"},{"name":"Chia seeds","qty":12,"unit":"g"},{"name":"Bananas","qty":1,"unit":"each"}],"steps":["Add oats and chia seeds to a clean lidded container.","Pour over the milk, stir well and cover.","Refrigerate overnight for at least 4 hours.","Slice the banana and add just before eating."],"tip":"No-cook but needs a fridge; use fresh milk and keep chilled."},"b4":{"prep":5,"cook":0,"servings":1,"ingredients":[{"name":"Cottage cheese","qty":180,"unit":"g"},{"name":"Wholemeal bread","qty":2,"unit":"slices"},{"name":"Berries","qty":80,"unit":"g"}],"steps":["Toast the bread if you have access to a toaster; otherwise use fresh bread.","Spread cottage cheese over the bread.","Rinse berries and serve on top or alongside."],"tip":"No-cook alternative: use fresh bread, crackers or an oatcake."},"l1":{"prep":10,"cook":0,"servings":1,"ingredients":[{"name":"Cooked chicken slices","qty":120,"unit":"g"},{"name":"Avocados","qty":0.5,"unit":"each"},{"name":"Salad leaves","qty":40,"unit":"g"},{"name":"Wholemeal wraps","qty":1,"unit":"each"}],"steps":["Wash the salad leaves and pat them dry.","Slice half an avocado; open the ready-to-eat cooked chicken.","Lay the wrap flat and add the leaves, chicken and avocado.","Roll tightly, fold the sides in and eat straight away."],"tip":"No cooking · Use ready-cooked chicken and keep it chilled until eating."},"l2":{"prep":5,"cook":50,"servings":1,"ingredients":[{"name":"Baking potatoes","qty":1,"unit":"each"},{"name":"Tinned tuna","qty":1,"unit":"tin"},{"name":"Plain yoghurt","qty":50,"unit":"g"}],"steps":["Wash and prick the potato; heat the oven to 200°C (180°C fan).","Bake the potato on a tray for 45–60 minutes until completely soft in the centre.","Drain a tin of tuna and mix with yoghurt and pepper if desired.","Split the potato, fluff the middle and spoon over the tuna mixture."],"tip":"Potato size and tuna tin size affect calories; adjust portions if needed."},"l3":{"prep":10,"cook":0,"servings":1,"ingredients":[{"name":"Ready-to-eat lentils","qty":150,"unit":"g"},{"name":"Ready-cooked grains","qty":125,"unit":"g"},{"name":"Salad leaves","qty":60,"unit":"g"},{"name":"Feta","qty":35,"unit":"g"},{"name":"Lemons","qty":0.5,"unit":"each"}],"steps":["Check the lentils and grain packs say ready-to-eat cold, and drain if needed.","Rinse the salad and place it in a bowl.","Mix lentils and grains into the salad.","Crumble over feta, squeeze over lemon and toss before eating."],"tip":"No-cook; choose grains labelled ready to eat without heating."},"l4":{"prep":5,"cook":0,"servings":1,"ingredients":[{"name":"Wholegrain bread","qty":2,"unit":"slices"},{"name":"Turkey slices","qty":110,"unit":"g"},{"name":"Salad leaves","qty":40,"unit":"g"},{"name":"Plain yoghurt","qty":30,"unit":"g"}],"steps":["Lay out two slices of wholegrain bread.","Spread a thin layer of plain yoghurt over one slice as a light dressing.","Add ready-to-eat turkey slices and washed salad leaves.","Close the sandwich, cut in half and serve."],"tip":"No-cook; use fully cooked, ready-to-eat turkey and keep it chilled."},"d1":{"prep":10,"cook":25,"servings":1,"ingredients":[{"name":"Salmon fillets","qty":1,"unit":"each"},{"name":"Baby potatoes","qty":220,"unit":"g"},{"name":"Broccoli","qty":170,"unit":"g"}],"steps":["Heat oven to 200°C (180°C fan). Halve large baby potatoes and place on a lined tray.","Roast potatoes for 20–25 minutes, turning once. A small amount of optional cooking oil adds calories.","Place salmon on a separate tray and bake for about 12–15 minutes until opaque and cooked through.","Steam broccoli for 5–7 minutes until tender and serve with salmon and potatoes."],"tip":"Check salmon is thoroughly cooked; cooking times depend on thickness."},"d2":{"prep":10,"cook":20,"servings":1,"ingredients":[{"name":"Chicken breast","qty":160,"unit":"g"},{"name":"Stir-fry vegetables","qty":200,"unit":"g"},{"name":"Rice","qty":70,"unit":"g"},{"name":"Soy sauce","qty":20,"unit":"ml"},{"name":"Ginger","qty":10,"unit":"g"}],"steps":["Cook 70 g dry rice according to its pack instructions.","Slice the chicken thinly and grate or finely chop the ginger.","Heat a non-stick pan, add chicken and cook until completely cooked through, with no pink remaining.","Add stir-fry vegetables and ginger with a splash of water; cook until tender.","Stir in soy sauce and serve over the cooked rice."],"tip":"Amounts are for dry rice; a teaspoon of oil is optional but adds calories."},"d3":{"prep":10,"cook":30,"servings":1,"ingredients":[{"name":"Lean beef mince","qty":150,"unit":"g"},{"name":"Kidney beans","qty":125,"unit":"g"},{"name":"Tinned tomatoes","qty":200,"unit":"g"},{"name":"Rice","qty":65,"unit":"g"}],"steps":["Cook the dry rice following packet instructions.","Brown lean beef mince in a non-stick pan over medium heat, breaking it up until cooked through.","Drain and rinse the kidney beans, then add them and the tinned tomatoes to the mince.","Simmer 15–20 minutes until thick and piping hot throughout; season with optional chilli and spices.","Serve with the cooked rice."],"tip":"Use lean mince; optional oil, spices and toppings alter calories."},"d4":{"prep":10,"cook":20,"servings":1,"ingredients":[{"name":"Tofu","qty":150,"unit":"g"},{"name":"Chickpeas","qty":120,"unit":"g"},{"name":"Mixed vegetables","qty":160,"unit":"g"},{"name":"Rice","qty":60,"unit":"g"},{"name":"Curry sauce","qty":120,"unit":"g"}],"steps":["Cook 60 g dry rice according to the packet.","Cut the tofu into cubes and drain and rinse the chickpeas.","Add tofu, chickpeas, mixed vegetables and curry sauce to a saucepan.","Simmer gently for around 12–15 minutes until vegetables are tender and everything is piping hot.","Spoon over the rice and serve."],"tip":"Use a curry sauce whose calories match your needs; sauces vary widely."},"s1":{"prep":2,"cook":0,"servings":1,"ingredients":[{"name":"Apples","qty":1,"unit":"each"},{"name":"Mixed nuts","qty":30,"unit":"g"}],"steps":["Wash the apple and slice it if preferred.","Portion approximately 30 g of unsalted mixed nuts.","Serve together as a quick snack."],"tip":"No-cook · Portion the nuts rather than eating straight from the packet."},"s2":{"prep":1,"cook":0,"servings":1,"ingredients":[{"name":"Skyr yoghurt","qty":170,"unit":"g"}],"steps":["Take one approximately 170 g plain Skyr yoghurt pot.","Check the label for its calories and protein.","Eat chilled with a spoon."],"tip":"No-cook; individual brands and pot sizes differ."},"s3":{"prep":5,"cook":0,"servings":1,"ingredients":[{"name":"Hummus","qty":70,"unit":"g"},{"name":"Carrots","qty":120,"unit":"g"},{"name":"Cucumber","qty":120,"unit":"g"}],"steps":["Wash the carrots and cucumber.","Cut both into easy-to-dip sticks.","Put the hummus into a small bowl and serve with the vegetables."],"tip":"No-cook · A pre-cut vegetable pack makes this easier while travelling."},"s4":{"prep":1,"cook":0,"servings":1,"ingredients":[{"name":"Bananas","qty":1,"unit":"each"},{"name":"Milk","qty":250,"unit":"ml"}],"steps":["Peel and eat the banana.","Pour a 250 ml glass of semi-skimmed milk.","Drink the milk alongside your banana."],"tip":"No-cook; keep milk chilled and check the milk type on the label."},"b5":{"prep":3,"cook":0,"servings":1,"ingredients":[{"name":"High-protein yoghurt","qty":200,"unit":"g"},{"name":"Bananas","qty":1,"unit":"each"},{"name":"Muesli","qty":50,"unit":"g"}],"steps":["Open a 200 g pot of ready-to-eat high-protein yoghurt.","Slice the banana and add it to the yoghurt.","Sprinkle muesli over the top and eat immediately, or pack ingredients separately until eating."],"tip":"Hotel-friendly; requires no cooking but yoghurt should be kept chilled."},"l5":{"prep":5,"cook":0,"servings":1,"ingredients":[{"name":"Tinned tuna","qty":1,"unit":"tin"},{"name":"Wholemeal wraps","qty":1,"unit":"each"},{"name":"Bagged salad","qty":80,"unit":"g"}],"steps":["Open and drain the tuna tin; use a ring-pull tin while away.","Spread out a wholemeal wrap and add washed bagged salad.","Add tuna, fold in both ends and roll tightly.","Serve immediately, or keep cold until needed."],"tip":"No-cook · Check the tuna tin is ready to eat and keep the assembled wrap chilled."},"d5":{"prep":5,"cook":0,"servings":1,"ingredients":[{"name":"Ready-cooked chicken","qty":160,"unit":"g"},{"name":"Bagged salad","qty":100,"unit":"g"},{"name":"Wholemeal bread","qty":2,"unit":"slices"},{"name":"Cherry tomatoes","qty":120,"unit":"g"}],"steps":["Choose supermarket chicken clearly labelled fully cooked and ready to eat.","Rinse tomatoes and prepare bagged salad as directed on its packaging.","Put chicken, salad and tomatoes on a plate or in a takeaway container.","Serve with wholemeal bread on the side."],"tip":"No-cook and hotel-friendly. Keep cooked chicken chilled and observe use-by dates."},"d6":{"prep":2,"cook":0,"servings":1,"ingredients":[{"name":"Supermarket sushi","qty":1,"unit":"pack"},{"name":"Ready-to-eat edamame","qty":100,"unit":"g"},{"name":"Mandarins","qty":2,"unit":"each"}],"steps":["Choose a chilled supermarket sushi pack and check its storage instructions.","Check that the edamame is sold as ready-to-eat without cooking or reheating.","Serve the sushi and edamame together.","Peel two mandarins and have them for dessert."],"tip":"No-cook; buy fresh and keep chilled. Check fish, soy, sesame and wheat allergens."},"d7":{"prep":8,"cook":0,"servings":1,"ingredients":[{"name":"Tinned chickpeas","qty":160,"unit":"g"},{"name":"Feta","qty":60,"unit":"g"},{"name":"Cherry tomatoes","qty":130,"unit":"g"},{"name":"Cucumber","qty":130,"unit":"g"},{"name":"Olive oil","qty":10,"unit":"ml"}],"steps":["Drain and rinse the chickpeas thoroughly; use a ring-pull tin if away.","Rinse tomatoes and cucumber and cut into bite-sized pieces.","Combine vegetables and chickpeas in a bowl; crumble feta over the top.","Drizzle with the measured olive oil and toss to combine."],"tip":"No-cook; feta must be kept chilled. The olive oil is included in the portion estimate."}};
+for(const f of foods){if(RECIPES[f.id])f.ingredients=RECIPES[f.id].ingredients.map(x=>x.name)}
+const MORE_MEALS=[{"id":"idea-b6","meal":"Breakfast","name":"Peanut butter & banana overnight oats","cal":485,"protein":19,"noCook":true,"desc":"New recipe idea · no cooking","ingredients":["Rolled oats","Milk","Peanut butter","Bananas","Chia seeds"],"recipe":{"prep":5,"cook":0,"servings":1,"ingredients":[{"name":"Rolled oats","qty":55,"unit":"g"},{"name":"Milk","qty":200,"unit":"ml"},{"name":"Peanut butter","qty":20,"unit":"g"},{"name":"Bananas","qty":1,"unit":"each"},{"name":"Chia seeds","qty":8,"unit":"g"}],"steps":["Mix oats, milk and chia seeds in a lidded container.","Stir in peanut butter and refrigerate for at least four hours.","Slice the banana over the top just before eating."],"tip":"Keep chilled; use an insulated bag when travelling."}},{"id":"idea-b7","meal":"Breakfast","name":"Mushroom & spinach omelette toast","cal":430,"protein":27,"noCook":false,"desc":"New recipe idea · cook at home","ingredients":["Eggs","Mushrooms","Baby spinach","Wholemeal bread","Olive oil"],"recipe":{"prep":8,"cook":10,"servings":1,"ingredients":[{"name":"Eggs","qty":2,"unit":"each"},{"name":"Mushrooms","qty":100,"unit":"g"},{"name":"Baby spinach","qty":60,"unit":"g"},{"name":"Wholemeal bread","qty":2,"unit":"slices"},{"name":"Olive oil","qty":5,"unit":"ml"}],"steps":["Slice mushrooms and wash spinach.","Heat the oil in a non-stick pan and soften mushrooms.","Add spinach and cook until wilted.","Whisk eggs, add to the pan and cook until fully set. Serve with toast."],"tip":""}},{"id":"idea-b8","meal":"Breakfast","name":"Berry skyr & chia breakfast pot","cal":370,"protein":31,"noCook":true,"desc":"New recipe idea · no cooking","ingredients":["Skyr yoghurt","Mixed berries","Chia seeds","Granola"],"recipe":{"prep":5,"cook":0,"servings":1,"ingredients":[{"name":"Skyr yoghurt","qty":220,"unit":"g"},{"name":"Mixed berries","qty":120,"unit":"g"},{"name":"Chia seeds","qty":15,"unit":"g"},{"name":"Granola","qty":25,"unit":"g"}],"steps":["Spoon skyr into a bowl or lidded pot.","Top with berries, chia seeds and granola.","Eat straight away, or keep refrigerated until breakfast."],"tip":"Choose a granola you enjoy and check its label for the actual calories."}},{"id":"idea-b9","meal":"Breakfast","name":"Smoked salmon breakfast bagel","cal":465,"protein":29,"noCook":true,"desc":"New recipe idea · no cooking","ingredients":["Wholemeal bagels","Smoked salmon","Light cream cheese","Cucumber"],"recipe":{"prep":7,"cook":0,"servings":1,"ingredients":[{"name":"Wholemeal bagels","qty":1,"unit":"each"},{"name":"Smoked salmon","qty":85,"unit":"g"},{"name":"Light cream cheese","qty":35,"unit":"g"},{"name":"Cucumber","qty":70,"unit":"g"}],"steps":["Split the bagel; use it fresh if you have no toaster.","Spread both halves with light cream cheese.","Add chilled smoked salmon and sliced cucumber.","Close and serve immediately."],"tip":"Store smoked salmon chilled and follow the pack use-by date."}},{"id":"idea-l6","meal":"Lunch","name":"Chicken & couscous lunch box","cal":525,"protein":39,"noCook":true,"desc":"New recipe idea · no cooking","ingredients":["Ready-cooked chicken","Ready-to-eat couscous","Cherry tomatoes","Cucumber","Olive oil"],"recipe":{"prep":10,"cook":0,"servings":1,"ingredients":[{"name":"Ready-cooked chicken","qty":130,"unit":"g"},{"name":"Ready-to-eat couscous","qty":140,"unit":"g"},{"name":"Cherry tomatoes","qty":100,"unit":"g"},{"name":"Cucumber","qty":100,"unit":"g"},{"name":"Olive oil","qty":5,"unit":"ml"}],"steps":["Choose couscous explicitly labelled ready to eat without heating.","Place couscous and sliced ready-cooked chicken into a bowl.","Add rinsed, chopped cucumber and tomatoes.","Drizzle oil over the top and toss."],"tip":"No-cook and suitable for work with a fridge or cool bag."}},{"id":"idea-l7","meal":"Lunch","name":"Hummus, pepper & feta wrap","cal":490,"protein":22,"noCook":true,"desc":"New recipe idea · no cooking","ingredients":["Wholemeal wraps","Hummus","Feta","Jarred roasted peppers","Salad leaves"],"recipe":{"prep":8,"cook":0,"servings":1,"ingredients":[{"name":"Wholemeal wraps","qty":1,"unit":"each"},{"name":"Hummus","qty":70,"unit":"g"},{"name":"Feta","qty":50,"unit":"g"},{"name":"Jarred roasted peppers","qty":90,"unit":"g"},{"name":"Salad leaves","qty":45,"unit":"g"}],"steps":["Drain sliced roasted peppers and rinse salad leaves.","Spread hummus over the wrap.","Scatter with peppers, crumbled feta and leaves.","Fold in the edges and roll firmly."],"tip":"Use ready-to-eat jarred peppers, not raw ingredients that require cooking."}},{"id":"idea-l8","meal":"Lunch","name":"Prawn & rice-noodle salad","cal":530,"protein":36,"noCook":false,"desc":"New recipe idea · cook at home","ingredients":["Cooked prawns","Rice noodles","Cucumber","Carrots","Lime","Soy sauce"],"recipe":{"prep":10,"cook":10,"servings":1,"ingredients":[{"name":"Cooked prawns","qty":140,"unit":"g"},{"name":"Rice noodles","qty":75,"unit":"g"},{"name":"Cucumber","qty":100,"unit":"g"},{"name":"Carrots","qty":100,"unit":"g"},{"name":"Lime","qty":1,"unit":"each"},{"name":"Soy sauce","qty":15,"unit":"ml"}],"steps":["Cook noodles following pack instructions and cool quickly.","Check that the prawns are ready to eat and kept refrigerated.","Slice cucumber and grate carrots.","Toss noodles, prawns and vegetables with lime juice and soy sauce."],"tip":"Avoid leaving cooked seafood or noodles at room temperature."}},{"id":"idea-l9","meal":"Lunch","name":"Mediterranean mixed-bean pitta","cal":480,"protein":21,"noCook":true,"desc":"New recipe idea · no cooking","ingredients":["Wholemeal pitta","Tinned mixed beans","Cherry tomatoes","Feta","Salad leaves","Lemon"],"recipe":{"prep":9,"cook":0,"servings":1,"ingredients":[{"name":"Wholemeal pitta","qty":2,"unit":"each"},{"name":"Tinned mixed beans","qty":150,"unit":"g"},{"name":"Cherry tomatoes","qty":100,"unit":"g"},{"name":"Feta","qty":40,"unit":"g"},{"name":"Salad leaves","qty":35,"unit":"g"},{"name":"Lemon","qty":0.5,"unit":"each"}],"steps":["Drain and rinse the ready-to-eat beans.","Mix beans with quartered tomatoes and crumbled feta.","Squeeze over lemon and spoon into fresh pitta pockets.","Finish with salad leaves."],"tip":"Use ring-pull tins when travelling; no heating is required."}},{"id":"idea-d8","meal":"Dinner","name":"Turkey meatball tomato pasta","cal":620,"protein":45,"noCook":false,"desc":"New recipe idea · cook at home","ingredients":["Lean turkey mince","Wholewheat pasta","Passata","Onion","Parmesan","Olive oil"],"recipe":{"prep":15,"cook":25,"servings":1,"ingredients":[{"name":"Lean turkey mince","qty":170,"unit":"g"},{"name":"Wholewheat pasta","qty":80,"unit":"g"},{"name":"Passata","qty":180,"unit":"g"},{"name":"Onion","qty":0.5,"unit":"each"},{"name":"Parmesan","qty":15,"unit":"g"},{"name":"Olive oil","qty":5,"unit":"ml"}],"steps":["Mix turkey mince with a little pepper and form small meatballs.","Brown meatballs in oil, then add diced onion and passata.","Simmer until turkey is completely cooked through.","Boil pasta following the packet, then combine with sauce.","Finish with grated parmesan."],"tip":"Check meatballs are thoroughly cooked before serving."}},{"id":"idea-d9","meal":"Dinner","name":"Chicken fajita traybake","cal":625,"protein":47,"noCook":false,"desc":"New recipe idea · cook at home","ingredients":["Chicken breast","Mixed peppers","Onion","Wholemeal wraps","Plain yoghurt","Olive oil"],"recipe":{"prep":12,"cook":30,"servings":1,"ingredients":[{"name":"Chicken breast","qty":170,"unit":"g"},{"name":"Mixed peppers","qty":170,"unit":"g"},{"name":"Onion","qty":0.5,"unit":"each"},{"name":"Wholemeal wraps","qty":2,"unit":"each"},{"name":"Plain yoghurt","qty":50,"unit":"g"},{"name":"Olive oil","qty":5,"unit":"ml"}],"steps":["Preheat the oven to 200°C (180°C fan).","Slice chicken, peppers and onion; toss with oil and mild fajita spices if desired.","Spread over a baking tray and roast for approximately 25–30 minutes until chicken is cooked through.","Warm wraps if you wish and serve with yoghurt."],"tip":"Adjust spice, oil and wrap size to match nutrition."}},{"id":"idea-d10","meal":"Dinner","name":"Black bean & sweetcorn rice bowl","cal":580,"protein":23,"noCook":false,"desc":"New recipe idea · cook at home","ingredients":["Brown rice","Tinned black beans","Sweetcorn","Avocados","Cherry tomatoes","Lime"],"recipe":{"prep":10,"cook":20,"servings":1,"ingredients":[{"name":"Brown rice","qty":75,"unit":"g"},{"name":"Tinned black beans","qty":150,"unit":"g"},{"name":"Sweetcorn","qty":80,"unit":"g"},{"name":"Avocados","qty":0.5,"unit":"each"},{"name":"Cherry tomatoes","qty":100,"unit":"g"},{"name":"Lime","qty":0.5,"unit":"each"}],"steps":["Cook rice following the packet until fully tender.","Drain and rinse beans and sweetcorn.","Warm the beans and sweetcorn, then place over cooked rice.","Top with diced avocado, chopped tomatoes and lime juice."],"tip":"Rice amounts are uncooked weight; keep cooked rice food-safe."}},{"id":"idea-d11","meal":"Dinner","name":"Ready-cooked chicken grain bowl","cal":590,"protein":40,"noCook":true,"desc":"New recipe idea · no cooking","ingredients":["Ready-cooked chicken","Ready-cooked grains","Hummus","Cucumber","Cherry tomatoes"],"recipe":{"prep":10,"cook":0,"servings":1,"ingredients":[{"name":"Ready-cooked chicken","qty":140,"unit":"g"},{"name":"Ready-cooked grains","qty":150,"unit":"g"},{"name":"Hummus","qty":50,"unit":"g"},{"name":"Cucumber","qty":100,"unit":"g"},{"name":"Cherry tomatoes","qty":100,"unit":"g"}],"steps":["Use chicken and grains that are labelled ready to eat cold.","Place grains in a bowl and add sliced chicken.","Rinse and chop cucumber and tomatoes, then add.","Finish with a spoonful of hummus."],"tip":"Works away from home; buy fresh and keep chilled."}},{"id":"idea-d12","meal":"Dinner","name":"Pesto salmon & vegetable traybake","cal":650,"protein":43,"noCook":false,"desc":"New recipe idea · cook at home","ingredients":["Salmon fillets","Baby potatoes","Broccoli","Basil pesto"],"recipe":{"prep":10,"cook":25,"servings":1,"ingredients":[{"name":"Salmon fillets","qty":1,"unit":"each"},{"name":"Baby potatoes","qty":220,"unit":"g"},{"name":"Broccoli","qty":150,"unit":"g"},{"name":"Basil pesto","qty":25,"unit":"g"}],"steps":["Heat oven to 200°C (180°C fan) and halve the potatoes.","Roast potatoes for about 15 minutes, then add salmon and broccoli.","Spoon measured pesto over the salmon.","Return to oven for around 12–15 minutes, until salmon is cooked and potatoes are tender."],"tip":"Pesto quantities strongly affect calories; measure your portion."}},{"id":"idea-d13","meal":"Dinner","name":"Rotisserie chicken & crunchy salad","cal":550,"protein":41,"noCook":true,"desc":"New recipe idea · no cooking","ingredients":["Ready-cooked chicken","Wholemeal bread","Bagged salad","Cherry tomatoes","Plain yoghurt"],"recipe":{"prep":8,"cook":0,"servings":1,"ingredients":[{"name":"Ready-cooked chicken","qty":150,"unit":"g"},{"name":"Wholemeal bread","qty":2,"unit":"slices"},{"name":"Bagged salad","qty":120,"unit":"g"},{"name":"Cherry tomatoes","qty":100,"unit":"g"},{"name":"Plain yoghurt","qty":40,"unit":"g"}],"steps":["Use ready-to-eat chicken with skin removed if preferred.","Put salad and rinsed tomatoes on a plate.","Add chicken and serve with bread and yoghurt dressing.","Keep any leftovers refrigerated promptly."],"tip":"No-cook; use chilled fully-cooked chicken and eat by the use-by date."}},{"id":"idea-s5","meal":"Snack","name":"Apple, peanut butter & oatcakes","cal":255,"protein":8,"noCook":true,"desc":"New recipe idea · no cooking","ingredients":["Apples","Peanut butter","Oatcakes"],"recipe":{"prep":3,"cook":0,"servings":1,"ingredients":[{"name":"Apples","qty":1,"unit":"each"},{"name":"Peanut butter","qty":20,"unit":"g"},{"name":"Oatcakes","qty":2,"unit":"each"}],"steps":["Wash and slice the apple.","Measure peanut butter into a small pot.","Spread over oatcakes and enjoy with apple slices."],"tip":"Peanut allergy: swap for another snack."}},{"id":"idea-s6","meal":"Snack","name":"Quark, berries & dark chocolate","cal":230,"protein":23,"noCook":true,"desc":"New recipe idea · no cooking","ingredients":["Quark","Mixed berries","Dark chocolate"],"recipe":{"prep":4,"cook":0,"servings":1,"ingredients":[{"name":"Quark","qty":170,"unit":"g"},{"name":"Mixed berries","qty":100,"unit":"g"},{"name":"Dark chocolate","qty":15,"unit":"g"}],"steps":["Spoon quark into a bowl.","Add berries and finely chopped dark chocolate.","Stir or eat in layers."],"tip":"Keep dairy chilled."}},{"id":"idea-s7","meal":"Snack","name":"Cottage cheese & crunchy crackers","cal":245,"protein":19,"noCook":true,"desc":"New recipe idea · no cooking","ingredients":["Cottage cheese","Wholegrain crackers","Carrots"],"recipe":{"prep":4,"cook":0,"servings":1,"ingredients":[{"name":"Cottage cheese","qty":150,"unit":"g"},{"name":"Wholegrain crackers","qty":3,"unit":"each"},{"name":"Carrots","qty":80,"unit":"g"}],"steps":["Spoon cottage cheese into a small bowl.","Wash and chop the carrot into sticks.","Serve with crackers for dipping."],"tip":"Choose ready-to-eat cottage cheese and keep refrigerated."}},{"id":"idea-s8","meal":"Snack","name":"Orange & mixed nuts","cal":235,"protein":6,"noCook":true,"desc":"New recipe idea · no cooking","ingredients":["Oranges","Mixed nuts"],"recipe":{"prep":2,"cook":0,"servings":1,"ingredients":[{"name":"Oranges","qty":1,"unit":"each"},{"name":"Mixed nuts","qty":35,"unit":"g"}],"steps":["Peel the orange.","Measure the nuts and eat together."],"tip":"Pre-portion nuts for easy travel snacks."}},{"id":"idea-s9","meal":"Snack","name":"Ready-boiled eggs & cherry tomatoes","cal":175,"protein":14,"noCook":true,"desc":"New recipe idea · no cooking","ingredients":["Ready-boiled eggs","Cherry tomatoes"],"recipe":{"prep":2,"cook":0,"servings":1,"ingredients":[{"name":"Ready-boiled eggs","qty":2,"unit":"each"},{"name":"Cherry tomatoes","qty":100,"unit":"g"}],"steps":["Choose pre-cooked, ready-to-eat hard-boiled eggs from the chilled section.","Rinse tomatoes and serve with the eggs."],"tip":"No-cook only when eggs are purchased already cooked; refrigerate properly."}}];
+
+const EX={
+ squat:{name:'Gentle bodyweight squats',cue:'Feet about hip to shoulder width. Sit back and down only as far as comfortable. Keep knees tracking over toes and stand tall.',steps:['Stand with feet about shoulder-width and your chest relaxed.','Sit back and bend the knees to a comfortable depth; a sturdy chair can help.','Stand up slowly, keeping control. Do not force depth.'],type:'squat',link:NHS_VIDEOS,linkText:'Watch NHS squat video'},
+ wall:{name:'Wall sits',cue:'Lean against a wall and slide down into a shallow seated hold. Keep breathing and stop well before pain.',steps:['Stand with your back against a wall and feet a little forward.','Slide down to a comfortable shallow squat — no need to reach 90 degrees.','Hold and breathe, then use your legs to stand.'],type:'wall',link:NHS_STRENGTH,linkText:'Browse NHS leg strength guidance'},
+ reverse:{name:'Supported reverse lunges',cue:'Hold a wall or chair. Step one leg backwards and bend both knees gently, then return to standing.',steps:['Stand tall with a stable chair or wall close by.','Step one foot back; lower slowly as far as comfortable.','Press through the front foot to return; alternate sides.'],type:'lunge',link:NHS_SHEFFIELD,linkText:'Find lunge demonstrations'},
+ step:{name:'Low step-ups',cue:'Use a stable low step, never an unstable gym bench. Step up slowly and step down with control.',steps:['Choose a secure, low step that does not wobble.','Place one whole foot on it and step up without pushing off excessively with the trailing foot.','Step down slowly. Swap legs.'],type:'step',link:NHS_SHEFFIELD,linkText:'Find step-up demonstration'},
+ calf:{name:'Calf raises',cue:'Hold a chair or wall, lift heels slowly and lower in control.',steps:['Stand upright, feet hip-width, with support nearby.','Raise both heels and pause briefly.','Lower slowly.'],type:'calf',link:NHS_STRENGTH,linkText:'See NHS calf raise pictures'},
+ balance:{name:'Single-leg balance',cue:'Stand near support. Shift your weight to one leg and hold, then switch. Keep a soft knee.',steps:['Stand next to a wall or stable chair.','Lift one foot a little off the floor and balance without gripping the floor.','Step down and repeat on the other side.'],type:'balance',link:NHS_SHEFFIELD,linkText:'Find balance demonstrations'},
+ bridge:{name:'Glute bridges',cue:'Lie on your back, knees bent, raise your hips and lower smoothly without arching your back.',steps:['Lie on your back, knees bent and feet flat.','Press through your feet to lift your hips until your body forms a gentle line.','Pause briefly, then lower with control.'],type:'bridge',link:NHS_SHEFFIELD,linkText:'Find bridge demonstration'},
+ lateral:{name:'Side steps',cue:'Take controlled steps sideways with knees slightly soft. No jumping needed.',steps:['Stand tall with knees relaxed, feet hip-width.','Take a moderate step to one side and bring the other foot in.','Repeat both ways, staying controlled.'],type:'lateral',link:NHS_SHEFFIELD,linkText:'Find side movement demonstrations'},
+ row:{name:'Easy rowing',cue:'Push first with the legs, lean back a little, then pull with the arms. Return arms, body, then knees. Keep it conversational.',steps:['Set resistance comfortably, shoulders relaxed.','Push through your legs first; then gently open the hips and draw the handle in.','Return the arms first, hinge forwards, then bend the knees.'],type:'row',link:NHS_SHEFFIELD,linkText:'Find rowing machine demonstration'},
+ walk:{name:'Brisk walking',cue:'Walk at a comfortable purposeful pace that still lets you speak in sentences.',steps:['Start with 3–5 minutes of easy walking.','Increase to a brisk but sustainable pace; do not force speed.','Finish with an easier few minutes.'],type:'walk',link:NHS_VIDEOS,linkText:'NHS warm-up and stretching videos'},
+ mobility:{name:'Gentle mobility & stretches',cue:'Move ankles and hips smoothly, and finish with gentle thigh and calf stretches. No bouncing.',steps:['Circle each ankle and march gently.','Take small comfortable hip and knee bends.','Stretch calves and the front of the thighs gently without pain.'],type:'mobility',link:NHS_VIDEOS,linkText:'Watch NHS stretch demos'},
+ side:{name:'Gentle side lunges',cue:'Step sideways, bend that knee gently and keep the other leg longer. Return to centre; stay shallow.',steps:['Stand with feet hip-width, use support if needed.','Step sideways, slowly sitting into the stepping leg.','Push back to centre and alternate sides.'],type:'lateral',link:NHS_SHEFFIELD,linkText:'Find side-lunge guidance'}
+};
+const names={legsA:'Leg strength · A',legsB:'Ski legs · B',row:'Rower & aerobic fitness',walk:'Brisk walk day',mobility:'Balance & mobility',recovery:'Recovery day',awayActive:'Away-day movement',awayMobility:'Away-day recovery',taper:'Light pre-holiday movement'};
+const phases=[{name:'Foundation',description:'Build a habit without overloading your thighs.'},{name:'Strength & stamina',description:'Slightly longer holds, steadier cardio and more control.'},{name:'Ski conditioning',description:'Build thigh endurance and balance; stay pain-free.'},{name:'Final preparation',description:'Practise comfortable back-to-back activity; taper near departure.'}];
+const fresh=()=>({v:1,settings:{waterGoal:2000,calGoal:null,proteinGoal:null,displayName:'',tripStart:'2027-02-01'},trips:[],activity:[{id:'first-walk-2026',date:'2026-10-13',name:'Brisk walking-pad walk',minutes:60,intensity:'Brisk',note:'First session done. Thighs felt tired afterwards.'}],completed:{},meals:[],water:[],drinks:[],metrics:[],customFoods:[],favourites:[],weeklyPlan:{},shoppingChecked:{},shoppingExtra:{},resortFavourites:[],healthRecords:[]});
+let state;try{const raw=localStorage.getItem(STORAGE);state=raw?Object.assign(fresh(),JSON.parse(raw)):fresh();if(!Array.isArray(state.trips)||!Array.isArray(state.activity)||!Array.isArray(state.meals))throw Error();state.favourites=Array.isArray(state.favourites)?state.favourites:[];state.customFoods=Array.isArray(state.customFoods)?state.customFoods:[];state.weeklyPlan=state.weeklyPlan||{};state.shoppingChecked=state.shoppingChecked||{};state.shoppingExtra=state.shoppingExtra||{};state.drinks=Array.isArray(state.drinks)?state.drinks:[];state.resortFavourites=Array.isArray(state.resortFavourites)?state.resortFavourites:[];state.healthRecords=Array.isArray(state.healthRecords)?state.healthRecords:[];state.settings={...fresh().settings,...state.settings};}catch(e){state=fresh()}
+let currentDate=toISO(new Date()),tab='workouts',resortQuery='',resortCountry='All',resortFavOnly=false,drinkResults=[],drinkStatus='',drinkSearchTerm='',drinkSelected=null,coach=null,coachInterval=null,barcodeProduct=null,barcodeStatus='',cameraControls=null,cameraStream=null,scanLoop=null,cameraBusy=false,mealPlanExpanded=false,discoverFilter='All',discoverOffset=0;
+function toISO(d){return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}
+function dt(s){return new Date(s+'T12:00:00')}
+function addDays(s,n){let d=dt(s);d.setDate(d.getDate()+n);return toISO(d)}
+function weekdays(s){let d=dt(s);return (d.getDay()+6)%7}
+function weekStart(s){return addDays(s,-weekdays(s))}
+function fdate(s,options){return dt(s).toLocaleDateString('en-GB',options||{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
+function short(s){return dt(s).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function save(){try{localStorage.setItem(STORAGE,JSON.stringify(state));cloudOnSave()}catch(e){toast('Unable to save here. Export a backup instead.')}}
+function toast(message){const root=document.getElementById('toastRoot');root.innerHTML=`<div role="status" style="position:fixed;z-index:100;top:12px;left:50%;transform:translateX(-50%);max-width:calc(100vw - 24px);padding:12px 18px;border-radius:12px;color:#241129;background:#ffe371;box-shadow:0 10px 30px #0008;font-size:13px;font-weight:750">${esc(message)}</div>`;setTimeout(()=>root.replaceChildren(),3400)}
+function uid(){return 'id'+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function awayOn(day){return state.trips.find(x=>x.start<=day&&x.end>=day)||null}
+function phaseIndex(day){const days=Math.round((dt(day)-dt(START))/86400000);return days<28?0:days<63?1:days<91?2:3}
+function minForDay(date){let trip=awayOn(date);return trip?Math.max(5,Math.min(90,Number(trip.minutes)||15)):null}
+function dailyPlan(day){
+ let start=weekStart(day),days=Array.from({length:7},(_,i)=>addDays(start,i)),home=days.map((d,i)=>({d,i})).filter(x=>!awayOn(x.d));
+ let assign={};
+ const legsPairs=[];for(let a=0;a<home.length;a++)for(let b=a+1;b<home.length;b++){const p=home[a],q=home[b],space=q.i-p.i;const score=(space>=3?20:space>=2?8:-14)-Math.abs(p.i-0)*1.6-Math.abs(q.i-4)*1.2-(space<=1?25:0);legsPairs.push({p,q,score})}
+ legsPairs.sort((a,b)=>b.score-a.score);
+ if(legsPairs.length){assign[legsPairs[0].p.d]='legsA';assign[legsPairs[0].q.d]='legsB'}
+ else if(home.length)assign[home[0].d]='legsA';
+ const free=home.filter(x=>!assign[x.d]);
+ const byTarget=t=>free.filter(x=>!assign[x.d]).sort((a,b)=>Math.abs(a.i-t)-Math.abs(b.i-t))[0];
+ const row=byTarget(2);if(row)assign[row.d]='row';
+ const walking=byTarget(5);if(walking)assign[walking.d]='walk';
+ for(const h of home)if(!assign[h.d])assign[h.d]=(h.i===6?'recovery':'mobility');
+ for(let i=0;i<days.length;i++)if(awayOn(days[i]))assign[days[i]]=i%2===0?'awayActive':'awayMobility';
+ // Keep the actual first logged day gentle; the existing hour walk is enough.
+ if(day==='2026-10-13')assign[day]='recovery';
+ if(day>=addDays(tripStartDate(),-7)&&day<tripStartDate()&&['legsA','legsB'].includes(assign[day]))assign[day]='taper';
+ if(day>=tripStartDate()&&day<addDays(tripStartDate(),10))assign[day]='mobility';
+ return {kind:assign[day]||'recovery',days,assign,phase:phaseIndex(day),away:awayOn(day)};
+}
+function exerciseList(day){const {kind,phase,away}=dailyPlan(day);const more=phase>=1,adv=phase>=2;const ex=(id,sets,qty,unit='reps')=>({id,sets,qty,unit});
+ const rows={
+ legsA:[ex('squat',more?3:2,adv?12:more?10:8),ex('wall',more?3:2,adv?40:more?25:15,'sec'),ex('calf',more?3:2,more?14:10),ex('balance',2,more?30:20,'sec / leg')],
+ legsB:[ex('reverse',more?3:2,more?8:6,'reps / leg'),ex('step',more?3:2,more?10:8,'reps / leg'),ex('bridge',more?3:2,more?12:10),ex(adv?'side':'lateral',2,more?12:8,'reps / side')],
+ row:[ex('row',1,adv?25:more?18:12,'min'),ex('mobility',1,5,'min')],
+ walk:[ex('walk',1,adv?45:more?35:25,'min')],
+ mobility:[ex('balance',2,20,'sec / leg'),ex('mobility',1,10,'min')],
+ recovery:[ex('mobility',1,8,'min')],
+ awayActive:[ex('squat',2,8),ex('calf',2,10),ex('balance',2,20,'sec / leg'),ex('walk',1,12,'min')],
+ awayMobility:[ex('walk',1,12,'min'),ex('mobility',1,6,'min')],
+ taper:[ex('squat',1,8),ex('balance',1,20,'sec / leg'),ex('mobility',1,6,'min')]
+ };
+ let list=rows[kind]||rows.recovery;
+ if(away){let max=minForDay(day);if(max<=12)list=list.filter(x=>x.id!=='squat'&&x.id!=='calf').map(x=>({...x,qty:Math.min(x.qty,x.unit==='min'?6:x.qty)}));else if(max<20)list=list.map(x=>x.id==='walk'?{...x,qty:8}:x)}
+ return list;
+}
+function doneKey(day,kind,id,index){return day+'|'+kind+'|'+id+'|'+index}
+function isDone(day,kind,id,index){return !!state.completed[doneKey(day,kind,id,index)]}
+function activities(day){return state.activity.filter(x=>x.date===day)}
+function mealDay(day){return state.meals.filter(x=>x.date===day)}
+function waterDay(day){return state.water.filter(x=>x.date===day)}
+function drinkDay(day){return state.drinks.filter(x=>x.date===day)}
+function dailyCalories(day){return total(mealDay(day),'cal')+total(drinkDay(day),'cal')}
+function dailyProtein(day){return total(mealDay(day),'protein')+total(drinkDay(day),'protein')}
+function cloudName(){
+ const c=window.skiReadyCloudProfile||window.SKI_READY_PROFILE||null;
+ return String(c?.user?.user_metadata?.full_name||c?.user?.user_metadata?.name||c?.display_name||c?.full_name||c?.name||'').trim();
+}
+function displayName(){return cloudName()||String(state.settings.displayName||'').trim()}
+function tripStartDate(){return state.settings.tripStart||HOLIDAY}
+function weeklyEncouragement(day){
+ const start=weekStart(day),end=addDays(start,6),workouts=state.activity.filter(x=>x.date>=start&&x.date<=end),minutes=total(workouts,'minutes');
+ const completed=Object.entries(state.completed).filter(([k,v])=>v&&k.slice(0,10)>=start&&k.slice(0,10)<=end);
+ const days=new Set([...workouts.map(x=>x.date),...completed.map(([k])=>k.slice(0,10))]);
+ const foodDays=new Set([...state.meals,...state.drinks].filter(x=>x.date>=start&&x.date<=end).map(x=>x.date));
+ const drinkDays=new Set([...state.water,...state.drinks].filter(x=>x.date>=start&&x.date<=end).map(x=>x.date));
+ if(!days.size&&!foodDays.size&&!drinkDays.size)return 'New week, fresh start. Every walk, meal and glass you log helps build a routine.';
+ if(days.size>=4)return `Strong consistency this week: active on ${days.size} days${minutes?' with '+minutes+' minutes logged':''}. Keep recovery part of the plan!`;
+ if(minutes)return `You're building momentum: ${minutes} minutes of activity logged this week across ${days.size} active day${days.size===1?'':'s'}.`;
+ if(completed.length)return `Nice work: you've ticked off ${completed.length} exercise${completed.length===1?'':'s'} this week. Keep it comfortable and consistent.`;
+ return `Good tracking this week: meals logged on ${foodDays.size} day${foodDays.size===1?'':'s'} and drinks on ${drinkDays.size}. Small habits add up.`;
+}
+function tripNote(day){
+ if(day>=tripStartDate()&&day<addDays(tripStartDate(),10))return '⛷️ It’s ski time! Enjoy the slopes and listen to your legs.';
+ if(day>=addDays(tripStartDate(),-5)&&day<tripStartDate())return '⛷️ You are now ski ready — trust your preparation, rest well and enjoy the mountains!';
+ return '';
+}
+function num(v){return Number.isFinite(Number(v))?Number(v):0}
+function total(xs,field){return xs.reduce((s,x)=>s+num(x[field]),0)}
+
+// Selected popular resorts; these are discovery links, not fictitious live counters.
+// Live totals require authorised resort-report data. Fallbacks open a fresh report in a new tab.
+const RESORTS=[
+ ['Val Thorens','France','French Alps','https://www.valthorens.com/en/infos-neige/'],
+ ['Tignes','France','French Alps','https://en.tignes.net/skiing/ski-area/lifts-and-pistes-live-opening'],
+ ['Val d’Isère','France','French Alps','https://en.tignes.net/skiing/ski-area/lifts-and-pistes-live-opening'],
+ ['Les Arcs','France','French Alps','https://www.lesarcs.com/en/practical-guide-les-arcs/ski-resorts-and-ski-lifts'],
+ ['Courchevel','France','Les 3 Vallées','https://www.les3vallees.com/en/live/lifts-and-trails-opening'],
+ ['Méribel','France','Les 3 Vallées','https://www.les3vallees.com/en/live/lifts-and-trails-opening'],
+ ['Les Menuires','France','Les 3 Vallées','https://www.les3vallees.com/en/live/lifts-and-trails-opening'],
+ ['La Plagne','France','French Alps',''],['Avoriaz','France','Portes du Soleil',''],
+ ['Chamonix','France','Mont Blanc',''],['Alpe d’Huez','France','French Alps',''],['Les 2 Alpes','France','French Alps',''],
+ ['Zermatt','Switzerland','Valais','https://zermatt.swiss/en/info/lifts-pistes'],
+ ['Verbier','Switzerland','4 Vallées','https://verbier4vallees.ch/en/useful-information'],
+ ['St. Moritz','Switzerland','Engadin',''],['Davos Klosters','Switzerland','Graubünden',''],
+ ['St. Anton','Austria','Arlberg',''],['Ischgl','Austria','Tyrol',''],['Sölden','Austria','Ötztal',''],
+ ['Saalbach-Hinterglemm','Austria','Salzburg',''],['Kitzbühel','Austria','Tyrol',''],
+ ['Cervinia','Italy','Aosta Valley',''],['Cortina d’Ampezzo','Italy','Dolomites',''],['Val Gardena','Italy','Dolomites',''],
+ ['Grandvalira','Andorra','Pyrenees',''],['Bansko','Bulgaria','Pirin Mountains',''],
+ ['Whistler Blackcomb','Canada','British Columbia',''],['Banff Sunshine','Canada','Alberta',''],['Lake Louise','Canada','Alberta',''],
+ ['Vail','United States','Colorado',''],['Breckenridge','United States','Colorado',''],['Aspen Snowmass','United States','Colorado',''],
+ ['Palisades Tahoe','United States','California',''],['Jackson Hole','United States','Wyoming',''],['Mammoth Mountain','United States','California',''],
+ ['Niseko United','Japan','Hokkaido',''],['Hakuba Valley','Japan','Nagano',''],['Coronet Peak','New Zealand','Queenstown','']
+].map(([name,country,region,report],i)=>({id:'resort-'+i,name,country,region,report}));
+function resortSearchLink(name,kind){return 'https://www.google.com/search?q='+encodeURIComponent(name+' ski resort '+kind)}
+function resortsHTML(){
+ const countries=['All',...new Set(RESORTS.map(r=>r.country))].sort((a,b)=>a==='All'?-1:b==='All'?1:a.localeCompare(b));
+ const q=resortQuery.toLocaleLowerCase().trim();const results=RESORTS.filter(r=>(!resortFavOnly||state.resortFavourites.includes(r.id))&&(resortCountry==='All'||r.country===resortCountry)&&(!q||[r.name,r.country,r.region].some(v=>v.toLocaleLowerCase().includes(q))));
+ return `<section class="panel mint"><div class="eyebrow">⛷️ Your mountain guide</div><h2 style="margin-top:7px">Ski resorts & live conditions</h2><p class="small subdued">Browse popular resorts, save favourites, and open their latest lift/run status and webcams. The links lead to live sources — numbers are not yet imported into Ski Ready.</p><form data-form="resortSearch" class="resort-toolbar"><label class="field">Find a resort<input name="q" maxlength="120" value="${esc(resortQuery)}" placeholder="Search by resort, country or ski area"></label><label class="field">Country<select name="country">${countries.map(c=>`<option value="${esc(c)}" ${c===resortCountry?'selected':''}>${esc(c)}</option>`).join('')}</select></label><button type="submit" class="btn primary">🔎 Search resorts</button><button type="button" class="btn quiet" data-action="resortfavfilter">${resortFavOnly?'★ Showing favourites':'☆ Favourites only'}</button></form><p class="resort-help">Lift and piste totals change during the day, especially in bad weather. Please use the current operator reports before planning a route. Live figures will appear in-app only after a supported data provider is configured.</p></section>
+ <section class="panel"><div class="sectionhead"><div><h3>${results.length} resorts ${resortFavOnly?'· saved':''}</h3><p class="small subdued">Official resort report links where available; search links for other mountains.</p></div></div>
+ ${results.length?`<div class="resort-list">${results.map(r=>{const saved=state.resortFavourites.includes(r.id);const link=r.report||resortSearchLink(r.name,'open lifts open pistes official status');const cam=resortSearchLink(r.name,'official live webcams snow');return `<article class="resort-card"><div class="sectionhead" style="margin:0"><div><h3>${esc(r.name)}</h3><p class="subdued tiny">${esc(r.region)} · ${esc(r.country)}</p></div><button class="resort-fave ${saved?'saved':''}" type="button" data-action="resortfav" data-id="${r.id}" aria-label="${saved?'Remove':'Save'} ${esc(r.name)} favourite">${saved?'★ Saved':'☆ Save'}</button></div><div class="resort-status"><div><strong>—</strong><span>Lifts open · view live report</span></div><div><strong>—</strong><span>Runs open · view live report</span></div></div><div class="resort-actions"><a class="btn primary" target="_blank" rel="noopener noreferrer" href="${esc(link)}">↗ ${r.report?'Official lift & piste status':'Find live report'}</a><a class="btn quiet" target="_blank" rel="noopener noreferrer" href="${esc(cam)}">📷 Webcams</a></div></article>`}).join('')}</div>`:`<p class="empty">No matching resorts in the starter directory. Try a different search or open a wider resort directory below.</p>`}
+ </section><section class="panel"><h3>🌨️ All ski resorts & detailed snow reports</h3><p class="small subdued">For resorts outside this directory, compare the latest snow, lift status and webcam reports from a dedicated provider.</p><div class="meta"><a class="btn quiet" href="https://www.onthesnow.co.uk/" target="_blank" rel="noopener noreferrer">Browse worldwide snow reports ↗</a><a class="btn quiet" href="https://www.onthesnow.com/widget" target="_blank" rel="noopener noreferrer">About live report widgets ↗</a></div><p class="mutedNote">A direct lifts/runs feed for all resorts normally requires a licensed resort-data API. No live totals are fabricated or cached as though current. Webcam pages may be offline outside the ski season.</p></section>`;
+}
+// Import small user-supplied daily summaries. This is not an account/API integration.
+function healthHTML(){
+ const x=state.healthRecords.filter(r=>r.date===currentDate);const steps=x.reduce((n,r)=>Math.max(n,Number(r.steps)||0),0);const cal=x.reduce((n,r)=>Math.max(n,Number(r.active_calories)||0),0);const sleep=x.reduce((n,r)=>Math.max(n,Number(r.sleep_hours)||0),0);
+ const platforms=[
+ ['Apple Health / Apple Watch','Requires an iPhone HealthKit-enabled companion app (or a supported export-to-CSV step). Safari cannot read Apple Health automatically.','https://developer.apple.com/documentation/healthkit/authorizing-access-to-health-data'],
+ ['Samsung Health','Usually linked through Health Connect in an Android app, after you grant permission.','https://developer.samsung.com/health/blog/en/accessing-samsung-health-data-through-health-connect'],
+ ['Google Fit / Health Connect','Google Fit APIs are being retired; new Android integrations should use Health Connect or Google Health API where available.','https://developer.android.com/health-and-fitness/health-connect/migration/fit/faq'],
+ ['Oura Ring','Supports OAuth cloud connection for activity, sleep and readiness, but needs developer app credentials and your consent.','https://cloud.ouraring.com/docs/authentication'],
+ ['Fitbit / Google Health API','Legacy Fitbit API closes on 30 October 2026. Google Health API is its replacement; new project onboarding is currently restricted.','https://developers.google.com/health']
+ ];
+ return `<section class="panel" id="healthPanel"><div class="sectionhead"><div><h3>❤️ Health & wearable data</h3><p class="small subdued">Import daily totals now. Direct device connections can be added later.</p></div><span class="tag">Not connected</span></div>
+ <div class="healthSummary">${stat('Steps',steps?steps.toLocaleString('en-GB'):'—','Imported · selected day')}${stat('Active kcal',cal?cal+' kcal':'—','For information only')}${stat('Sleep',sleep?sleep+' h':'—','Imported · selected day')}</div>
+ <p class="mutedNote">Imported activity calories are <b>not</b> subtracted from your food target, avoiding double counting. We won't upload full health exports to external services; the supported CSV summary becomes part of your Ski Ready backup and future cloud sync.</p>
+ <div class="stack"><label class="field">Import a simple health-summary CSV<input id="healthCsvFile" type="file" accept=".csv,text/csv" aria-label="Import health CSV"></label><button class="btn quiet smallbtn" type="button" data-action="healthtemplate">↓ Download CSV template</button></div>
+ <p class="mutedNote">CSV columns: <code>date,source,steps,active_calories,sleep_hours,weight_kg,exercise_minutes</code>. One row per source and date; repeat imports replace matching rows instead of duplicating them. File limit 3 MB. Apple Health's native ZIP export is <b>not</b> directly supported in this version.</p>
+ ${x.length?`<div class="itemlist">${x.map(r=>`<div class="listitem"><div><strong>${esc(r.source)}</strong><span class="subdued">${esc(r.date)} · ${num(r.steps)} steps · ${num(r.active_calories)} active kcal${num(r.weight_kg)?' · '+num(r.weight_kg)+' kg':''}</span></div></div>`).join('')}</div>`:''}
+ <details style="margin-top:15px"><summary style="cursor:pointer;font-weight:800;color:#ffe371">How to connect my tracker later</summary><div class="healthConnections">${platforms.map(p=>`<div class="healthConnection"><strong>${esc(p[0])} · planned integration</strong><p>${esc(p[1])}</p><a class="small" target="_blank" rel="noopener noreferrer" href="${esc(p[2])}">Official integration requirements ↗</a></div>`).join('')}</div></details></section>`;
+}
+function parseHealthCSV(text){
+ // RFC-style CSV quote parsing (including newlines in quoted cells).
+ let rows=[],row=[],field='',quoted=false;
+ for(let i=0;i<text.length;i++){const c=text[i];if(c==='"'){if(quoted&&text[i+1]==='"'){field+='"';i++}else quoted=!quoted}
+ else if(c===','&&!quoted){row.push(field);field=''}else if((c==='\n'||c==='\r')&&!quoted){if(c==='\r'&&text[i+1]==='\n')i++;row.push(field);if(row.some(x=>x.trim()))rows.push(row);row=[];field=''}else field+=c;}
+ if(quoted)throw Error('Unclosed CSV quotation');row.push(field);if(row.some(x=>x.trim()))rows.push(row);
+ if(!rows.length)throw Error('CSV is empty');const header=rows.shift().map(v=>v.trim().toLowerCase().replace(/^\ufeff/,''));if(!header.includes('date'))throw Error('Missing date header');
+ const supported=['steps','active_calories','sleep_hours','weight_kg','exercise_minutes'];if(!supported.some(c=>header.includes(c)))throw Error('No supported metric columns');
+ const result=[];for(const [i,values] of rows.entries()){
+  const raw={};header.forEach((h,j)=>raw[h]=(values[j]||'').trim());const date=raw.date.slice(0,10);
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(Date.parse(date+'T12:00:00')))throw Error('Invalid date on row '+(i+2));
+  let r={date,source:(raw.source||'Imported CSV').slice(0,60)};let atLeastOne=false;
+  for(const key of supported){if(raw[key]!==undefined&&raw[key]!==''){
+   const v=Number(raw[key]);if(!Number.isFinite(v)||v<0||v>1000000||key==='sleep_hours'&&v>24||key==='weight_kg'&&(v<20||v>400)||key==='exercise_minutes'&&v>1440)throw Error('Invalid '+key+' on row '+(i+2));r[key]=v;atLeastOne=true;
+  }}if(atLeastOne)result.push(r);
+ }
+ return result;
+}
+async function onHealthFile(e){const file=e.target.files?.[0];if(!file)return;try{
+ if(file.size>3*1024*1024)throw Error('Please use a daily-summary CSV under 3 MB');
+ const rows=parseHealthCSV(await file.text());if(!rows.length)throw Error('No supported numbers found');
+ if(!confirm(`Import ${rows.length} daily health summary row(s)? Matching source/date rows will be replaced. This data will be included in your private cloud backup when syncing is enabled.`))return;
+ const map=new Map(state.healthRecords.map(r=>[r.date+'|'+r.source,r]));rows.forEach(r=>map.set(r.date+'|'+r.source,r));state.healthRecords=[...map.values()].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,4000);save();render();toast('Imported '+rows.length+' health summary row(s).');
+ }catch(err){toast('Health import failed: '+String(err.message||err))}finally{e.target.value=''}}
+function downloadHealthTemplate(){const csv='date,source,steps,active_calories,sleep_hours,weight_kg,exercise_minutes\n';const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ski-ready-health-import-template.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000)}
+
+function render(){
+ document.getElementById('activeDate').value=currentDate;
+ document.getElementById('dayTitle').textContent=tab==='resorts'?'Explore the mountains':fdate(currentDate);
+ document.getElementById('dateEyebrow').textContent=tab==='resorts'?'Lift reports, webcams & snow conditions':currentDate===toISO(new Date())?'Today’s dashboard':'Daily dashboard';
+ document.querySelector('.dateControl').classList.toggle('hidden',tab==='resorts');
+ const who=displayName();document.getElementById('greetingName').textContent=who?'Hello, '+who+' 👋':'Hello there 👋';
+ document.getElementById('weekMotivation').textContent=weeklyEncouragement(currentDate);const tn=tripNote(currentDate),tr=document.getElementById('tripReadyMessage');tr.hidden=!tn;tr.textContent=tn;
+ document.querySelectorAll('[data-tab]').forEach(b=>{let active=b.dataset.tab===tab;b.classList.toggle('active',active);b.setAttribute('aria-current',active?'page':'false')});
+ document.getElementById('appMain').innerHTML=tab==='workouts'?workoutsHTML():tab==='meals'?mealsHTML():tab==='resorts'?resortsHTML():drinksHTML();
+ renderCoach();
+}
+function changeDate(day){stopScanner();currentDate=day;stopCoach();render()}
+function stat(label,value,sub){return `<div class="stat"><label>${esc(label)}</label><strong>${esc(value)}</strong><span class="small subdued">${esc(sub)}</span></div>`}
+function progress(percent){return `<div class="progress" aria-label="${Math.round(percent)}% completed"><div style="width:${Math.max(0,Math.min(percent,100))}%"></div></div>`}
+function weekStrip(plan){return `<div class="weekStrip">${plan.days.map(d=>{const kind=plan.assign[d],away=!!awayOn(d),current=d===currentDate;const isComplete=activities(d).length>0||Object.keys(state.completed).some(k=>k.startsWith(d+'|')&&state.completed[k]);return `<button type="button" data-action="day" data-date="${d}" class="dayChip ${away?'away':''} ${current?'selected':''} ${isComplete?'complete':''}" aria-label="${fdate(d)} ${away?'away from home':''} ${names[kind]||''}"><span>${dt(d).toLocaleDateString('en-GB',{weekday:'short'})}</span><strong>${dt(d).getDate()}</strong><small>${away?'Away':kind==='legsA'||kind==='legsB'?'Legs':kind==='row'?'Row':kind==='walk'?'Walk':kind==='mobility'?'Move':kind==='taper'?'Light':'Rest'}</small></button>`}).join('')}</div>`}
+function workoutsHTML(){
+ const plan=dailyPlan(currentDate),list=exerciseList(currentDate),done=list.filter((e,i)=>isDone(currentDate,plan.kind,e.id,i)).length,actual=activities(currentDate),dur=total(actual,'minutes');
+ const special=currentDate===START?'You already completed a 60-minute brisk walk on 13 October. With tired thighs, an easy recovery day is enough — no need to do another workout.':'';
+ const upcoming= Math.max(0,Math.ceil((dt(tripStartDate())-dt(currentDate))/86400000));
+ return `
+ <div class="stats">${stat('Until ski trip',currentDate>=tripStartDate()?'⛷️':upcoming+' days','Early February 2027')}${stat('Activity logged',dur+' min','On selected day')}${stat('Workout',done+'/'+list.length,'Exercises ticked off')}</div>
+ <div class="grid two">
+ <div>
+ <section class="panel mint">
+  <div class="sectionhead"><div><div class="eyebrow">${esc(phases[plan.phase].name)} phase</div><h2 style="margin:5px 0">${esc(names[plan.kind])}</h2><p class="small subdued">${esc(phases[plan.phase].description)}</p></div><span class="tag">${plan.away?'✈ Away':'⌂ Home'}</span></div>
+  <div class="meta"><span class="minttag">${plan.away?'No equipment needed':'Weight-free by default'}</span><span>${currentDate>=tripStartDate()?'Trip period':'Ski readiness'}</span></div>
+  ${weekStrip(plan)}
+  ${plan.away?`<div class="notice good">Away ${short(plan.away.start)}–${short(plan.away.end)}. Adjusted to roughly ${minForDay(currentDate)} minutes available, with no home-gym equipment.</div>`:''}
+  ${special?`<div class="notice good">${special}</div>`:''}
+  ${currentDate>=addDays(tripStartDate(),-7)&&currentDate<tripStartDate()?`<div class="notice">Final pre-trip week: keep sessions light and arrive rested.</div>`:''}
+  ${currentDate>=tripStartDate()&&currentDate<addDays(tripStartDate(),10)?`<div class="notice good">Enjoy your skiing. Treat this as optional mobility, not an extra hard workout.</div>`:''}
+  <div class="sectionhead" style="align-items:center;margin:20px 0 4px"><div><h3 style="margin:0">Today's exercises</h3><p class="small subdued">Tap “How to” for a two-position illustration and NHS demo resources.</p></div><button class="btn primary smallbtn" type="button" data-action="startcoach">🔊 Start coach</button></div>
+  ${progress(list.length?done/list.length*100:0)}<p class="tiny subdued" style="margin:0 0 13px">${done} of ${list.length} exercises complete. The coach uses your device's voice, not ChatGPT voice.</p>
+  ${list.map((e,i)=>exerciseHTML(e,i,plan.kind)).join('')}
+  <p class="mutedNote">Warm up gently before leg sessions. Hold onto support when needed. Muscle fatigue is okay; sharp pain, swelling or dizziness means stop. Keep intensity comfortable while building the habit.</p>
+ </section>
+ <section class="panel"><div class="sectionhead"><div><h3>Activity log</h3><p class="subdued small">Record walks, rowing or any other movement.</p></div><span class="tag">${dur} min</span></div>
+  <form data-form="activity" class="stack"><div class="fieldrow"><label class="field">Activity<input name="name" required maxlength="80" placeholder="e.g. Walking pad"></label><label class="field">Minutes<input name="minutes" required type="number" min="1" max="720" placeholder="30"></label></div><div class="fieldrow"><label class="field">Effort<select name="intensity"><option>Easy</option><option selected>Moderate</option><option>Brisk</option><option>Hard</option></select></label><label class="field">Note (optional)<input name="note" maxlength="140" placeholder="How your legs felt"></label></div><button class="btn primary" type="submit">+ Log activity</button></form>
+  ${itemRows(actual,'activity')}</section>
+ </div>
+ <aside>
+ <section class="panel"><div class="sectionhead"><div><h3>✈ Away from home</h3><p class="subdued small">Tell the app when you're away and for how long.</p></div></div>
+ <form data-form="trip"><div class="fieldrow"><label class="field">Away from<input required type="date" name="start" value="${currentDate}"></label><label class="field">Returning on<input required type="date" name="end" value="${currentDate}"></label></div><label class="field" style="margin-top:10px">Exercise time available each day<select name="minutes"><option value="10">10 minutes</option><option value="15" selected>15 minutes</option><option value="20">20 minutes</option><option value="30">30 minutes</option><option value="45">45 minutes</option><option value="60">60 minutes</option></select></label><label class="field" style="margin-top:10px">Notes (optional)<input name="notes" maxlength="120" placeholder="e.g. Travelling for work"></label><button type="submit" class="btn primary full">Save away dates & adapt workouts</button></form>
+ <p class="mutedNote">Away dates are inclusive. Your week is rearranged automatically: rowing stays on home days where possible; away days use walking, mobility and bodyweight exercises.</p>
+ ${itemRows(state.trips.slice().sort((a,b)=>a.start.localeCompare(b.start)),'trip')}
+ </section>
+ <section class="panel"><div class="sectionhead"><div><h3>⚖️ Weight & waist</h3><p class="subdued small">Add your first weigh-in tomorrow — there's no rush.</p></div></div>
+ <form data-form="metric" class="stack"><div class="fieldrow"><label class="field">Weight (kg)<input name="weight" type="number" min="25" max="350" step="0.1" placeholder="Not measured yet"></label><label class="field">Waist (cm)<input name="waist" type="number" min="35" max="250" step="0.1" placeholder="Optional"></label></div><button type="submit" class="btn full">+ Save measurement</button></form>
+ ${metricGraph()}
+ ${itemRows(state.metrics.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5),'metric')}
+ <p class="mutedNote">Weight naturally fluctuates. A weekly trend and optional waist measurement are more useful than any single reading. Fat loss cannot be targeted to one body area.</p>
+ </section>
+ ${healthHTML()}
+ <section class="panel"><h3>⭐ How the plan progresses</h3><div class="stack">${phases.map((p,i)=>`<div class="listitem" style="align-items:center;${i===plan.phase?'border-color:#a779da':''}"><div><strong>${i+1}. ${esc(p.name)}</strong><span class="subdued">${esc(p.description)}</span></div>${i===plan.phase?'<span class="tag">Now</span>':''}</div>`).join('')}</div></section>
+ </aside></div>`;
+}
+function exerciseHTML(e,i,kind){const x=EX[e.id],done=isDone(currentDate,kind,e.id,i);return `<div class="exercise ${done?'done':''}"><div class="eximage" aria-hidden="true">${diagram(e.id)}</div><div class="extext"><h4>${esc(x.name)}</h4><p>${e.sets} ${e.sets===1?'set':'sets'} × ${e.qty} ${esc(e.unit)}</p><div class="exacts"><label><input type="checkbox" data-action="complete" data-ex="${e.id}" data-index="${i}" ${done?'checked':''}> Done</label><button class="btn quiet smallbtn" type="button" data-action="howto" data-ex="${e.id}">How to ↗</button></div></div></div>`}
+function diagram(id){
+ const type=EX[id]?.type||'squat';
+ const panel=(atX,pose,label)=>{
+  const x=atX;let body='';const head=(cx,cy)=>`<circle cx="${cx}" cy="${cy}" r="8" fill="#d8fff0" stroke="#376b6b" stroke-width="2"/>`;
+  const stroke=p=>`<path d="${p}" fill="none" stroke="#d0a6ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const block=(bx,by,w,h)=>`<rect x="${bx}" y="${by}" width="${w}" height="${h}" rx="2" fill="#376879"/>`;
+  if(type==='wall')body=block(x+48,13,5,115)+head(x+31,27)+stroke(`M ${x+31} 36 L ${x+31} 66 L ${x+52} 84 L ${x+52} 104 M ${x+31} 66 L ${x+9} 84 L ${x+9} 104 M ${x+31} 46 L ${x+16} 61 M ${x+31} 48 L ${x+43} 63`);
+  else if(type==='bridge')body=block(x+5,106,80,4)+head(x+12,pose?77:88)+stroke(pose?`M ${x+20} 77 L ${x+58} 68 L ${x+74} 96 M ${x+58} 68 L ${x+42} 96 M ${x+34} 80 L ${x+27} 103`:`M ${x+20} 88 L ${x+57} 95 L ${x+74} 96 M ${x+57} 95 L ${x+43} 103 M ${x+29} 92 L ${x+25} 103`);
+  else if(type==='row')body=block(x+6,103,80,4)+block(x+47,91,19,6)+head(x+(pose?27:49),pose?43:37)+stroke(pose?`M ${x+28} 52 L ${x+38} 87 L ${x+58} 90 L ${x+68} 101 M ${x+38} 87 L ${x+19} 102 M ${x+32} 65 L ${x+67} 63`:`M ${x+49} 46 L ${x+54} 88 L ${x+69} 103 M ${x+54} 88 L ${x+24} 100 M ${x+47} 61 L ${x+72} 63`);
+  else if(type==='step')body=block(x+55,91,31,18)+head(x+(pose?54:36),pose?20:22)+stroke(pose?`M ${x+54} 30 L ${x+51} 60 L ${x+63} 91 M ${x+51} 60 L ${x+36} 85 L ${x+21} 103 M ${x+52} 45 L ${x+39} 65`:`M ${x+36} 30 L ${x+38} 59 L ${x+42} 95 L ${x+28} 103 M ${x+38} 59 L ${x+65} 90 M ${x+39} 45 L ${x+52} 60`);
+  else if(type==='walk')body=head(x+(pose?50:34),25)+stroke(pose?`M ${x+50} 33 L ${x+43} 66 L ${x+23} 98 M ${x+43} 66 L ${x+71} 97 M ${x+45} 49 L ${x+30} 67 M ${x+44} 49 L ${x+58} 62`:`M ${x+34} 33 L ${x+42} 66 L ${x+64} 98 M ${x+42} 66 L ${x+24} 99 M ${x+43} 48 L ${x+57} 67 M ${x+43} 48 L ${x+28} 62`);
+  else if(type==='lateral')body=head(x+(pose?48:40),20)+stroke(pose?`M ${x+48} 28 L ${x+48} 62 L ${x+20} 83 L ${x+7} 103 M ${x+48} 62 L ${x+70} 83 L ${x+78} 103 M ${x+48} 43 L ${x+33} 55 M ${x+48} 43 L ${x+63} 55`:`M ${x+40} 28 L ${x+40} 67 L ${x+30} 104 M ${x+40} 67 L ${x+50} 104 M ${x+40} 42 L ${x+27} 55 M ${x+40} 42 L ${x+53} 55`);
+  else if(type==='balance')body=head(x+41,20)+stroke(pose?`M ${x+41} 28 L ${x+41} 65 L ${x+40} 103 M ${x+41} 65 L ${x+66} 78 L ${x+68} 86 M ${x+41} 41 L ${x+18} 51 M ${x+41} 41 L ${x+64} 49`:`M ${x+41} 28 L ${x+41} 65 L ${x+30} 103 M ${x+41} 65 L ${x+51} 103 M ${x+41} 41 L ${x+18} 51 M ${x+41} 41 L ${x+64} 51`);
+  else if(type==='calf')body=head(x+41,20)+stroke(`M ${x+41} 28 L ${x+41} 67 L ${x+31} ${pose?98:103} M ${x+41} 67 L ${x+52} ${pose?98:103} M ${x+41} 40 L ${x+22} 52 M ${x+41} 40 L ${x+59} 52`)+(pose?stroke(`M ${x+30} 98 L ${x+28} 94 M ${x+52} 98 L ${x+55} 94`):'');
+  else if(type==='lunge')body=head(x+40,20)+stroke(pose?`M ${x+40} 28 L ${x+40} 61 L ${x+61} 79 L ${x+73} 101 M ${x+40} 61 L ${x+24} 80 L ${x+10} 90 M ${x+40} 39 L ${x+26} 53 M ${x+40} 39 L ${x+55} 53`:`M ${x+40} 28 L ${x+40} 65 L ${x+30} 103 M ${x+40} 65 L ${x+50} 103 M ${x+40} 41 L ${x+26} 55 M ${x+40} 41 L ${x+55} 55`);
+  else if(type==='mobility')body=head(x+41,21)+stroke(pose?`M ${x+41} 29 L ${x+41} 66 L ${x+27} 104 M ${x+41} 66 L ${x+54} 104 M ${x+41} 43 L ${x+17} 26 M ${x+41} 43 L ${x+65} 26`:`M ${x+41} 29 L ${x+41} 66 L ${x+30} 103 M ${x+41} 66 L ${x+52} 103 M ${x+41} 44 L ${x+25} 56 M ${x+41} 44 L ${x+57} 56`);
+  else body=head(x+40,pose?34:20)+stroke(pose?`M ${x+40} 42 L ${x+46} 69 L ${x+26} 84 L ${x+18} 104 M ${x+46} 69 L ${x+68} 84 L ${x+75} 104 M ${x+42} 53 L ${x+24} 63 M ${x+43} 53 L ${x+61} 62`:`M ${x+40} 28 L ${x+40} 66 L ${x+29} 104 M ${x+40} 66 L ${x+51} 104 M ${x+40} 43 L ${x+25} 54 M ${x+40} 43 L ${x+55} 54`);
+  return `<g>${body}<text x="${x+40}" y="122" fill="#82a8b9" text-anchor="middle" font-size="9">${label}</text></g>`;
+ };
+ return `<svg viewBox="0 0 190 130" role="img" aria-label="${esc(EX[id]?.name||'Exercise')} start and movement illustration"><rect x="0" y="0" width="190" height="130" rx="10" fill="#21152d"/><path d="M95 11v110" stroke="#294a5b" stroke-dasharray="4 6"/>${panel(6,0,'START')}${panel(102,1,'MOVE')}</svg>`;
+}
+function itemRows(items,type){if(!items.length)return `<p class="empty">Nothing recorded yet.</p>`;
+ return `<div class="itemlist">${items.map(x=>{
+ let title='',desc='';
+ if(type==='trip'){title=`${short(x.start)} → ${short(x.end)}`;desc=`${x.minutes||15} min/day · ${esc(x.notes||'No equipment')}`}
+ if(type==='activity'){title=esc(x.name);desc=`${x.minutes} min · ${esc(x.intensity)}${x.note?' · '+esc(x.note):''}`}
+ if(type==='meal'){title=esc(x.name);desc=`${esc(x.meal)} · ${x.cal} kcal · ${x.protein} g protein`}
+ if(type==='water'){title=`${x.ml} ml`;desc=esc(x.time||short(x.date))}
+ if(type==='drink'){title=esc(x.name||'Drink')+' · '+x.ml+' ml';desc=`${num(x.cal)} kcal · ${esc(x.time||short(x.date))}${x.ingredients?' · '+esc(x.ingredients):''}`}
+
+ if(type==='metric'){title=`${x.weight?x.weight+' kg':'Weight —'}${x.waist?' · '+x.waist+' cm waist':''}`;desc=short(x.date)}
+ return `<div class="listitem"><div><strong>${title}</strong><span class="subdued">${desc}</span></div><button class="linkDelete" type="button" data-action="delete" data-type="${type==='drink'?(x.kind==='water'?'water':'drink'):type}" data-id="${esc(x.id)}" aria-label="Remove ${esc(type)} entry">Remove</button></div>`}).join('')}</div>`;
+}
+function metricGraph(){const imported=(state.healthRecords||[]).filter(x=>num(x.weight_kg)>0).map(x=>({date:x.date,weight:x.weight_kg}));const byDay=new Map(imported.map(x=>[x.date,x]));state.metrics.filter(x=>num(x.weight)>0).forEach(x=>byDay.set(x.date,x));const ms=[...byDay.values()].sort((a,b)=>a.date.localeCompare(b.date)).slice(-12);if(!ms.length)return '<p class="empty">No weight entered yet. Your trend chart will appear here.</p>';
+ if(ms.length===1)return `<div class="tip" style="margin-top:12px">Starting point: <b>${ms[0].weight} kg</b>. Add another weigh-in to see a trend.</div>`;
+ const vals=ms.map(x=>num(x.weight)),lo=Math.min(...vals)-.8,hi=Math.max(...vals)+.8,span=Math.max(hi-lo,.6),points=vals.map((v,i)=>`${20+i*300/(vals.length-1)},${123-(v-lo)/span*98}`).join(' ');
+ return `<svg class="chart" role="img" aria-label="Trend chart of ${vals.length} recent weights" viewBox="0 0 340 145" preserveAspectRatio="none"><path d="M20 25 H330 M20 74 H330 M20 123 H330" stroke="#30485d" stroke-dasharray="3 5"/><polyline points="${points}" fill="none" stroke="#ffe371" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>${points.split(' ').map(p=>{const [x,y]=p.split(',');return `<circle cx="${x}" cy="${y}" r="3.5" fill="#e5c6ff"/>`}).join('')}<text x="20" y="140" fill="#a9b9c6" font-size="10">${short(ms[0].date)}</text><text x="330" y="140" text-anchor="end" fill="#a9b9c6" font-size="10">${short(ms[ms.length-1].date)}</text></svg>`;
+}
+function allFoods(){return [...foods,...state.customFoods]}
+function foodById(id){return allFoods().find(f=>f.id===id)}
+
+function recipeFor(food){return food?.recipe?.steps?.length?food.recipe:RECIPES[food?.id]||null}
+function formatQuantity(number,unit){const q=Math.round(Number(number)*10)/10;const s=Number.isInteger(q)?String(q):q.toFixed(1);const plural={'each':'items','slices':'slices','tin':'tins','pack':'packs','portion':'portions'};if(unit==='each')return (q===.5?'½':s)+' '+(q===1||q===.5?'item':'items');if(unit==='slice' || unit==='slices')return s+' '+(q===1?'slice':'slices');if(unit==='tin')return s+' '+(q===1?'tin':'tins');if(unit==='pack')return s+' '+(q===1?'pack':'packs');if(unit==='portion')return s+' '+(q===1?'portion':'portions');return s+' '+unit}
+function recipeModal(id,servings=1){
+ const f=foodById(id)||MORE_MEALS.find(x=>x.id===id);const r=recipeFor(f);if(!f||!r){toast('This food has no saved recipe yet.');return;}
+ servings=Math.max(1,Math.min(8,Number(servings)||1));
+ const away=awayOn(currentDate),available=stockStatus(f,weekStart(currentDate));
+ document.getElementById('modalRoot').innerHTML=`<div class="modalback" role="presentation"><div class="modal recipeModal" role="dialog" aria-modal="true" aria-labelledby="recipeTitle"><div class="modalTop"><div><div class="eyebrow">${f.noCook?'🥗 No cooking required':'🍳 Make it at home'} · ${esc(f.meal)}</div><h2 id="recipeTitle">${esc(f.name)}</h2></div><button class="btn quiet smallbtn" type="button" data-action="closemodal" aria-label="Close recipe">✕ Close</button></div>
+ <div class="recipeStats"><span>⏱ Prep <b>${r.prep} min</b></span><span>♨️ Cook <b>${r.cook} min</b></span><span>🔥 Approx. <b>${Math.round(num(f.cal)*servings)} kcal</b></span><span>💪 Approx. <b>${Math.round(num(f.protein)*servings)} g protein</b></span></div>
+ <label class="field recipeServings">Servings<select data-action="recipeservings" data-id="${esc(f.id)}">${Array.from({length:8},(_,i)=>i+1).map(n=>`<option value="${n}" ${n===servings?'selected':''}>${n} ${n===1?'serving':'servings'}</option>`).join('')}</select></label>
+ ${away&&!f.noCook?'<div class="notice">This recipe needs cooking; choose a no-cook meal for your away day.</div>':''}
+ <h3>Ingredients</h3><ul class="recipeIngredients">${r.ingredients.map(item=>{const bought=state.shoppingChecked[weekStart(currentDate)+'|'+item.name];return `<li><span>${esc(item.name)} ${bought?'<span class="foodReady">✓ bought</span>':''}</span><b>${esc(formatQuantity(item.qty*servings,item.unit))}</b></li>`}).join('')}</ul>
+ <h3>Method — step by step</h3><ol class="recipeSteps">${r.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>
+ ${r.tip?`<div class="notice good">${esc(r.tip)}</div>`:''}
+ <p class="mutedNote">Nutrition values are estimates per suggested serving, not a precise calculation from these ingredients. Compare actual food labels, quantities and allergies; adding extra oil, sauces or larger portions changes calories. Shopping ticks indicate you've bought ingredients, not necessarily that they remain in your kitchen.</p>
+ <div class="recipeActions"><button type="button" class="btn primary" data-action="logrecipe" data-id="${esc(f.id)}" data-servings="${servings}">+ Log ${servings} ${servings===1?'serving':'servings'}</button><button type="button" class="btn quiet" data-action="closemodal">Close recipe</button></div></div></div>`;
+ const heading=document.getElementById('recipeTitle');if(heading)heading.focus?.();
+}
+function previewIdeaRecipe(food){recipeModal(food.id)}
+function favoriteFoods(){return state.favourites.map(foodById).filter(Boolean)}
+function baseOptionsFor(meal,day){return allFoods().filter(f=>f.meal===meal&&(!awayOn(day)||f.noCook))}
+function boughtItems(week){const prefix=week+'|';return new Set(Object.entries(state.shoppingChecked).filter(([k,v])=>v&&k.startsWith(prefix)).map(([k])=>k.slice(prefix.length).trim().toLowerCase()))}
+function stockStatus(food,week){const want=[...new Set((food?.ingredients||[]).map(s=>String(s).trim().toLowerCase()).filter(Boolean))],have=boughtItems(week),missing=want.filter(s=>!have.has(s));return {ready:want.length>0&&!missing.length,total:want.length,bought:want.length-missing.length,missing};}
+function optionsFor(meal,day){const week=weekStart(day);return baseOptionsFor(meal,day).sort((a,b)=>Number(stockStatus(b,week).ready)-Number(stockStatus(a,week).ready)||Number(state.favourites.includes(b.id))-Number(state.favourites.includes(a.id))||stockStatus(b,week).bought-stockStatus(a,week).bought)}
+function plannedFood(day,meal){const opts=baseOptionsFor(meal,day);const stored=state.weeklyPlan[day]?.[meal];const match=opts.find(f=>f.id===stored);if(match)return match;const homeIndex=(weekdays(day)+({Breakfast:0,Lunch:1,Dinner:2,Snack:3}[meal]||0))%Math.max(1,opts.length);return opts[homeIndex]||null}
+function weeklyMeals(){const start=weekStart(currentDate);return Array.from({length:7},(_,i)=>{const day=addDays(start,i);return {day,away:!!awayOn(day),meals:['Breakfast','Lunch','Dinner','Snack'].map(meal=>({meal,food:plannedFood(day,meal)}))}})}
+function foodCard(f){const fav=state.favourites.includes(f.id),stock=stockStatus(f,weekStart(currentDate));return `<div class="food"><div><div class="foodHead"><h4>${esc(f.name)}</h4>${f.noCook?'<span class="tag">No-cook</span>':''}</div><p>${esc(f.desc||'Personal meal')}</p><p style="color:var(--mint);margin-top:7px"><b>${num(f.cal)} kcal</b> · ${num(f.protein)} g protein</p><p class="${stock.ready?'foodReady':'foodMissing'}">${stock.ready?'✓ Ingredients bought':stock.total?stock.bought+'/'+stock.total+' ingredients ticked':'Add ingredients to check availability'}</p></div><div class="foodActions">${recipeFor(f)?`<button class="btn quiet smallbtn" data-action="recipe" data-id="${esc(f.id)}" type="button">📖 View recipe</button>`:''}<button class="btn smallbtn" data-action="addfood" data-id="${esc(f.id)}" type="button">+ Log meal</button><button class="btn smallbtn ${fav?'faved':''}" data-action="favourite" data-id="${esc(f.id)}" type="button" aria-label="${fav?'Remove':'Add'} ${esc(f.name)} ${fav?'from':'to'} favourites">${fav?'★ Saved':'☆ Favourite'}</button>${f.userRecipe?`<button class="btn warn smallbtn" type="button" data-action="deleterecipe" data-id="${esc(f.id)}">Remove my recipe</button>`:''}</div></div>`}
+function shoppingIngredients(){const counts={};weeklyMeals().forEach(row=>row.meals.forEach(({food})=>{if(!food)return;const recipe=recipeFor(food);for(const item of food.ingredients||[]){const label=String(item).trim();if(!label)continue;const rec=counts[label]||(counts[label]={uses:0,units:{}});rec.uses++;const quant=recipe?.ingredients?.find(x=>x.name===label);if(quant){rec.units[quant.unit]=(rec.units[quant.unit]||0)+Number(quant.qty)}else{rec.units['portion']=(rec.units['portion']||0)+1}}}));return Object.entries(counts).map(([name,data])=>[name,data.uses,Object.entries(data.units).map(([unit,qty])=>formatQuantity(qty,unit)).join(' + ')]).sort((a,b)=>a[0].localeCompare(b[0]))}
+function newIdeasForDate(){return MORE_MEALS.filter(f=>(discoverFilter==='All'||f.meal===discoverFilter)&&(!awayOn(currentDate)||f.noCook)&&!state.customFoods.some(saved=>saved.id===f.id))}
+function exploreMealsHTML(){
+ const pool=newIdeasForDate();
+ const suggestions=Array.from({length:Math.min(3,pool.length)},(_,i)=>pool[(discoverOffset+i)%pool.length]);
+ return `<section class="panel" id="exploreMeals"><div class="sectionhead"><div><div class="eyebrow">Fresh inspiration</div><h3>✨ Explore more meals & recipes</h3><p class="small subdued">Want a change? Browse new ideas, save the ones you like and swap them into your meal plan. Every idea below has ingredients and step-by-step instructions.</p></div></div>
+ <label class="field" style="max-width:280px">Find ideas for<select data-action="explorefilter">${['All','Breakfast','Lunch','Dinner','Snack'].map(m=>`<option value="${m}" ${m===discoverFilter?'selected':''}>${m==='All'?'All meals':m}</option>`).join('')}</select></label>
+ ${awayOn(currentDate)?'<p class="notice good">✈ Showing no-cook ideas because you are away on this date.</p>':''}
+ <div class="discoverGrid">${suggestions.length?suggestions.map(f=>`<article class="discoverCard"><div><div class="meta"><span>${esc(f.meal)}</span>${f.noCook?'<span class="minttag">No-cook</span>':''}</div><h4 style="margin-top:9px">${esc(f.name)}</h4><p>${num(f.cal)} kcal · ${num(f.protein)} g protein per serving · ${num(f.recipe.prep)+num(f.recipe.cook)} min</p></div><div class="foodActions"><button type="button" class="btn quiet smallbtn" data-action="previewidea" data-id="${f.id}">📖 Recipe</button><button type="button" class="btn primary smallbtn" data-action="saveidea" data-id="${f.id}">★ Save to my meals</button></div></article>`).join(''):'<p class="small subdued">You have saved all the current ideas for this category. Try a different category, or add your own below.</p>'}</div>
+ <div class="meta" style="margin-top:12px"><button class="btn quiet" type="button" data-action="refreshideas" ${pool.length<=3?'disabled':''}>↻ Show different ideas</button><span class="small subdued">${pool.length} unsaved suggestions available${awayOn(currentDate)?' (no-cook)':''}</span></div>
+ <div class="discoverForm"><details><summary>＋ Create and save your own recipe (without logging a meal)</summary><p class="small subdued">Recipes you add here become available in Favourites and the weekly meal-plan swaps. Nutrition values are estimates you enter yourself; they aren't calculated from ingredients.</p>
+ <form class="stack" data-form="saveRecipe"><label class="field">Recipe name<input name="name" required maxlength="90" placeholder="e.g. My favourite chicken pasta"></label>
+ <div class="fieldrow"><label class="field">Meal type<select name="meal"><option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Snack</option></select></label><label class="field">Calories per serving<input name="cal" type="number" min="0" max="5000" step="1" required placeholder="Estimate or check your recipe"></label></div>
+ <div class="fieldrow"><label class="field">Protein per serving (g)<input name="protein" type="number" min="0" max="300" step="0.1" required placeholder="From your recipe"></label><label class="field">Description (optional)<input name="desc" maxlength="130" placeholder="A family favourite"></label></div>
+ <label class="field">Ingredients for ONE serving — one per line<textarea name="ingredients" required rows="5" placeholder="Chicken breast | 150 | g&#10;Pasta | 80 | g&#10;Passata | 120 | g"></textarea></label>
+ <p class="tiny subdued" style="margin:0">Format: ingredient | quantity | unit. Units could be g, ml, each, slices, tin, pack, tsp or tbsp.</p>
+ <label class="field">Method — one instruction per line<textarea name="steps" required rows="5" placeholder="Cook the pasta following its packet.&#10;Cook chicken until completely done.&#10;Mix with passata and serve."></textarea></label>
+ <div class="fieldrow"><label class="field">Prep minutes<input name="prep" type="number" min="0" max="480" value="10" required></label><label class="field">Cook minutes<input name="cook" type="number" min="0" max="480" value="15" required></label></div>
+ <label class="small"><input type="checkbox" name="noCook" style="width:auto;margin-right:6px"> No cooking needed — suitable when away</label>
+ <label class="small"><input type="checkbox" name="fav" checked style="width:auto;margin-right:6px"> Add to favourites</label>
+ <button class="btn primary" type="submit">Save recipe to my meals</button></form></details></div>
+ <p class="mutedNote">New suggestions come from a built-in recipe library, not live AI generation. You can add as many of your own recipes as you like. For nutrition and allergies, verify real ingredients, labels and portions.</p></section>`;
+}
+function buildOwnRecipe(form){
+ const fd=new FormData(form),get=k=>String(fd.get(k)||'').trim();
+ const names=get('ingredients').split('\n').map(s=>s.trim()).filter(Boolean).slice(0,35);
+ const steps=get('steps').split('\n').map(s=>s.trim()).filter(Boolean).slice(0,30);
+ if(!names.length||!steps.length){toast('Add at least one ingredient and one recipe step.');return null}
+ const ingredients=names.map(line=>{const [name,qty,unit]=line.split('|').map(s=>(s||'').trim());const number=Number(qty);return {name:String(name).slice(0,100),qty:Number.isFinite(number)&&number>0?number:1,unit:(unit||'portion').slice(0,20)}}).filter(x=>x.name);
+ if(!ingredients.length){toast('Add ingredients with valid names.');return null}
+ const cal=Number(get('cal')),protein=Number(get('protein'));
+ if(!(cal>=0&&cal<=5000&&protein>=0&&protein<=300)){toast('Check estimated calories and protein.');return null}
+ return {id:uid(),meal:get('meal'),name:get('name').slice(0,90),desc:get('desc').slice(0,130)||'Your saved recipe',cal,protein,noCook:fd.has('noCook'),userRecipe:true,ingredients:ingredients.map(x=>x.name),recipe:{prep:Number(get('prep'))||0,cook:Number(get('cook'))||0,servings:1,ingredients,steps,tip:'Your own recipe. Check labels and adapt cooking steps for food safety.'},isFavorite:fd.has('fav')};
+}
+function mealsHTML(){const ms=mealDay(currentDate),cal=dailyCalories(currentDate),protein=dailyProtein(currentDate),drinkCal=total(drinkDay(currentDate),'cal'),goal=Number(state.settings.calGoal)||null,pgoal=Number(state.settings.proteinGoal)||null,away=!!awayOn(currentDate),wk=weekStart(currentDate),week=weeklyMeals(),weekTotal=Array.from({length:7},(_,i)=>{const d=addDays(wk,i);return {d,kcal:dailyCalories(d)}});
+ const barRes=barcodeProduct?`<div class="barcodeResult"><strong>${esc(barcodeProduct.name)}</strong><p class="small subdued" style="margin:5px 0">Barcode: ${esc(barcodeProduct.code)} · Data from Open Food Facts</p><p class="small"><b>${barcodeProduct.cal100===null?'Calories not available':Math.round(barcodeProduct.cal100)+' kcal'} / 100g</b> · ${barcodeProduct.protein100===null?'Protein not available':barcodeProduct.protein100.toFixed(1)+'g protein'} / 100g</p><p class="small subdued"><b>Ingredients:</b> ${esc(barcodeProduct.ingredients||'Not supplied in this product listing — check packaging.')}</p><form data-form="barcodeMeal" class="stack"><label class="field">Amount eaten (grams or ml if label is per 100ml)<input required name="grams" type="number" min="1" max="5000" step="1" value="${barcodeProduct.serving||100}"></label><div class="fieldrow"><label class="field">Calories per 100g/100ml<input name="cal100" required type="number" min="0" max="1500" step="0.1" value="${barcodeProduct.cal100??''}" placeholder="Read food label"></label><label class="field">Protein per 100g/100ml<input name="protein100" required type="number" min="0" max="100" step="0.1" value="${barcodeProduct.protein100??''}" placeholder="Read food label"></label></div><label class="field">Log as<select name="meal"><option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Snack</option></select></label><label class="small"><input type="checkbox" name="fav" style="width:auto;margin-right:6px"> Save to favourites</label><label class="small"><input type="checkbox" name="noCook" style="width:auto;margin-right:6px"> Can eat without cooking</label><p class="mutedNote">Check the package label. User-submitted barcode data can be incomplete or wrong; amounts are based on the per-100g values above. For drinks, use ml only if values are per 100ml.</p><button class="btn primary full" type="submit">+ Add scanned food to calorie counter</button></form></div>`:'';
+ return `<div class="stats">${stat('Calories today',cal+' kcal',goal?Math.max(0,goal-cal)+' kcal remaining':'Target not set yet')}${stat('Protein today',Math.round(protein*10)/10+' g',pgoal?'Goal '+pgoal+' g':'Target not set yet')}${stat('Drinks calories',drinkCal+' kcal','Included in daily total')}</div>
+ ${goal?`<section class="panel"><div class="sectionhead"><h3>Daily calorie counter</h3><strong>${cal} / ${goal} kcal</strong></div>${progress(cal/goal*100)}<p class="small subdued">${cal<=goal?goal-cal+' kcal remaining':cal-goal+' kcal above target'}. Targets are optional and are not a requirement to eat less after exercise.</p></section>`:`<div class="notice good">Your calorie counter is active. Enter a calorie goal only after you've worked out an appropriate daily target — we'll leave it blank for now.</div>`}
+ ${away?'<div class="notice good">✈ You are away on this date. Meal suggestions and your weekly plan show no-cook choices only, including ready-to-eat supermarket options.</div>':''}
+ <section class="panel"><div class="sectionhead"><div><div class="eyebrow">Shop it → make it</div><h3>Meals based on what you've bought</h3><p class="small subdued">Tick items on your weekly shopping list and recipe suggestions automatically show which ingredients you have. Your chosen meal plan won't be changed without you asking.</p></div></div>
+ <div class="inventoryGrid">${['Breakfast','Lunch','Dinner','Snack'].map(meal=>{const matches=optionsFor(meal,currentDate).filter(f=>stockStatus(f,wk).ready);return `<span><b>${esc(meal)}:</b> ${matches.length?esc(matches.slice(0,2).map(f=>f.name).join(' · '))+' ✓':'Tick ingredients to unlock choices'}</span>`}).join('')}</div>
+ <button type="button" class="btn primary" data-action="pantryplan" style="margin-top:12px">↻ Update weekly meals using bought ingredients</button><p class="mutedNote">This only replaces planned meals when all their ingredients are ticked as bought; manually selected favourites stay available. Any new ingredients needed will appear in the shopping list. Away days remain no-cook.</p></section>
+ ${exploreMealsHTML()}
+ <div class="grid two"><div>
+ <section class="panel"><div class="sectionhead"><div><div class="eyebrow">Meals to enjoy</div><h2>Meal suggestions & favourites</h2><p class="subdued small">Save foods you like using ☆ Favourite, then add them to your day or swap them into the weekly plan.</p></div></div>
+ ${state.favourites.length?`<h3>★ Your favourites</h3><div class="foodGrid">${favoriteFoods().filter(f=>!away||f.noCook).map(foodCard).join('')||'<p class="small subdued">Your saved meals need cooking. Save some ready-to-eat favourites for away days.</p>'}</div>`:''}
+ ${['Breakfast','Lunch','Dinner','Snack'].map(meal=>`<div class="mealType"><h3>${meal==='Snack'?'Snacks':meal}</h3><span class="tag">${ms.filter(x=>x.meal===meal).length} logged</span></div><div class="foodGrid">${optionsFor(meal,currentDate).map(foodCard).join('')}</div>`).join('')}
+ </section>
+ <section class="panel"><div class="sectionhead"><div><h3>🛒 Weekly plan & shopping list</h3><p class="small subdued">${short(wk)}–${short(addDays(wk,6))} · your saved trips automatically get no-cook meals</p></div></div><details data-plan-details ${mealPlanExpanded?'open':''}><summary class="btn quiet" style="cursor:pointer;width:100%">View / swap meals for this week</summary><p class="small subdued">Choose a favourite or any meal for each day. The ingredients list below updates immediately. Meals are suggestions, not automatically entered into your calorie diary.</p>${week.map(row=>`<div class="dayMealCard" style="margin:10px 0"><strong>${esc(fdate(row.day,{weekday:'short',day:'numeric',month:'short'}))} ${row.away?'· ✈ no-cook':''}</strong><div class="weekMeal">${row.meals.map(({meal,food})=>`<label class="field">${meal}<select data-action="planmeal" data-date="${row.day}" data-meal="${meal}">${optionsFor(meal,row.day).map(opt=>`<option value="${esc(opt.id)}" ${opt.id===food?.id?'selected':''}>${state.favourites.includes(opt.id)?'★ ':''}${esc(opt.name)}</option>`).join('')}</select>${food&&recipeFor(food)?`<button class="btn quiet smallbtn planRecipe" data-action="recipe" data-id="${esc(food.id)}" type="button">View recipe ↗</button>`:''}</label>`).join('')}</div></div>`).join('')}</details>
+ <div class="sectionhead" style="margin-top:18px"><div><h3>Ingredients to buy</h3><p class="small subdued">Tick items you have bought. Ready-to-make meal suggestions update as you shop. Counts mean planned meal uses, not exact pack quantities.</p></div><button class="btn quiet smallbtn" type="button" data-action="clearshopping" data-week="${wk}">Untick all</button></div>
+ <div class="shoppingCols">${shoppingIngredients().map(([item,count,quantity])=>{const key=wk+'|'+item;const tick=!!state.shoppingChecked[key];return `<label class="listCheck ${tick?'checked':''}"><input type="checkbox" data-action="shopping" data-key="${esc(key)}" ${tick?'checked':''}><span>${esc(item)} <b class="shoppingQuantity">${esc(quantity)}</b> <span class="tiny subdued">${count>1?'· '+count+' planned meals':''}</span></span></label>`}).join('')||'<p class="subdued">No meals planned.</p>'}</div><p class="mutedNote">The weekly plan is a starting template. Confirm allergens, ingredients and portion sizes on packaging, especially with ready-made meals.</p>
+ </section>
+ </div><aside>
+ <section class="panel"><h3>Daily food diary</h3><p class="small subdued">Food ${total(ms,'cal')} kcal + drinks ${drinkCal} kcal = <b>${cal} kcal today</b>.</p>${itemRows(ms,'meal')}</section>
+ <section class="panel"><h3>▥ Barcode scanner & food lookup</h3><p class="small subdued">Scan a packaged food or type its barcode to see ingredients and calories. Internet is required for lookups.</p><div class="meta" style="margin:10px 0"><button class="btn primary" data-action="scan" type="button">📷 Scan with camera</button><span class="small subdued">Camera needs HTTPS and permission</span></div><form data-form="barcodeLookup" class="stack"><label class="field">Barcode number<input name="code" inputmode="numeric" pattern="[0-9]{8,14}" maxlength="14" placeholder="Enter 8–14 digits" required></label><button class="btn full" type="submit">Look up barcode</button></form>${barcodeStatus?`<div class="notice">${esc(barcodeStatus)}</div>`:''}${barRes}<p class="mutedNote">Food data from <a href="https://world.openfoodfacts.org" target="_blank" rel="noopener noreferrer">Open Food Facts</a>. Always check nutrition and allergens against your packaging.</p></section>
+ <section class="panel"><h3>+ Add your own meal</h3><form class="stack" data-form="customMeal"><label class="field">Meal / food name<input required name="name" maxlength="80" placeholder="e.g. Homemade chicken pasta"></label><label class="field">Eating occasion<select name="meal"><option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Snack</option></select></label><div class="fieldrow"><label class="field">Calories (estimate)<input name="cal" type="number" required min="0" max="5000" placeholder="550"></label><label class="field">Protein (g)<input name="protein" type="number" required min="0" max="300" step="0.1" placeholder="35"></label></div><label class="field">Ingredients (comma-separated, optional)<textarea name="ingredients" rows="2" placeholder="Chicken, pasta, tomatoes"></textarea></label><label class="field">Your recipe steps (optional, one step per line)<textarea name="steps" rows="3" placeholder="Boil pasta&#10;Cook chicken until done&#10;Stir through sauce"></textarea></label><div class="fieldrow"><label class="field">Prep time (minutes)<input name="prep" type="number" min="0" max="480" value="5"></label><label class="field">Cook time (minutes)<input name="cook" type="number" min="0" max="480" value="0"></label></div><label class="small"><input type="checkbox" name="fave" style="width:auto;margin-right:6px"> Save as a favourite meal</label><label class="small"><input type="checkbox" name="nocook" style="width:auto;margin-right:6px"> Can eat without cooking</label><button class="btn primary full" type="submit">Add to food diary</button></form></section>
+ <section class="panel"><h3>Food + drink calories · last 7 days</h3><div class="bars">${weekTotal.map(x=>`<div class="barCol"><div class="barTrack" title="${esc(short(x.d))}: ${x.kcal} kcal"><div style="height:${Math.max(0,Math.min(100,x.kcal/(goal||2600)*100))}%;background:linear-gradient(#ffe371,#9359d7)"></div></div><b>${dt(x.d).toLocaleDateString('en-GB',{weekday:'short'})}</b><div>${x.kcal||'—'}</div></div>`).join('')}</div><p class="mutedNote">Daily totals include logged meals and caloric drinks, not meals merely planned.</p></section>
+ <section class="panel"><h3>Targets (optional)</h3><p class="small subdued">Your starting weight isn't known yet. Leave these blank until we can personalise a sensible goal. No restrictive calorie limit is pre-filled.</p><form class="stack" data-form="foodGoals"><div class="fieldrow"><label class="field">Calories / day<input type="number" name="calGoal" min="1000" max="6000" step="50" placeholder="Not set" value="${state.settings.calGoal??''}"></label><label class="field">Protein / day (g)<input type="number" name="proteinGoal" min="1" max="350" placeholder="Not set" value="${state.settings.proteinGoal??''}"></label></div><button class="btn full" type="submit">Save targets</button></form><p class="mutedNote">You cannot choose where fat comes off first. Consistent eating and activity can reduce overall body fat while supporting ski training.</p></section>
+ </aside></div>`;
+}
+function drinksHTML(){
+ const ws=waterDay(currentDate),ds=drinkDay(currentDate),wml=total(ws,'ml'),otherMl=total(ds,'ml'),ml=wml+otherMl,drinkKcal=total(ds,'cal'),goal=Math.max(250,num(state.settings.waterGoal)||2000),pct=Math.min(100,ml/goal*100),days=Array.from({length:7},(_,i)=>addDays(currentDate,i-6));
+ const results=drinkResults.length?`<div class="stack" style="margin-top:10px">${drinkResults.map((d,i)=>`<div class="drinkResult"><strong>${esc(d.name)}</strong><p>${esc(d.brand||'')} · ${d.cal100===null?(d.refCal100g===null?'Nutrition unknown':'Listed as '+Math.round(d.refCal100g)+' kcal / 100g; check mixed drink label'):Math.round(d.cal100*10)/10+' kcal / 100ml'}</p><button type="button" data-action="selectdrink" data-index="${i}" class="btn smallbtn">Choose this drink</button></div>`).join('')}</div>`:'';
+ const selected=drinkSelected?`<div class="barcodeResult" style="margin-top:12px"><strong>${esc(drinkSelected.name)}</strong><p class="small subdued">${esc(drinkSelected.brand||'')} · ${esc(drinkSelected.code||'')} · ${drinkSelected.basis==='100g'?'Nutrition listed per 100g, NOT per 100ml. Please enter values per 100ml of the drink as prepared, especially for powders.':'Nutrition listed per 100ml'}</p><p class="small subdued"><b>Ingredients:</b> ${esc(drinkSelected.ingredients||'Not listed — check the packaging.')}</p>
+ <form data-form="selectedDrink" class="stack"><label class="field">How much did you drink? (ml)<input name="ml" type="number" min="1" max="5000" required value="330"></label><div class="fieldrow"><label class="field">Calories per 100ml<input name="cal100" type="number" min="0" max="900" step="0.1" required value="${drinkSelected.cal100??''}" placeholder="Check label"></label><label class="field">Protein per 100ml (g)<input name="protein100" type="number" min="0" max="100" step="0.1" value="${drinkSelected.protein100??0}"></label></div><p class="mutedNote">Calories are calculated from the quantity you actually drink. Double-check the label, particularly with drink powders and concentrated products.</p><button type="submit" class="btn primary full">+ Log this drink</button></form></div>`:'';
+ return `<div class="stats">${stat('Fluids today',(ml/1000).toFixed(2)+' L','Water + other drinks')}${stat('Drink calories',drinkKcal+' kcal','Included in Meals total')}${stat('Daily guide',(goal/1000).toFixed(2)+' L','Flexible reminder')}</div><div class="grid two"><div>
+ <section class="panel mint"><div class="eyebrow">Water and more</div><h2 style="margin:5px 0">Today's drinks</h2><p class="subdued small">Water and other drinks count towards this fluid tracker; drinks with calories also count in your food diary.</p>
+ <div class="waterGlass" role="img" aria-label="${ml} ml of ${goal} ml recorded"><div class="waterFill" style="height:${pct}%"></div><strong>${Math.round(ml/goal*100)}%</strong></div>
+ ${progress(pct)}<p class="small subdued" style="text-align:center">${ml.toLocaleString('en-GB')} / ${goal.toLocaleString('en-GB')} ml</p>
+ <div class="waterButtons"><button type="button" data-action="addwater" data-ml="250" class="waterButton">💧<span>Water · 250 ml</span></button><button type="button" data-action="addwater" data-ml="500" class="waterButton">💧💧<span>Water · 500 ml</span></button><button type="button" data-action="addwater" data-ml="750" class="waterButton">💧💧💧<span>Water · 750 ml</span></button><button type="button" data-action="addwater" data-ml="1180" class="waterButton">🥤<span>1 Stanley 40 oz · 1.18 L water</span></button></div>
+ <p class="small subdued">Your 40 oz Stanley holds approximately 1.18 L when full. If filled with ice, record the actual amount of liquid consumed.</p><form data-form="water" class="fieldrow" style="align-items:end"><label class="field">Other water amount (ml)<input required type="number" name="ml" min="1" max="5000" placeholder="e.g. 330"></label><button class="btn primary" type="submit">+ Add water</button></form></section>
+ <section class="panel"><div class="sectionhead"><div><h3>🔎 Find another drink</h3><p class="subdued small">Search for Coca-Cola, Sneak Energy or another packaged drink. Results require internet and may vary by flavour.</p></div></div>
+ <form class="stack" data-form="drinkSearch"><label class="field">Drink name<input name="query" required minlength="2" maxlength="70" placeholder="e.g. Coca-Cola or Sneak Energy" value="${esc(drinkSearchTerm)}"></label><button type="submit" class="btn primary full">Search drinks</button></form>
+ ${drinkStatus?`<p class="small subdued" role="status" style="margin:10px 0">${esc(drinkStatus)}</p>`:''}${results}${selected}
+ <p class="mutedNote">Search uses <a href="https://world.openfoodfacts.org" target="_blank" rel="noopener noreferrer">Open Food Facts</a> community listings. These can be incomplete or inaccurate; always verify sugar, caffeine and nutrition on packaging.</p></section>
+ <section class="panel"><h3>+ Log a drink yourself</h3><p class="small subdued">Useful for drinks not found in search or drink powders mixed at home.</p><form data-form="manualDrink" class="stack"><label class="field">Drink name<input required name="name" maxlength="100" placeholder="e.g. Sneak Energy, specific flavour"></label><div class="fieldrow"><label class="field">Amount (ml)<input required name="ml" type="number" min="1" max="5000" placeholder="500"></label><label class="field">Calories in that amount<input required name="cal" type="number" min="0" max="4000" step="1" placeholder="From label"></label></div><label class="field">Ingredients / notes (optional)<input name="ingredients" maxlength="250" placeholder="e.g. sugar-free, orange flavour"></label><button type="submit" class="btn primary full">+ Log drink & calories</button></form></section>
+ </div><aside>
+ <section class="panel"><h3>Drinks recorded today</h3>${itemRows([...ws.map(x=>({...x,kind:'water',name:'Water',cal:0})),...ds.map(x=>({...x,kind:'drink'}))].sort((a,b)=>(a.time||'').localeCompare(b.time||'')),'drink')}</section>
+ <section class="panel"><h3>Daily drinks guide</h3><p class="subdued small">2,000 ml is an editable reminder, not a medical requirement. Your needs vary with activity, climate and other factors. Sugary drinks can fit occasionally, but their calories count towards your daily total.</p><form data-form="waterGoal"><label class="field">Fluid guide per day (ml)<input type="number" name="goal" min="250" max="8000" step="50" required value="${goal}"></label><button class="btn full" type="submit">Update guide</button></form></section>
+ <section class="panel"><h3>Last 7 days</h3><div class="bars">${days.map(d=>{let t=total(waterDay(d),'ml')+total(drinkDay(d),'ml'),p=Math.min(100,t/goal*100);return `<div class="barCol"><div class="barTrack" title="${short(d)}: ${t} ml"><div style="height:${p}%"></div></div><b>${dt(d).toLocaleDateString('en-GB',{weekday:'short'})}</b><div>${t?Math.round(t/1000*10)/10+'L':'—'}</div></div>`}).join('')}</div><p class="mutedNote">Other drinks contribute fluids, but don't replace the benefits of choosing water regularly. Watch caffeine intake, especially with energy drinks.</p></section>
+ </aside></div>`;
+}
+
+function howto(id){const x=EX[id];if(!x)return;document.getElementById('modalRoot').innerHTML=`<div class="modalback" role="presentation"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="howTitle"><div class="modalTop"><div><div class="eyebrow">Exercise guide</div><h2 id="howTitle">${esc(x.name)}</h2></div><button type="button" class="btn quiet smallbtn" data-action="closemodal" aria-label="Close">✕ Close</button></div><div class="diagram">${diagram(id)}</div><p class="subdued small">Illustration is a simplified position guide, not a substitute for watching proper technique.</p><ol class="howto">${x.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol><div class="meta"><button class="btn primary" data-action="speakex" data-ex="${id}" type="button">🔊 Read instructions</button><a class="btn quiet" href="${x.link}" target="_blank" rel="noopener noreferrer">🎬 ${esc(x.linkText)} ↗</a></div><p class="mutedNote">External demonstration opens online; this tracker itself works offline.</p></div></div>`;document.querySelector('.modal .btn').focus()}
+function speak(text){if(!('speechSynthesis' in window)){toast('Spoken coaching is not supported in this browser.');return}try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-GB';u.rate=.88;u.pitch=1;u.volume=1;speechSynthesis.speak(u)}catch(e){toast('Unable to play speech on this device.')}}
+function stopCoach(){if(coachInterval)clearInterval(coachInterval);coachInterval=null;coach=null;if('speechSynthesis' in window)speechSynthesis.cancel();renderCoach()}
+function startCoach(){const list=exerciseList(currentDate),plan=dailyPlan(currentDate);if(!list.length)return;const first=list.findIndex((e,i)=>!isDone(currentDate,plan.kind,e.id,i));coach={date:currentDate,kind:plan.kind,index:first>=0?first:0,paused:false,remaining:0};announceCoach();renderCoach();coachInterval=setInterval(()=>{if(!coach||coach.paused)return;if(coach.remaining>0){coach.remaining--;renderCoach()}},1000)}
+function announceCoach(){if(!coach)return;let e=exerciseList(coach.date)[coach.index];if(!e){stopCoach();toast('Well done — workout complete!');return}const x=EX[e.id];const timed=e.unit==='sec'||e.unit==='sec / leg',secs=timed?e.sets*e.qty*(e.unit.includes('leg')?2:1):0;coach.remaining=secs;
+ speak(`Next up: ${x.name}. ${e.sets} sets of ${e.qty} ${e.unit.replaceAll('/','per')}. ${x.cue} ${timed?'Follow the timer, and pause for a breather whenever you need.':'Go at your own pace. Tap done and next when you have finished.'}`)}
+function nextCoach(){if(!coach)return;const exercises=exerciseList(coach.date),e=exercises[coach.index];if(e){state.completed[doneKey(coach.date,coach.kind,e.id,coach.index)]=true;save()}coach.index++;if(coach.index>=exercises.length){stopCoach();toast('Workout logged. Great consistency!')}else announceCoach();render()}
+function renderCoach(){const root=document.getElementById('coachRoot');if(!coach){root.replaceChildren();return}const e=exerciseList(coach.date)[coach.index];if(!e){root.replaceChildren();return}root.innerHTML=`<section class="coachBox" role="region" aria-label="Spoken exercise coach"><div><div class="eyebrow">🔊 Guided workout · ${coach.index+1}/${exerciseList(coach.date).length}</div><strong>${esc(EX[e.id].name)}</strong><p>${e.sets} × ${e.qty} ${esc(e.unit)} ${coach.remaining?'· '+coach.remaining+' seconds left':''} · ${coach.paused?'Paused':'Working at your pace'}</p></div><div class="coachCtrl"><button class="btn smallbtn" data-action="coachrepeat" type="button" title="Repeat the exercise instruction">↻ Repeat</button><button class="btn smallbtn" data-action="coachpause" type="button">${coach.paused?'▶ Resume':'Ⅱ Pause'}</button><button class="btn primary smallbtn" data-action="coachnext" type="button">✓ Done & next</button><button class="btn warn smallbtn" data-action="coachstop" type="button">Stop</button></div></section>`}
+function addWater(ml){state.water.push({id:uid(),date:currentDate,ml,time:new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})});save();render();toast(`Added ${ml} ml`)}
+function logDrink(name,ml,cal,protein,ingredients='',barcode=''){
+ state.drinks.push({id:uid(),date:currentDate,name:String(name).slice(0,100),ml,cal,protein,ingredients:String(ingredients||'').slice(0,250),barcode,time:new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})});
+ save();render();toast(`${name}: ${cal} kcal counted in today's total.`);
+}
+async function searchDrinks(term){
+ term=String(term||'').trim().slice(0,70);drinkSearchTerm=term;drinkResults=[];drinkSelected=null;
+ if(term.length<2){drinkStatus='Enter at least two characters.';render();return;}
+ drinkStatus='Searching packaged drinks…';render();
+ try{
+  const params=new URLSearchParams({search_terms:term,search_simple:'1',action:'process',json:'1',page_size:'18',fields:'code,product_name,brands,ingredients_text,ingredients_text_en,nutriments'});
+  const resp=await fetch(OFF_SEARCH+'?'+params.toString());if(!resp.ok)throw Error('Search request failed');const data=await resp.json();
+  drinkResults=(data.products||[]).filter(p=>p.product_name||p.brands).map(p=>{const n=p.nutriments||{};
+   let kcal=n['energy-kcal_prepared_100ml']??n['energy-kcal_100ml']??null,prot=n['proteins_prepared_100ml']??n['proteins_100ml']??null;let raw100g=n['energy-kcal_100g'];
+   return {name:String(p.product_name||p.brands||'Drink').slice(0,120),brand:String(p.brands||''),code:String(p.code||''),ingredients:String(p.ingredients_text_en||p.ingredients_text||''),cal100:kcal!==null&&Number.isFinite(Number(kcal))?Number(kcal):null,protein100:prot!==null&&Number.isFinite(Number(prot))?Number(prot):null,basis:kcal!==null?'100ml':'100g',refCal100g:Number.isFinite(Number(raw100g))&&raw100g!==undefined?Number(raw100g):null};
+  }).slice(0,12);
+  drinkStatus=drinkResults.length?'Choose the exact product/flavour and verify its nutrition label.':'No matches found. Use the manual drink form below.';
+ }catch(err){drinkStatus='Could not search right now. Use the manual drink form or try again online.';drinkResults=[]}
+ render();
+}
+function addFood(id,servings=1){const f=foodById(id)||MORE_MEALS.find(x=>x.id===id);if(!f)return;servings=Math.max(1,Math.min(8,Number(servings)||1));state.meals.push({id:uid(),date:currentDate,foodId:id,name:f.name+(servings>1?' · '+servings+' servings':''),meal:f.meal,cal:Math.round(num(f.cal)*servings),protein:Math.round(num(f.protein)*servings*10)/10,servings});save();render();toast(`${f.name} added`)}
+async function lookupBarcode(code){
+ code=String(code||'').replace(/\s+/g,'');if(!/^\d{8,14}$/.test(code)){barcodeStatus='Please enter a barcode with 8–14 digits.';barcodeProduct=null;render();return}
+ barcodeStatus='Looking up product…';barcodeProduct=null;render();
+ try{const resp=await fetch(OFF_API+encodeURIComponent(code)+'.json?fields=code,product_name,brands,ingredients_text,ingredients_text_en,nutriments,serving_quantity,quantity');if(!resp.ok)throw Error('Network error');const json=await resp.json();if(json.status!==1||!json.product){barcodeStatus='Not in the food database. You can enter it manually below.';render();return}
+ const p=json.product,n=p.nutriments||{},calRaw=n['energy-kcal_100g'],protRaw=n['proteins_100g'];
+ let cal100=Number.isFinite(Number(calRaw))&&calRaw!==undefined?Number(calRaw):null;let prot100=Number.isFinite(Number(protRaw))&&protRaw!==undefined?Number(protRaw):null;
+ barcodeProduct={code,name:(p.product_name||p.brands||'Unnamed product').slice(0,100),ingredients:p.ingredients_text_en||p.ingredients_text||'',cal100,protein100:prot100,serving:Number(p.serving_quantity)>0&&Number(p.serving_quantity)<2000?Math.round(Number(p.serving_quantity)):100};
+ barcodeStatus='Product found. Check the label and edit serving size before logging.';
+ }catch(e){barcodeStatus='Could not contact the food database. Check your internet connection or enter the meal manually.';barcodeProduct=null}
+ render();
+}
+function stopScanner(){cameraBusy=false;if(scanLoop){clearInterval(scanLoop);scanLoop=null}if(cameraControls){cameraControls.stop();cameraControls=null}if(cameraStream){cameraStream.getTracks().forEach(track=>track.stop());cameraStream=null}document.getElementById('modalRoot').replaceChildren()}
+function loadZXing(){return new Promise((resolve,reject)=>{if(window.ZXingBrowser)return resolve(window.ZXingBrowser);const tag=document.createElement('script');tag.src='https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.5/umd/zxing-browser.min.js';tag.onload=()=>window.ZXingBrowser?resolve(window.ZXingBrowser):reject(Error('Barcode reader library unavailable'));tag.onerror=()=>reject(Error('Barcode reader library could not load'));document.head.appendChild(tag)})}
+async function startScanner(){
+ if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia){toast('Camera scanning requires a secure HTTPS website. Please enter the barcode manually.');return}
+ if(cameraBusy)return;cameraBusy=true;
+ document.getElementById('modalRoot').innerHTML=`<div class="modalback"><div class="modal" role="dialog" aria-modal="true" aria-label="Barcode camera scanner"><div class="modalTop"><div><h2>Scan food barcode</h2><p class="small subdued">Point your camera at the barcode in good light.</p></div><button type="button" class="btn quiet smallbtn" data-action="closescanner">✕ Close</button></div><video class="barcodeVideo" id="barcodeVideo" autoplay muted playsinline></video><p class="small subdued" id="scanStatus">Starting camera…</p><p class="small subdued">If scanning isn't available on your device, close this and type the barcode instead.</p></div></div>`;
+ const video=document.getElementById('barcodeVideo'),status=document.getElementById('scanStatus');
+ try{
+  if('BarcodeDetector' in window){
+    cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});video.srcObject=cameraStream;await video.play();
+    const detector=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128']});let scanning=false;
+    scanLoop=setInterval(async()=>{if(scanning||!cameraBusy||video.readyState<2)return;scanning=true;try{const found=await detector.detect(video);if(found.length&&found[0].rawValue){const code=found[0].rawValue;stopScanner();lookupBarcode(code)}}catch(e){}finally{scanning=false}},250);
+    if(status)status.textContent='Camera ready — centre the barcode.';
+  }else{
+    if(status)status.textContent='Loading camera barcode reader…';const lib=await loadZXing();if(!cameraBusy)return;
+    const reader=new lib.BrowserMultiFormatReader();
+    cameraControls=await reader.decodeFromConstraints({video:{facingMode:'environment'},audio:false},video,(result,error,controls)=>{if(result&&cameraBusy){const code=result.getText();stopScanner();lookupBarcode(code)}});
+    if(status)status.textContent='Camera ready — centre the barcode.';
+  }
+ }catch(e){stopScanner();toast('Camera unavailable. Try barcode number entry instead. Use HTTPS and allow camera access.')}
+}
+function onSubmit(e){const form=e.target.closest('form[data-form]');if(!form)return;e.preventDefault();const fd=new FormData(form),get=k=>String(fd.get(k)||'').trim();const kind=form.dataset.form;
+ if(kind==='resortSearch'){resortQuery=get('q').slice(0,120);resortCountry=get('country')||'All';render();return}
+ if(kind==='trip'){let start=get('start'),end=get('end');if(!start||!end||end<start){toast('Check away dates: return must be on or after departure.');return}let length=(dt(end)-dt(start))/86400000;if(length>180){toast('Please add shorter away periods (up to 180 days).');return}state.trips.push({id:uid(),start,end,minutes:Number(get('minutes'))||15,notes:get('notes')});toast('Away dates saved — your workouts have been adjusted.')}
+ if(kind==='activity'){state.activity.push({id:uid(),date:currentDate,name:get('name'),minutes:Number(get('minutes')),intensity:get('intensity'),note:get('note')});toast('Activity added. Well done!')}
+ if(kind==='metric'){if(!get('weight')&&!get('waist')){toast('Enter a weight or waist measurement.');return}state.metrics.push({id:uid(),date:currentDate,weight:get('weight')?Number(get('weight')):null,waist:get('waist')?Number(get('waist')):null});toast('Measurement saved.')}
+ if(kind==='saveRecipe'){
+  const own=buildOwnRecipe(form);if(!own)return;
+  const isFav=own.isFavorite;delete own.isFavorite;state.customFoods.push(own);
+  if(isFav)state.favourites.push(own.id);
+  save();render();toast('Recipe saved! Find it in meals and weekly-plan swaps.');return;
+ }
+ if(kind==='customMeal'){const meal={id:uid(),date:currentDate,name:get('name'),meal:get('meal'),cal:Number(get('cal')),protein:Number(get('protein'))};if(fd.has('fave')){const parts=get('ingredients').split(',').map(x=>x.trim()).filter(Boolean),steps=get('steps').split('\n').map(s=>s.trim()).filter(Boolean).slice(0,20);const f={id:uid(),name:meal.name,meal:meal.meal,cal:meal.cal,protein:meal.protein,desc:'Saved personal meal',ingredients:parts,noCook:fd.has('nocook')};if(steps.length)f.recipe={prep:Number(get('prep'))||0,cook:Number(get('cook'))||0,servings:1,ingredients:parts.map(name=>({name,qty:1,unit:'portion'})),steps};state.customFoods.push(f);state.favourites.push(f.id);meal.foodId=f.id}state.meals.push(meal);toast(fd.has('fave')?'Meal logged and saved to favourites.':'Meal logged.')}
+ if(kind==='barcodeLookup'){lookupBarcode(get('code'));return}
+ if(kind==='barcodeMeal'){if(!barcodeProduct){toast('Look up a barcode first.');return}const grams=Number(get('grams')),cal100=Number(get('cal100')),p100=Number(get('protein100'));if(!(grams>0&&grams<=5000&&cal100>=0&&p100>=0)){toast('Check the portion and nutrition values.');return}const meal={id:uid(),date:currentDate,name:barcodeProduct.name,meal:get('meal'),cal:Math.round(cal100*grams/100),protein:Math.round(p100*grams/10)/10,barcode:barcodeProduct.code,amount:grams};if(fd.has('fav')){const f={id:uid(),meal:meal.meal,name:meal.name,cal:meal.cal,protein:meal.protein,desc:grams+' g portion · scanned barcode',ingredients:barcodeProduct.ingredients?barcodeProduct.ingredients.split(',').map(x=>x.trim()).filter(Boolean):[barcodeProduct.name],noCook:fd.has('noCook'),barcode:barcodeProduct.code};state.customFoods.push(f);state.favourites.push(f.id);meal.foodId=f.id}state.meals.push(meal);barcodeStatus='Added '+meal.cal+' kcal for '+grams+' g of '+meal.name;toast('Scanned food logged.');}
+ if(kind==='drinkSearch'){searchDrinks(get('query'));return}
+ if(kind==='manualDrink'){
+  const ml=Number(get('ml')),cal=Number(get('cal'));if(!get('name')||!(ml>0&&ml<=5000)||!Number.isFinite(cal)||cal<0||cal>4000){toast('Check the drink name, amount and calories.');return;}
+  logDrink(get('name'),ml,cal,0,get('ingredients'));return;
+ }
+ if(kind==='selectedDrink'){
+  if(!drinkSelected){toast('Please choose a drink first.');return;}
+  const ml=Number(get('ml')),cal100=Number(get('cal100')),p100=Number(get('protein100')||0);
+  if(!(ml>0&&ml<=5000&&cal100>=0&&cal100<=900&&p100>=0&&p100<=100)){toast('Check amount and calories per 100ml.');return;}
+  logDrink(drinkSelected.name,ml,Math.round(cal100*ml/100),Math.round(p100*ml/10)/10,drinkSelected.ingredients,drinkSelected.code);return;
+ }
+ if(kind==='profile'){state.settings.displayName=get('name').slice(0,55);if(get('tripStart'))state.settings.tripStart=get('tripStart');cloudProfileChanged(state.settings.displayName);document.getElementById('modalRoot').replaceChildren();toast('Greeting updated.');}
+ if(kind==='foodGoals'){state.settings.calGoal=get('calGoal')?Number(get('calGoal')):null;state.settings.proteinGoal=get('proteinGoal')?Number(get('proteinGoal')):null;toast('Nutrition targets updated.')}
+ if(kind==='water'){let ml=Number(get('ml'));if(!(ml>0&&ml<=5000)){toast('Please enter a valid amount.');return}addWater(ml);return}
+ if(kind==='waterGoal'){state.settings.waterGoal=Number(get('goal'));toast('Water guide updated.')}
+ save();render()
+}
+function onClick(e){const b=e.target.closest('[data-action], [data-tab]');if(!b)return;
+ if(b.dataset.tab){stopScanner();tab=b.dataset.tab;stopCoach();render();window.scrollTo({top:0,behavior:'smooth'});return}
+ let a=b.dataset.action;
+ if(a==='resortfav'){let id=b.dataset.id;if(!RESORTS.some(r=>r.id===id))return;state.resortFavourites=state.resortFavourites.includes(id)?state.resortFavourites.filter(x=>x!==id):[...state.resortFavourites,id];save();render();return}
+ if(a==='resortfavfilter'){resortFavOnly=!resortFavOnly;render();return}
+ if(a==='healthtemplate'){downloadHealthTemplate();return}
+ if(a==='prevday')changeDate(addDays(currentDate,-1));
+ if(a==='nextday')changeDate(addDays(currentDate,1));
+ if(a==='today')changeDate(toISO(new Date()));
+ if(a==='day')changeDate(b.dataset.date);
+ if(a==='howto')howto(b.dataset.ex);
+ if(a==='recipe')recipeModal(b.dataset.id);
+ if(a==='closemodal')document.getElementById('modalRoot').replaceChildren();
+ if(a==='closescanner')stopScanner();
+ if(a==='scan')startScanner();
+ if(a==='editprofile'){document.getElementById('modalRoot').innerHTML=`<div class="modalback" role="presentation"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="profileTitle"><div class="modalTop"><h2 id="profileTitle">Your Ski Ready greeting</h2><button class="btn quiet smallbtn" data-action="closemodal" type="button">✕ Close</button></div><p class="small subdued">Until cloud sign-in is connected, use a name saved on this device. Once connected, your account profile name will take priority.</p><form data-form="profile" class="stack"><label class="field">Display name<input name="name" maxlength="55" placeholder="Your first name" value="${esc(state.settings.displayName||'')}"></label><label class="field">First ski day (editable)<input type="date" name="tripStart" required value="${esc(tripStartDate())}"></label><button class="btn primary" type="submit">Save greeting & trip date</button></form></div></div>`}
+ if(a==='selectdrink'){drinkSelected=drinkResults[Number(b.dataset.index)]||null;render();}
+ if(a==='pantryplan'){
+  const days=weeklyMeals();let changed=0,ready=0;
+  for(const row of days)for(const {meal,food} of row.meals){
+   if(food&&stockStatus(food,weekStart(row.day)).ready){ready++;continue}
+   const best=optionsFor(meal,row.day).find(f=>stockStatus(f,weekStart(row.day)).ready);
+   if(best){state.weeklyPlan[row.day]=state.weeklyPlan[row.day]||{};state.weeklyPlan[row.day][meal]=best.id;changed++;}
+  }
+  mealPlanExpanded=true;save();render();toast(changed?`Updated ${changed} planned meal${changed===1?'':'s'} using ingredients bought.`:ready?'Your planned meals already match bought ingredients.':'Tick some shopping ingredients first — no fully stocked meals yet.');
+ }
+ if(a==='refreshideas'){discoverOffset+=3;render();}
+ if(a==='previewidea'){const f=MORE_MEALS.find(x=>x.id===b.dataset.id);if(f)previewIdeaRecipe(f);}
+ if(a==='saveidea'){
+  const f=MORE_MEALS.find(x=>x.id===b.dataset.id);
+  if(f&&!state.customFoods.some(x=>x.id===f.id)){
+   state.customFoods.push(JSON.parse(JSON.stringify(f)));state.favourites.push(f.id);
+   save();discoverOffset=0;render();toast('New recipe saved to favourites. Swap it into your weekly plan!');
+  }
+ }
+ if(a==='deleterecipe'){
+  const id=b.dataset.id,f=state.customFoods.find(x=>x.id===id);
+  if(f?.userRecipe&&confirm('Remove this personal recipe from your library? Existing food diary entries will stay.')){
+   state.customFoods=state.customFoods.filter(x=>x.id!==id);state.favourites=state.favourites.filter(x=>x!==id);
+   save();render();toast('Recipe removed from your library.');
+  }
+ }
+ if(a==='favourite'){const id=b.dataset.id;if(state.favourites.includes(id)){state.favourites=state.favourites.filter(x=>x!==id);toast('Removed from favourites.')}else{state.favourites.push(id);toast('Saved to favourites.')}save();render()}
+ if(a==='clearshopping'){const prefix=b.dataset.week+'|';for(const k of Object.keys(state.shoppingChecked))if(k.startsWith(prefix))delete state.shoppingChecked[k];save();render();}
+ if(a==='speakex')speak(EX[b.dataset.ex].cue);
+ if(a==='addfood')addFood(b.dataset.id);
+ if(a==='logrecipe'){addFood(b.dataset.id,Number(b.dataset.servings));document.getElementById('modalRoot').replaceChildren();}
+ if(a==='addwater')addWater(Number(b.dataset.ml));
+ if(a==='startcoach')startCoach();
+ if(a==='coachpause'&&coach){coach.paused=!coach.paused;if('speechSynthesis' in window){if(coach.paused)speechSynthesis.pause();else speechSynthesis.resume()}renderCoach()}
+ if(a==='coachrepeat'&&coach)announceCoach();
+ if(a==='coachnext')nextCoach();
+ if(a==='coachstop')stopCoach();
+ if(a==='delete'){const type=b.dataset.type,id=b.dataset.id;const map={trip:'trips',activity:'activity',meal:'meals',metric:'metrics',water:'water',drink:'drinks'};if(map[type]){state[map[type]]=state[map[type]].filter(x=>x.id!==id);save();render();toast('Entry removed.')}}
+ if(a==='export'){const blob=new Blob([JSON.stringify({app:'Ski Ready',exported:new Date().toISOString(),data:state},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='ski-ready-backup-'+toISO(new Date())+'.json';document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);toast('Backup ready to save.')}
+ if(a==='import'){document.getElementById('importFile').click()}
+}
+function onChange(e){if(e.target.id==='activeDate'&&e.target.value)changeDate(e.target.value);
+ if(e.target.dataset.action==='explorefilter'){discoverFilter=e.target.value;discoverOffset=0;render();return;}
+ if(e.target.dataset.action==='shopping'){state.shoppingChecked[e.target.dataset.key]=e.target.checked;save();render()}
+ if(e.target.dataset.action==='recipeservings'){recipeModal(e.target.dataset.id,Number(e.target.value));return}
+ if(e.target.dataset.action==='planmeal'){const day=e.target.dataset.date,meal=e.target.dataset.meal,id=e.target.value;if(!optionsFor(meal,day).some(f=>f.id===id)){toast('Choose a meal suitable for that day.');return}state.weeklyPlan[day]=state.weeklyPlan[day]||{};state.weeklyPlan[day][meal]=id;mealPlanExpanded=true;save();render();toast('Weekly plan and ingredients updated.')}
+
+ if(e.target.dataset.action==='complete'){const p=dailyPlan(currentDate);let key=doneKey(currentDate,p.kind,e.target.dataset.ex,Number(e.target.dataset.index));if(e.target.checked)state.completed[key]=true;else delete state.completed[key];save();render()}}
+
+// Data saves always go to localStorage first. A compare-and-swap RPC prevents
+// another device's changes being silently overwritten.
+const CLOUD_CONFIG=window.SKI_READY_CLOUD_CONFIG||{};
+const cloudConfigured=/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/.test(CLOUD_CONFIG.url||'')&&/^sb_publishable_|^eyJ/.test(CLOUD_CONFIG.publishableKey||'');
+let cloudClient=null,cloudUser=null,cloudRow=null,cloudRev=0,cloudMode='offline',cloudDirty=false,cloudBusy=false,cloudTimer=null,cloudLoading=false,cloudMessage='',cloudLastChecked=0;
+const cloudTrustKey=id=>'ski-ready-cloud-user-'+id;
+const cloudRevKey=id=>'ski-ready-cloud-revision-'+id;
+const cloudDirtyKey=id=>'ski-ready-cloud-dirty-'+id;
+function cloudCache(){try{localStorage.setItem(STORAGE,JSON.stringify(state))}catch(e){toast('Unable to save locally. Export a backup.')}}
+function cloudOnSave(){if(cloudMode==='active'&&cloudUser){cloudDirty=true;localStorage.setItem(cloudDirtyKey(cloudUser.id),'1');cloudStatus('Saving to cloud…');clearTimeout(cloudTimer);cloudTimer=setTimeout(cloudFlush,900)}}
+function cloudStatus(t){document.getElementById('cloudBadge').textContent=t}
+function cloudControls(){
+ const root=document.getElementById('cloudBody'); if(!root)return;
+ if(!cloudConfigured){cloudStatus('Setup needed');root.innerHTML='<p>Cloud files are prepared, but the Supabase project URL and publishable key still need to be connected. <strong>Your records remain local.</strong></p><p class="cloudHint">Continue using Export backup until setup is finished.</p>';return}
+ if(!cloudClient){cloudStatus('Connecting…');root.innerHTML='<p>Connecting to the secure sign-in service…</p>';return}
+ if(!cloudUser){cloudStatus('Not signed in');root.innerHTML=`<p>Sign in with your email to use the same records on all devices.</p><form id="cloudLogin" class="cloudLogin"><label>Email address<input type="email" name="email" placeholder="you@example.com" autocomplete="email" required></label><button class="btn primary" type="submit">Email me a sign-in link</button></form>${cloudMessage?'<p class="cloudHint">'+esc(cloudMessage)+'</p>':''}<p class="cloudHint">Use a secure hosted website (HTTPS). Your email address is never shared with other users.</p>`;return}
+ const email=esc(cloudUser.email||'your account');
+ let top=`<p>Signed in as <strong>${email}</strong>. ${cloudMessage?esc(cloudMessage):''}</p>`;
+ if(cloudMode==='choose' || cloudMode==='conflict'){
+  const present=!!cloudRow;
+  cloudStatus(cloudMode==='conflict'?'⚠️ Newer cloud changes':'Choose your copy');
+  const info=present?`A cloud backup exists (last updated ${esc(new Date(cloudRow.updated_at).toLocaleString('en-GB'))}). Choose which copy to use.`:'There is no cloud record yet. Save the data on this device as your starting copy.';
+  root.innerHTML=top+`<p class="cloudWarning">${info} The app will <strong>not</strong> replace any copy without your choice. Export a JSON backup first if you have unsaved records.</p>`+(present?`<button type="button" class="btn primary" data-cloud="download">Use cloud copy on this device</button><button type="button" class="btn quiet" data-cloud="upload">Upload this device instead</button>`:`<button type="button" class="btn primary" data-cloud="upload">Start sync using this device</button>`)+`<button type="button" class="btn quiet" data-cloud="refresh">Check again</button><button type="button" class="btn quiet" data-cloud="signout">Sign out</button>`;return
+ }
+ cloudStatus(cloudMode==='active'?(cloudDirty?'Local changes pending':'✓ Synced'):'Offline / retry');
+ root.innerHTML=top+`<p class="cloudHint">${cloudMode==='active'?'Your latest edits are saved on this device first, then securely synced.':'Your local records are safe. Cloud syncing will retry when online.'}</p><button type="button" class="btn quiet" data-cloud="refresh">Refresh from cloud</button><button type="button" class="btn quiet" data-cloud="retry">Retry upload</button><button type="button" class="btn quiet" data-cloud="signout">Sign out</button>`;
+}
+async function cloudLoadRow(){
+ const {data,error}=await cloudClient.from('ski_ready_data').select('data,revision,updated_at').eq('user_id',cloudUser.id).maybeSingle();
+ if(error)throw error;
+ return data||null;
+}
+function cloudApplyRow(row){
+ const d=row.data;if(!d||!Array.isArray(d.meals)||!Array.isArray(d.activity)||!Array.isArray(d.trips))throw Error('Cloud backup has an invalid format');
+ state={...fresh(),...d,settings:{...fresh().settings,...d.settings}};
+ state.favourites=Array.isArray(state.favourites)?state.favourites:[];state.customFoods=Array.isArray(state.customFoods)?state.customFoods:[];
+ state.weeklyPlan=state.weeklyPlan||{};state.shoppingChecked=state.shoppingChecked||{};state.shoppingExtra=state.shoppingExtra||{};state.drinks=Array.isArray(state.drinks)?state.drinks:[];state.resortFavourites=Array.isArray(state.resortFavourites)?state.resortFavourites:[];state.healthRecords=Array.isArray(state.healthRecords)?state.healthRecords:[];
+ cloudCache();stopCoach();render();
+}
+function cloudRemember(){localStorage.setItem(cloudTrustKey(cloudUser.id),'yes');localStorage.setItem(cloudRevKey(cloudUser.id),String(cloudRev));localStorage.setItem('ski-ready-cloud-active-user',cloudUser.id); if(!cloudDirty)localStorage.removeItem(cloudDirtyKey(cloudUser.id))}
+async function cloudOnSignedIn(user){
+ if(!user||cloudLoading)return;
+ cloudLoading=true;cloudUser=user;window.skiReadyCloudProfile={user};cloudControls();render();
+ try{
+  cloudRow=await cloudLoadRow();cloudRev=Number(cloudRow?.revision||0);
+  const trusted=localStorage.getItem(cloudTrustKey(user.id))==='yes'&&localStorage.getItem('ski-ready-cloud-active-user')===user.id&&localStorage.getItem(STORAGE);
+  const storedRev=Number(localStorage.getItem(cloudRevKey(user.id))||0);
+  // On a previously trusted device, only auto-resume if its last confirmed
+  // cloud revision still matches: never silently resolve competing edits.
+  if(trusted&&storedRev===cloudRev){cloudMode='active';cloudDirty=localStorage.getItem(cloudDirtyKey(user.id))==='1';cloudMessage=cloudDirty?'Resuming unsent local edits.':'Your account is connected.';if(!document.getElementById('cloudDetails').dataset.visited){document.getElementById('cloudDetails').open=false;document.getElementById('cloudDetails').dataset.visited='1'}; cloudControls(); if(cloudDirty)setTimeout(cloudFlush,1000); if(!navigator.onLine)cloudMessage='Offline: changes will sync when reconnected.';}
+  else{cloudMode='choose';cloudMessage='Choose which records to start with.';document.getElementById('cloudDetails').open=true;cloudControls()}
+ }catch(e){cloudMode='offline';cloudMessage='Could not read cloud records: '+String(e.message||e);cloudControls()}
+ finally{cloudLoading=false;render()}
+}
+async function cloudSignOut(){
+ if(cloudDirty||cloudBusy){if(!confirm('There are changes that may not have reached the cloud. Export a JSON backup before signing out. Sign out anyway?'))return}
+ if(!confirm('Sign out and clear your locally cached fitness records on this device? Your saved cloud copy will remain.'))return;
+ const uid=cloudUser?.id;cloudMode='offline';clearTimeout(cloudTimer);cloudDirty=false;cloudUser=null;cloudRow=null;cloudRev=0;
+ if(uid){localStorage.removeItem(cloudTrustKey(uid));localStorage.removeItem(cloudRevKey(uid));localStorage.removeItem(cloudDirtyKey(uid))}
+ localStorage.removeItem('ski-ready-cloud-active-user');localStorage.removeItem(STORAGE);state=fresh();window.skiReadyCloudProfile=null;
+ try{await cloudClient.auth.signOut()}catch(e){} cloudMessage='Signed out. Local records on this device were cleared.';cloudControls();render();
+}
+async function cloudChoose(action){
+ if(!cloudUser||cloudBusy)return;
+ if(action==='download'){
+  if(!cloudRow){cloudMessage='No cloud copy found.';cloudControls();return}
+  if(!confirm('Replace this device’s current logs with the cloud copy? You can export a local backup first.'))return;
+  cloudApplyRow(cloudRow);cloudRev=Number(cloudRow.revision);cloudMode='active';cloudDirty=false;cloudRemember();cloudMessage='Cloud data loaded on this device.';cloudControls();toast('Cloud copy loaded!');return
+ }
+ if(action==='upload'){
+  if(cloudRow&&!confirm('Replace the newer cloud copy with this device’s data? Other devices may lose their changes. Export a backup first if unsure.'))return;
+  cloudMode='active';cloudDirty=true;localStorage.setItem(cloudDirtyKey(cloudUser.id),'1');cloudMessage='Uploading this device as the chosen copy…';cloudControls();await cloudFlush();
+ }
+}
+async function cloudFlush(){
+ if(!cloudUser||cloudMode!=='active'||cloudBusy||!cloudDirty)return;
+ if(!navigator.onLine){cloudStatus('Offline · stored locally');return}
+ cloudBusy=true;
+ try{
+  while(cloudDirty&&cloudMode==='active'){
+   cloudDirty=false;const data=JSON.parse(JSON.stringify(state));const expected=cloudRev;
+   const {data:result,error}=await cloudClient.rpc('ski_ready_sync_write',{p_data:data,p_expected_revision:expected});
+   if(error)throw error;
+   if(!result||!result.length){cloudMode='conflict';localStorage.setItem(cloudDirtyKey(cloudUser.id),'1');cloudRow=await cloudLoadRow();cloudMessage='Another device has newer records. Choose which version to keep.';cloudDirty=true;document.getElementById('cloudDetails').open=true;break}
+   cloudRev=Number(result[0].revision);cloudRemember();cloudRow={data,revision:cloudRev,updated_at:result[0].updated_at};
+  }
+  if(cloudMode==='active'){cloudMessage='Saved to cloud.';cloudStatus('✓ Synced')}
+ }catch(e){cloudDirty=true;if(cloudUser)localStorage.setItem(cloudDirtyKey(cloudUser.id),'1');cloudMessage='Sync paused: '+String(e.message||e)+'. Your records are safe on this device.';cloudStatus('⚠️ Sync paused')}
+ finally{cloudBusy=false;cloudControls()}
+}
+async function cloudRefresh(){
+ if(!cloudUser||cloudBusy||cloudLoading)return;
+ try{
+  let newRow=await cloudLoadRow();if(cloudMode==='choose'||cloudMode==='conflict'||cloudMode==='offline'){
+   cloudRow=newRow;cloudRev=Number(newRow?.revision||0);cloudMode='choose';cloudMessage='Choose which copy to use.';cloudControls();return;
+  }
+  if(!newRow){cloudMode='conflict';cloudRow=null;cloudMessage='Cloud copy disappeared. Resolve before continuing.';cloudControls();document.getElementById('cloudDetails').open=true;return}
+  if(Number(newRow.revision)!==cloudRev){
+   if(cloudDirty||document.querySelector('input:focus,textarea:focus,select:focus')||document.getElementById('modalRoot').children.length){
+    cloudMode='conflict';cloudRow=newRow;cloudMessage='Another device changed the cloud data. Export a backup if you have local edits.';cloudControls();document.getElementById('cloudDetails').open=true;return;
+   }
+   cloudRow=newRow;cloudRev=Number(newRow.revision);cloudApplyRow(newRow);cloudRemember();cloudMessage='Latest updates loaded from another device.';toast('Updated from cloud');
+  }
+  cloudControls();
+ }catch(e){cloudMessage='Unable to refresh: '+String(e.message||e);cloudControls()}
+}
+async function cloudProfileChanged(name){
+ if(!cloudClient||!cloudUser)return;
+ try{const {data,error}=await cloudClient.auth.updateUser({data:{full_name:name}});if(error)throw error;
+  if(data?.user){cloudUser=data.user;window.skiReadyCloudProfile={user:data.user};render()}
+ }catch(e){cloudMessage='Profile name could not update: '+String(e.message||e);cloudControls()}
+}
+async function cloudBoot(){
+ if(!cloudConfigured){cloudControls();return}
+ cloudControls();
+ try{
+  if(!window.supabase){await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.0';s.onload=resolve;s.onerror=()=>reject(Error('Sign-in library did not load'));document.head.appendChild(s)})}
+  cloudClient=window.supabase.createClient(CLOUD_CONFIG.url.replace(/\/$/,''),CLOUD_CONFIG.publishableKey);
+  cloudControls();
+  const {data,error}=await cloudClient.auth.getUser();if(error&&error.name!=='AuthSessionMissingError')throw error;
+  if(data?.user)await cloudOnSignedIn(data.user);else cloudControls();
+  cloudClient.auth.onAuthStateChange((event,session)=>{
+   if(event==='SIGNED_OUT'){if(cloudUser){cloudUser=null;cloudMode='offline';window.skiReadyCloudProfile=null;cloudMessage='Signed out.';cloudControls()}}
+   else if((event==='SIGNED_IN'||event==='INITIAL_SESSION')&&session?.user&&(!cloudUser||session.user.id!==cloudUser.id))setTimeout(()=>cloudOnSignedIn(session.user),0);
+  });
+  setInterval(()=>{if(cloudUser&&cloudMode==='active'&&document.visibilityState==='visible'){if(cloudDirty)cloudFlush();else cloudRefresh()}},30000);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&cloudUser&&cloudMode==='active'){if(cloudDirty)cloudFlush();else cloudRefresh()}});
+  window.addEventListener('online',()=>{if(cloudDirty)cloudFlush();else cloudRefresh()});
+ }catch(e){cloudMessage='Unable to start cloud connection: '+String(e.message||e);cloudStatus('Unavailable');cloudControls()}
+}
+const cloudPanel=document.getElementById('cloudPanel');
+cloudPanel.addEventListener('submit',async e=>{
+ if(e.target.id!=='cloudLogin')return;e.preventDefault();if(!cloudClient)return;
+ const email=String(new FormData(e.target).get('email')||'').trim();if(!email)return;
+ try{const {error}=await cloudClient.auth.signInWithOtp({email,options:{emailRedirectTo:window.location.origin+window.location.pathname}});if(error)throw error;
+  cloudMessage='Check your inbox for a secure sign-in link. Return to this website afterwards.';
+ }catch(err){cloudMessage='Could not send email: '+String(err.message||err)} cloudControls();
+});
+cloudPanel.addEventListener('click',async e=>{
+ const button=e.target.closest('[data-cloud]');if(!button)return;
+ const action=button.dataset.cloud; if(action==='download'||action==='upload')await cloudChoose(action);
+ else if(action==='signout')await cloudSignOut();
+ else if(action==='refresh')await cloudRefresh();
+ else if(action==='retry'){if(cloudDirty)await cloudFlush();else await cloudRefresh()}
+});
+
+async function onImport(e){const file=e.target.files?.[0];if(!file)return;try{const json=JSON.parse(await file.text()),data=json.data||json;if(!data||!Array.isArray(data.trips)||!Array.isArray(data.meals)||!Array.isArray(data.activity)||!Array.isArray(data.water)||!Array.isArray(data.metrics)||typeof data.completed!=='object')throw Error('Invalid format');if(!confirm(cloudMode==='active'?'Replace the records on this device AND the linked cloud copy with this backup? Export a backup first if unsure.':'Replace the records on this device with the contents of this backup?'))return;state={...fresh(),...data,settings:{...fresh().settings,...data.settings}};state.favourites=Array.isArray(state.favourites)?state.favourites:[];state.customFoods=Array.isArray(state.customFoods)?state.customFoods:[];state.weeklyPlan=state.weeklyPlan||{};state.shoppingChecked=state.shoppingChecked||{};state.drinks=Array.isArray(state.drinks)?state.drinks:[];state.resortFavourites=Array.isArray(state.resortFavourites)?state.resortFavourites:[];state.healthRecords=Array.isArray(state.healthRecords)?state.healthRecords:[];save();stopCoach();render();toast('Backup imported.')}catch(err){toast('This does not look like a valid Ski Ready backup.')}finally{e.target.value=''}}
+ document.addEventListener('submit',onSubmit);document.addEventListener('click',onClick);document.addEventListener('change',onChange);document.addEventListener('toggle',e=>{if(e.target.matches?.('[data-plan-details]'))mealPlanExpanded=e.target.open},true);
+ document.getElementById('importFile').addEventListener('change',onImport);
+ document.addEventListener('change',e=>{if(e.target.id==='healthCsvFile')onHealthFile(e)});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')stopScanner()});
+ document.getElementById('modalRoot').addEventListener('click',e=>{if(e.target.classList.contains('modalback')){if(cameraBusy)stopScanner();else document.getElementById('modalRoot').replaceChildren()}});
+ render();cloudBoot();
+})();
+</script>
+</body>
+</html>
