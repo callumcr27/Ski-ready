@@ -102,6 +102,45 @@
 .resort-help{font-size:12px;color:#d2c3e4;line-height:1.5}
 @media(max-width:620px){.resort-list{grid-template-columns:1fr}.healthSummary{grid-template-columns:repeat(2,minmax(0,1fr))}.resort-toolbar{grid-template-columns:1fr}.bottomnav .navwrap{gap:2px}.navbtn{font-size:10px;padding:8px 2px}.navbtn .navicon{font-size:21px}}
 
+
+    /* Collapsible tabs and dashboard sections. */
+    .tab-collapse-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 15px;padding:11px 13px;border:1px solid #624783;background:#261939;border-radius:13px}
+    .tab-collapse-bar strong{font-size:14px;color:#ffe371}
+    .collapse-btn{border:1px solid #9570be;border-radius:10px;background:#382452;color:#fff0c8;padding:8px 13px;font-size:12px;font-weight:800;min-height:39px}
+    .collapse-btn:hover{background:#4d3271}
+    .tab-collapsed-note{padding:19px 15px;margin-bottom:18px;border:1px dashed #7956a2;background:#20152f;border-radius:13px;color:#dfcfea}
+    .section-collapse-tools{display:flex;justify-content:flex-end;margin:0 0 8px}
+    .section-collapse-tools .collapse-btn{min-height:33px;padding:5px 10px;font-size:11px}
+    .panel.panel-is-collapsed > :not(.section-collapse-tools){display:none!important}
+
+    /* Show a useful identifier while a section is collapsed. */
+    .section-collapse-tools{align-items:center;gap:12px}
+    .section-collapse-identity{display:none;flex:1;min-width:0}
+    .panel.panel-is-collapsed .section-collapse-tools{justify-content:space-between;margin:0;align-items:center}
+    .panel.panel-is-collapsed .section-collapse-identity{display:grid;gap:4px}
+    .section-collapse-identity strong{font-size:16px;font-weight:850;color:#ffe371;line-height:1.35}
+    .section-collapse-identity small{font-size:12px;line-height:1.45;color:#dbcce9}
+
+    /* Collapsed sections retain their eyebrow title and purpose; inner groups get the same treatment. */
+    .section-collapse-identity strong{color:#ffe371}
+    .section-collapse-identity small{color:#dbcce9}
+    .sub-collapse-panel{border:1px solid #554071;border-radius:12px;background:#1c1429;margin:12px 0;padding:12px}
+    .sub-collapse-tools{display:flex;align-items:center;justify-content:flex-end;gap:12px}
+    .sub-collapse-identity{display:none;min-width:0;flex:1}
+    .sub-collapse-identity strong{font-weight:850;color:#ffe371;line-height:1.4;font-size:15px}
+    .sub-collapse-identity small{display:block;color:#dccbe9;font-size:12px;line-height:1.45;margin-top:3px}
+    .sub-collapse-panel.sub-is-collapsed{border-color:#8262b2;background:#231632}
+    .sub-collapse-panel.sub-is-collapsed .sub-collapse-identity{display:block}
+    .sub-collapse-panel.sub-is-collapsed .sub-collapse-body{display:none}
+    .sub-collapse-body > .mealType:first-child{margin-top:0}
+    @media(max-width:460px){.sub-collapse-tools{align-items:flex-start;gap:8px}.sub-collapse-identity strong{font-size:14px}.sub-collapse-tools .collapse-btn{font-size:11px;padding:6px 8px}}
+
+    .panel.panel-is-collapsed{border-color:#8262b2}
+    .panel.panel-is-collapsed .collapse-btn{flex-shrink:0}
+    @media(max-width:460px){.panel.panel-is-collapsed .section-collapse-tools{align-items:flex-start;gap:10px}.panel.panel-is-collapsed .collapse-btn{font-size:11px;padding:6px 8px}.section-collapse-identity strong{font-size:14px}}
+
+    @media(max-width:460px){.tab-collapse-bar{gap:8px;padding:10px}.tab-collapse-bar strong{font-size:12px}.tab-collapse-bar .collapse-btn{padding:7px 9px;font-size:11px}}
+
   </style>
 </head>
 <body>
@@ -113,6 +152,8 @@
     <div id="cloudBody" class="cloudBody"><p>Preparing cloud connection…</p></div></details>
   </section>
   <div class="datebar"><div><div class="eyebrow" id="dateEyebrow">Your daily dashboard</div><h2 id="dayTitle"></h2></div><div class="dateControl"><button class="iconbtn" type="button" data-action="prevday" aria-label="Previous day">‹</button><input type="date" id="activeDate" aria-label="Choose date"><button class="iconbtn" type="button" data-action="nextday" aria-label="Next day">›</button><button class="btn quiet smallbtn" data-action="today" type="button">Today</button></div></div>
+  <div class="tab-collapse-bar" role="group" aria-label="Tab visibility"><strong id="tabCollapseTitle">Workouts tab</strong><button class="collapse-btn" id="tabCollapseButton" data-action="toggleTab" type="button" aria-expanded="true" aria-controls="appMain">− Minimise tab</button></div>
+  <p id="tabCollapsedHint" class="tab-collapsed-note" hidden></p>
   <main id="appMain" aria-live="polite"></main>
   <footer class="footer"><div>🔒 Your data is saved locally first. When signed in and syncing, cloud updates follow automatically. Export backups regularly.</div><div class="meta"><button type="button" class="btn quiet smallbtn" data-action="export">Export backup</button><button type="button" class="btn quiet smallbtn" data-action="import">Import backup</button><input type="file" id="importFile" accept="application/json,.json" class="hidden"></div></footer>
 </div>
@@ -349,6 +390,142 @@ async function onHealthFile(e){const file=e.target.files?.[0];if(!file)return;tr
  }catch(err){toast('Health import failed: '+String(err.message||err))}finally{e.target.value=''}}
 function downloadHealthTemplate(){const csv='date,source,steps,active_calories,sleep_hours,weight_kg,exercise_minutes\n';const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ski-ready-health-import-template.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000)}
 
+
+const TAB_LABELS={meals:'Meals',workouts:'Workouts',drinks:'Drinks',resorts:'Resorts'};
+const TAB_COLLAPSED_KEY='ski-ready-ui-tabs-collapsed-v1';
+const PANEL_COLLAPSED_KEY='ski-ready-ui-panels-collapsed-v1';
+function getCollapsedSetting(key){try{const value=JSON.parse(localStorage.getItem(key)||'{}');return value&&typeof value==='object'&&!Array.isArray(value)?value:{}}catch{return {}}}
+let collapsedTabs=getCollapsedSetting(TAB_COLLAPSED_KEY);
+let collapsedPanels=getCollapsedSetting(PANEL_COLLAPSED_KEY);
+function saveCollapsedSetting(key,value){try{localStorage.setItem(key,JSON.stringify(value))}catch{/* UI preference remains usable this session */}}
+const TAB_HELP={
+ workouts:'View exercise instructions, start guided workouts, log activity and manage your training schedule.',
+ meals:'Browse recipes, plan meals, track calories and prepare a shopping list.',
+ drinks:'Log water and other drinks, review calories and track fluid intake.',
+ resorts:'Explore ski resorts, save favourites and open the latest official snow and lift reports.'
+};
+const PANEL_HELP={
+ workouts:[
+  [/activity log/i,'Record walks, rowing and other exercise, then review your logged activity.'],
+  [/away from home/i,'Enter travel dates to adapt your workout plan for days without home equipment.'],
+  [/weight.*waist/i,'Save your measurements and review weight and waist trends over time.'],
+  [/health.*wearable/i,'Import health summaries from a CSV file and review your tracker data.'],
+  [/plan progresses/i,'See the stages of your ski fitness plan and where you are now.']
+ ],
+ meals:[
+  [/daily calorie counter/i,'See your logged calories compared with your optional daily target.'],
+  [/meals based on what/i,'Find suitable meals using ingredients you have already bought.'],
+  [/explore more meals/i,'Discover recipes, view instructions and add new favourites.'],
+  [/meal suggestions.*favourites/i,'Choose breakfast, lunch, dinner or snacks and save favourite meals.'],
+  [/weekly plan.*shopping/i,'Plan the week, swap meals and tick off ingredients to buy.'],
+  [/daily food diary/i,'See the meals you have logged today and their calorie totals.'],
+  [/barcode scanner/i,'Scan or look up packaged foods to check nutrition and log portions.'],
+  [/add your own meal/i,'Add a homemade meal with calories, ingredients and optional recipe steps.'],
+  [/food.*drink calories/i,'See a seven-day overview of your food and drink calories.'],
+  [/targets.*optional/i,'Set or change your optional daily calorie and protein goals.']
+ ],
+ drinks:[
+  [/today.s drinks/i,'Log water and other drinks and review your daily fluid intake.'],
+  [/find another drink/i,'Search for packaged drinks and review their nutrition information.'],
+  [/log a drink yourself/i,'Record drinks that are not available in the search results.'],
+  [/drinks recorded today/i,'Review the drinks and water you have logged today.'],
+  [/daily drinks guide/i,'Adjust your daily fluid reminder to suit your preferences.'],
+  [/last 7 days/i,'Compare your daily drinks and water totals over the last week.']
+ ],
+ resorts:[
+  [/ski resorts.*live conditions/i,'Search for popular resorts and follow official lift, piste and snow-condition reports.'],
+  [/^\d+ resorts/i,'Browse available resort links and manage your saved favourites.'],
+  [/all ski resorts.*snow reports/i,'Open additional resort reports and snow information from external sources.']
+ ]
+};
+function panelHelpText(label,panel){
+ const item=(PANEL_HELP[tab]||[]).find(([pattern])=>pattern.test(label));
+ if(item)return item[1];
+ if(tab==='workouts')return "View today's workout, see exercise instructions and track completed exercises.";
+ const intro=(panel.querySelector('.sectionhead p, p.small, p.subdued')?.textContent||'').replace(/\s+/g,' ').trim();
+ return intro ? (intro.length>135?intro.slice(0,132)+'…':intro) : 'Expand to see the information and actions in this section.';
+}
+
+function decoratePanels(){
+ const panels=[...document.querySelectorAll('#appMain section.panel')];
+ panels.forEach((panel,i)=>{
+  const key=tab+':'+i,heading=panel.querySelector('h2,h3');
+  const eyebrow=panel.querySelector(':scope > .sectionhead .eyebrow, :scope > .eyebrow');
+  const label=(heading?.textContent||'section').replace(/\s+/g,' ').trim().slice(0,70);
+  const row=document.createElement('div');row.className='section-collapse-tools';
+  const button=document.createElement('button');button.type='button';button.className='collapse-btn';button.dataset.action='togglePanel';button.dataset.panelKey=key;
+  button.dataset.panelLabel=label;button.setAttribute('aria-label',(collapsedPanels[key]?'Expand ':'Minimise ')+label);
+  button.setAttribute('aria-expanded',collapsedPanels[key]?'false':'true');
+  button.textContent=collapsedPanels[key]?'＋ Expand section':'− Minimise section';
+  const identity=document.createElement('div');identity.className='section-collapse-identity';
+  const title=document.createElement('strong');title.textContent=(eyebrow?.textContent||'').trim()||label;
+  const summary=document.createElement('small');summary.textContent=(title.textContent===label?'':label+' — ')+panelHelpText(label,panel);
+  identity.append(title,summary);
+  row.append(identity,button);panel.prepend(row);
+  panel.classList.toggle('panel-is-collapsed',!!collapsedPanels[key]);
+ });
+}
+
+const SUB_COLLAPSED_KEY='ski-ready-ui-subsections-collapsed-v1';
+let collapsedSubsections=getCollapsedSetting(SUB_COLLAPSED_KEY);
+function wrapSubsection(nodes,id,label,description){
+ if(!nodes.length||nodes.some(n=>!n))return;
+ const parent=nodes[0].parentElement;
+ if(!parent||nodes.some(n=>n.parentElement!==parent))return;
+ const card=document.createElement('div');card.className='sub-collapse-panel';
+ const heading=document.createElement('div');heading.className='sub-collapse-tools';
+ const identity=document.createElement('div');identity.className='sub-collapse-identity';
+ const title=document.createElement('strong');title.textContent=label;
+ const help=document.createElement('small');help.textContent=description;
+ identity.append(title,help);
+ const button=document.createElement('button');button.type='button';button.className='collapse-btn';
+ button.dataset.action='toggleSubsection';button.dataset.subsectionKey=id;button.dataset.subsectionLabel=label;
+ const closed=!!collapsedSubsections[id];button.setAttribute('aria-expanded',closed?'false':'true');
+ button.setAttribute('aria-label',(closed?'Expand ':'Minimise ')+label);
+ button.textContent=closed?'＋ Expand subsection':'− Minimise subsection';
+ heading.append(identity,button);
+ const body=document.createElement('div');body.className='sub-collapse-body';
+ parent.insertBefore(card,nodes[0]);
+ nodes.forEach(node=>body.appendChild(node));
+ card.append(heading,body);
+ card.classList.toggle('sub-is-collapsed',closed);
+}
+function decorateSubsections(){
+ if(tab==='meals'){
+  const mealTypes=[...document.querySelectorAll('#appMain .mealType')];
+  mealTypes.forEach(header=>{
+   const grid=header.nextElementSibling;
+   if(!grid?.classList.contains('foodGrid'))return;
+   const name=(header.querySelector('h3')?.textContent||'Meals').trim();
+   wrapSubsection([header,grid],'meals:type:'+name.toLowerCase(),name,
+      'Browse '+name.toLowerCase()+' recipes, choose a meal and add it to your food diary.');
+  });
+  const faveHeading=[...document.querySelectorAll('#appMain section.panel h3')].find(n=>n.textContent.trim()==='★ Your favourites');
+  if(faveHeading?.nextElementSibling?.classList.contains('foodGrid')){
+   wrapSubsection([faveHeading,faveHeading.nextElementSibling],'meals:favourites','Your favourites',
+      'View meals you saved and add a favourite to your plan.');
+  }
+  const buyHeading=[...document.querySelectorAll('#appMain .sectionhead')].find(n=>n.querySelector('h3')?.textContent.trim()==='Ingredients to buy');
+  if(buyHeading){
+   const contents=[buyHeading];
+   let sibling=buyHeading.nextElementSibling;
+   if(sibling?.classList.contains('shoppingCols')){contents.push(sibling);sibling=sibling.nextElementSibling;}
+   if(sibling?.classList.contains('mutedNote'))contents.push(sibling);
+   if(contents.length>1)wrapSubsection(contents,'meals:ingredients','Ingredients to buy',
+       'Tick off the shopping items needed for your weekly meal plan.');
+  }
+ }
+ if(tab==='workouts'){
+  const exerciseHeading=[...document.querySelectorAll('#appMain .sectionhead')].find(n=>n.querySelector('h3')?.textContent.trim()==="Today's exercises");
+  if(exerciseHeading){
+   const elements=[];let next=exerciseHeading;
+   while(next){elements.push(next);next=next.nextElementSibling;}
+   wrapSubsection(elements,'workouts:exercises',"Today's exercises",
+    'Follow the workout instructions, use the voice coach and tick off completed exercises.');
+  }
+ }
+}
+
 function render(){
  document.getElementById('activeDate').value=currentDate;
  document.getElementById('dayTitle').textContent=tab==='resorts'?'Explore the mountains':fdate(currentDate);
@@ -357,7 +534,15 @@ function render(){
  const who=displayName();document.getElementById('greetingName').textContent=who?'Hello, '+who+' 👋':'Hello there 👋';
  document.getElementById('weekMotivation').textContent=weeklyEncouragement(currentDate);const tn=tripNote(currentDate),tr=document.getElementById('tripReadyMessage');tr.hidden=!tn;tr.textContent=tn;
  document.querySelectorAll('[data-tab]').forEach(b=>{let active=b.dataset.tab===tab;b.classList.toggle('active',active);b.setAttribute('aria-current',active?'page':'false')});
- document.getElementById('appMain').innerHTML=tab==='workouts'?workoutsHTML():tab==='meals'?mealsHTML():tab==='resorts'?resortsHTML():drinksHTML();
+ const closed=!!collapsedTabs[tab],area=document.getElementById('appMain'),toggle=document.getElementById('tabCollapseButton'),hint=document.getElementById('tabCollapsedHint');
+ document.getElementById('tabCollapseTitle').textContent=TAB_LABELS[tab]+' tab';
+ toggle.textContent=closed?'＋ Expand tab':'− Minimise tab';
+ toggle.setAttribute('aria-expanded',closed?'false':'true');
+ hint.hidden=!closed;
+ hint.textContent=TAB_HELP[tab]+' Tap Expand tab above to show it again.';
+ area.hidden=closed;
+ area.innerHTML=closed?'':tab==='workouts'?workoutsHTML():tab==='meals'?mealsHTML():tab==='resorts'?resortsHTML():drinksHTML();
+ if(!closed){decoratePanels();decorateSubsections();}
  renderCoach();
 }
 function changeDate(day){stopScanner();currentDate=day;stopCoach();render()}
@@ -651,6 +836,29 @@ function onSubmit(e){const form=e.target.closest('form[data-form]');if(!form)ret
 function onClick(e){const b=e.target.closest('[data-action], [data-tab]');if(!b)return;
  if(b.dataset.tab){stopScanner();tab=b.dataset.tab;stopCoach();render();window.scrollTo({top:0,behavior:'smooth'});return}
  let a=b.dataset.action;
+ if(a==='toggleTab'){const closing=!collapsedTabs[tab];if(closing){stopScanner();stopCoach()}collapsedTabs[tab]=closing;saveCollapsedSetting(TAB_COLLAPSED_KEY,collapsedTabs);render();return}
+ if(a==='toggleSubsection'){
+  const key=b.dataset.subsectionKey;
+  if(!key||!key.startsWith(tab+':'))return;
+  const closed=!collapsedSubsections[key];
+  if(closed&&tab==='workouts')stopCoach();
+  collapsedSubsections[key]=closed;saveCollapsedSetting(SUB_COLLAPSED_KEY,collapsedSubsections);
+  const wrapper=b.closest('.sub-collapse-panel');
+  if(wrapper){
+   wrapper.classList.toggle('sub-is-collapsed',closed);
+   b.textContent=closed?'＋ Expand subsection':'− Minimise subsection';
+   b.setAttribute('aria-expanded',closed?'false':'true');
+   b.setAttribute('aria-label',(closed?'Expand ':'Minimise ')+(b.dataset.subsectionLabel||'subsection'));
+  }
+  return;
+ }
+ if(a==='togglePanel'){
+  const key=b.dataset.panelKey;if(!key||!key.startsWith(tab+':'))return;
+  const closing=!collapsedPanels[key];if(closing){stopScanner();stopCoach()}
+  collapsedPanels[key]=closing;saveCollapsedSetting(PANEL_COLLAPSED_KEY,collapsedPanels);
+  const panel=b.closest('section.panel');if(panel){panel.classList.toggle('panel-is-collapsed',closing);b.textContent=closing?'＋ Expand section':'− Minimise section';b.setAttribute('aria-expanded',closing?'false':'true');b.setAttribute('aria-label',(closing?'Expand ':'Minimise ')+(b.dataset.panelLabel||'section'))}
+  return;
+ }
  if(a==='resortfav'){let id=b.dataset.id;if(!RESORTS.some(r=>r.id===id))return;state.resortFavourites=state.resortFavourites.includes(id)?state.resortFavourites.filter(x=>x!==id):[...state.resortFavourites,id];save();render();return}
  if(a==='resortfavfilter'){resortFavOnly=!resortFavOnly;render();return}
  if(a==='healthtemplate'){downloadHealthTemplate();return}
