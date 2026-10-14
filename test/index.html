@@ -121,6 +121,21 @@
     .panel.panel-is-collapsed .section-collapse-identity{display:grid;gap:4px}
     .section-collapse-identity strong{font-size:16px;font-weight:850;color:#ffe371;line-height:1.35}
     .section-collapse-identity small{font-size:12px;line-height:1.45;color:#dbcce9}
+
+    /* Collapsed sections retain their eyebrow title and purpose; inner groups get the same treatment. */
+    .section-collapse-identity strong{color:#ffe371}
+    .section-collapse-identity small{color:#dbcce9}
+    .sub-collapse-panel{border:1px solid #554071;border-radius:12px;background:#1c1429;margin:12px 0;padding:12px}
+    .sub-collapse-tools{display:flex;align-items:center;justify-content:flex-end;gap:12px}
+    .sub-collapse-identity{display:none;min-width:0;flex:1}
+    .sub-collapse-identity strong{font-weight:850;color:#ffe371;line-height:1.4;font-size:15px}
+    .sub-collapse-identity small{display:block;color:#dccbe9;font-size:12px;line-height:1.45;margin-top:3px}
+    .sub-collapse-panel.sub-is-collapsed{border-color:#8262b2;background:#231632}
+    .sub-collapse-panel.sub-is-collapsed .sub-collapse-identity{display:block}
+    .sub-collapse-panel.sub-is-collapsed .sub-collapse-body{display:none}
+    .sub-collapse-body > .mealType:first-child{margin-top:0}
+    @media(max-width:460px){.sub-collapse-tools{align-items:flex-start;gap:8px}.sub-collapse-identity strong{font-size:14px}.sub-collapse-tools .collapse-btn{font-size:11px;padding:6px 8px}}
+
     .panel.panel-is-collapsed{border-color:#8262b2}
     .panel.panel-is-collapsed .collapse-btn{flex-shrink:0}
     @media(max-width:460px){.panel.panel-is-collapsed .section-collapse-tools{align-items:flex-start;gap:10px}.panel.panel-is-collapsed .collapse-btn{font-size:11px;padding:6px 8px}.section-collapse-identity strong{font-size:14px}}
@@ -437,6 +452,7 @@ function decoratePanels(){
  const panels=[...document.querySelectorAll('#appMain section.panel')];
  panels.forEach((panel,i)=>{
   const key=tab+':'+i,heading=panel.querySelector('h2,h3');
+  const eyebrow=panel.querySelector(':scope > .sectionhead .eyebrow, :scope > .eyebrow');
   const label=(heading?.textContent||'section').replace(/\s+/g,' ').trim().slice(0,70);
   const row=document.createElement('div');row.className='section-collapse-tools';
   const button=document.createElement('button');button.type='button';button.className='collapse-btn';button.dataset.action='togglePanel';button.dataset.panelKey=key;
@@ -444,12 +460,72 @@ function decoratePanels(){
   button.setAttribute('aria-expanded',collapsedPanels[key]?'false':'true');
   button.textContent=collapsedPanels[key]?'＋ Expand section':'− Minimise section';
   const identity=document.createElement('div');identity.className='section-collapse-identity';
-  const title=document.createElement('strong');title.textContent=label;
-  const summary=document.createElement('small');summary.textContent=panelHelpText(label,panel);
+  const title=document.createElement('strong');title.textContent=(eyebrow?.textContent||'').trim()||label;
+  const summary=document.createElement('small');summary.textContent=(title.textContent===label?'':label+' — ')+panelHelpText(label,panel);
   identity.append(title,summary);
   row.append(identity,button);panel.prepend(row);
   panel.classList.toggle('panel-is-collapsed',!!collapsedPanels[key]);
  });
+}
+
+const SUB_COLLAPSED_KEY='ski-ready-test-ui-subsections-collapsed-v1';
+let collapsedSubsections=getCollapsedSetting(SUB_COLLAPSED_KEY);
+function wrapSubsection(nodes,id,label,description){
+ if(!nodes.length||nodes.some(n=>!n))return;
+ const parent=nodes[0].parentElement;
+ if(!parent||nodes.some(n=>n.parentElement!==parent))return;
+ const card=document.createElement('div');card.className='sub-collapse-panel';
+ const heading=document.createElement('div');heading.className='sub-collapse-tools';
+ const identity=document.createElement('div');identity.className='sub-collapse-identity';
+ const title=document.createElement('strong');title.textContent=label;
+ const help=document.createElement('small');help.textContent=description;
+ identity.append(title,help);
+ const button=document.createElement('button');button.type='button';button.className='collapse-btn';
+ button.dataset.action='toggleSubsection';button.dataset.subsectionKey=id;button.dataset.subsectionLabel=label;
+ const closed=!!collapsedSubsections[id];button.setAttribute('aria-expanded',closed?'false':'true');
+ button.setAttribute('aria-label',(closed?'Expand ':'Minimise ')+label);
+ button.textContent=closed?'＋ Expand subsection':'− Minimise subsection';
+ heading.append(identity,button);
+ const body=document.createElement('div');body.className='sub-collapse-body';
+ parent.insertBefore(card,nodes[0]);
+ nodes.forEach(node=>body.appendChild(node));
+ card.append(heading,body);
+ card.classList.toggle('sub-is-collapsed',closed);
+}
+function decorateSubsections(){
+ if(tab==='meals'){
+  const mealTypes=[...document.querySelectorAll('#appMain .mealType')];
+  mealTypes.forEach(header=>{
+   const grid=header.nextElementSibling;
+   if(!grid?.classList.contains('foodGrid'))return;
+   const name=(header.querySelector('h3')?.textContent||'Meals').trim();
+   wrapSubsection([header,grid],'meals:type:'+name.toLowerCase(),name,
+      'Browse '+name.toLowerCase()+' recipes, choose a meal and add it to your food diary.');
+  });
+  const faveHeading=[...document.querySelectorAll('#appMain section.panel h3')].find(n=>n.textContent.trim()==='★ Your favourites');
+  if(faveHeading?.nextElementSibling?.classList.contains('foodGrid')){
+   wrapSubsection([faveHeading,faveHeading.nextElementSibling],'meals:favourites','Your favourites',
+      'View meals you saved and add a favourite to your plan.');
+  }
+  const buyHeading=[...document.querySelectorAll('#appMain .sectionhead')].find(n=>n.querySelector('h3')?.textContent.trim()==='Ingredients to buy');
+  if(buyHeading){
+   const contents=[buyHeading];
+   let sibling=buyHeading.nextElementSibling;
+   if(sibling?.classList.contains('shoppingCols')){contents.push(sibling);sibling=sibling.nextElementSibling;}
+   if(sibling?.classList.contains('mutedNote'))contents.push(sibling);
+   if(contents.length>1)wrapSubsection(contents,'meals:ingredients','Ingredients to buy',
+       'Tick off the shopping items needed for your weekly meal plan.');
+  }
+ }
+ if(tab==='workouts'){
+  const exerciseHeading=[...document.querySelectorAll('#appMain .sectionhead')].find(n=>n.querySelector('h3')?.textContent.trim()==="Today's exercises");
+  if(exerciseHeading){
+   const elements=[];let next=exerciseHeading;
+   while(next){elements.push(next);next=next.nextElementSibling;}
+   wrapSubsection(elements,'workouts:exercises',"Today's exercises",
+    'Follow the workout instructions, use the voice coach and tick off completed exercises.');
+  }
+ }
 }
 
 function render(){
@@ -468,7 +544,7 @@ function render(){
  hint.textContent=TAB_HELP[tab]+' Tap Expand tab above to show it again.';
  area.hidden=closed;
  area.innerHTML=closed?'':tab==='workouts'?workoutsHTML():tab==='meals'?mealsHTML():tab==='resorts'?resortsHTML():drinksHTML();
- if(!closed)decoratePanels();
+ if(!closed){decoratePanels();decorateSubsections();}
  renderCoach();
 }
 function changeDate(day){stopScanner();currentDate=day;stopCoach();render()}
@@ -763,6 +839,21 @@ function onClick(e){const b=e.target.closest('[data-action], [data-tab]');if(!b)
  if(b.dataset.tab){stopScanner();tab=b.dataset.tab;stopCoach();render();window.scrollTo({top:0,behavior:'smooth'});return}
  let a=b.dataset.action;
  if(a==='toggleTab'){const closing=!collapsedTabs[tab];if(closing){stopScanner();stopCoach()}collapsedTabs[tab]=closing;saveCollapsedSetting(TAB_COLLAPSED_KEY,collapsedTabs);render();return}
+ if(a==='toggleSubsection'){
+  const key=b.dataset.subsectionKey;
+  if(!key||!key.startsWith(tab+':'))return;
+  const closed=!collapsedSubsections[key];
+  if(closed&&tab==='workouts')stopCoach();
+  collapsedSubsections[key]=closed;saveCollapsedSetting(SUB_COLLAPSED_KEY,collapsedSubsections);
+  const wrapper=b.closest('.sub-collapse-panel');
+  if(wrapper){
+   wrapper.classList.toggle('sub-is-collapsed',closed);
+   b.textContent=closed?'＋ Expand subsection':'− Minimise subsection';
+   b.setAttribute('aria-expanded',closed?'false':'true');
+   b.setAttribute('aria-label',(closed?'Expand ':'Minimise ')+(b.dataset.subsectionLabel||'subsection'));
+  }
+  return;
+ }
  if(a==='togglePanel'){
   const key=b.dataset.panelKey;if(!key||!key.startsWith(tab+':'))return;
   const closing=!collapsedPanels[key];if(closing){stopScanner();stopCoach()}
