@@ -145,6 +145,18 @@
 
     @media(max-width:460px){.tab-collapse-bar{gap:8px;padding:10px}.tab-collapse-bar strong{font-size:12px}.tab-collapse-bar .collapse-btn{padding:7px 9px;font-size:11px}}
 
+
+    /* Oura integration preview: no real data until the authenticated connector is configured. */
+    .ouraCard{margin:14px 0 18px;padding:17px;border-radius:15px;border:1px solid #8c66b5;background:linear-gradient(130deg,#2d1b45,#1a1427)}
+    .ouraHead{display:flex;justify-content:space-between;align-items:flex-start;gap:9px;flex-wrap:wrap}
+    .ouraHead h4{margin:3px 0 5px;font-size:18px;color:#ffe371}
+    .ouraMetrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0}
+    .ouraMetric{padding:10px 9px;background:#170f23;border:1px solid #60467b;border-radius:11px}
+    .ouraMetric span{display:block;color:#cfbee4;font-size:11px}
+    .ouraMetric strong{display:block;font-size:24px;color:#ffe371;line-height:1.4}
+    .ouraMetric small{display:block;color:#ae9bbe;font-size:10px}
+    @media(max-width:450px){.ouraCard{padding:13px}.ouraMetrics{gap:5px}.ouraMetric{padding:9px 6px}.ouraMetric span{font-size:10px}.ouraMetric strong{font-size:21px}}
+
   </style>
 </head>
 <body>
@@ -361,6 +373,19 @@ function healthHTML(){
  ['Fitbit / Google Health API','Legacy Fitbit API closes on 30 October 2026. Google Health API is its replacement; new project onboarding is currently restricted.','https://developers.google.com/health']
  ];
  return `<section class="panel" id="healthPanel"><div class="sectionhead"><div><h3>❤️ Health & wearable data</h3><p class="small subdued">Import daily totals now. Direct device connections can be added later.</p></div><span class="tag">Not connected</span></div>
+ <div class="ouraCard" aria-label="Oura Ring integration preview">
+  <div class="ouraHead">
+   <div><div class="eyebrow">◯ Oura Ring · Integration preview</div><h4>Sleep, readiness &amp; activity</h4><p class="small subdued" style="margin:0">Bring your Oura wellness information into Ski Ready after secure account connection.</p></div>
+   <span class="tag" role="status">Setup required</span>
+  </div>
+  <div class="ouraMetrics">
+   <div class="ouraMetric"><span>Sleep score</span><strong>—</strong><small>Not connected</small></div>
+   <div class="ouraMetric"><span>Readiness score</span><strong>—</strong><small>Not connected</small></div>
+   <div class="ouraMetric"><span>Activity score</span><strong>—</strong><small>Not connected</small></div>
+  </div>
+  <p class="small subdued">This preview does not read your ring or automatically import any information yet. An Oura developer app and secure server connection are required first. You'll choose what to share through Oura's authorisation screen.</p>
+  <div class="meta"><a class="btn quiet smallbtn" href="https://developer.ouraring.com/" target="_blank" rel="noopener noreferrer">Oura developer setup ↗</a><span class="small subdued">The connection button will be enabled after setup.</span></div>
+ </div>
  <div class="healthSummary">${stat('Steps',steps?steps.toLocaleString('en-GB'):'—','Imported · selected day')}${stat('Active kcal',cal?cal+' kcal':'—','For information only')}${stat('Sleep',sleep?sleep+' h':'—','Imported · selected day')}</div>
  <p class="mutedNote">Imported activity calories are <b>not</b> subtracted from your food target, avoiding double counting. We won't upload full health exports to external services; the supported CSV summary becomes part of your Ski Ready backup and future cloud sync.</p>
  <div class="stack"><label class="field">Import a simple health-summary CSV<input id="healthCsvFile" type="file" accept=".csv,text/csv" aria-label="Import health CSV"></label><button class="btn quiet smallbtn" type="button" data-action="healthtemplate">↓ Download CSV template</button></div>
