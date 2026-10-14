@@ -112,6 +112,18 @@
     .section-collapse-tools{display:flex;justify-content:flex-end;margin:0 0 8px}
     .section-collapse-tools .collapse-btn{min-height:33px;padding:5px 10px;font-size:11px}
     .panel.panel-is-collapsed > :not(.section-collapse-tools){display:none!important}
+
+    /* Show a useful identifier while a section is collapsed. */
+    .section-collapse-tools{align-items:center;gap:12px}
+    .section-collapse-identity{display:none;flex:1;min-width:0}
+    .panel.panel-is-collapsed .section-collapse-tools{justify-content:space-between;margin:0;align-items:center}
+    .panel.panel-is-collapsed .section-collapse-identity{display:grid;gap:4px}
+    .section-collapse-identity strong{font-size:16px;font-weight:850;color:#ffe371;line-height:1.35}
+    .section-collapse-identity small{font-size:12px;line-height:1.45;color:#dbcce9}
+    .panel.panel-is-collapsed{border-color:#8262b2}
+    .panel.panel-is-collapsed .collapse-btn{flex-shrink:0}
+    @media(max-width:460px){.panel.panel-is-collapsed .section-collapse-tools{align-items:flex-start;gap:10px}.panel.panel-is-collapsed .collapse-btn{font-size:11px;padding:6px 8px}.section-collapse-identity strong{font-size:14px}}
+
     @media(max-width:460px){.tab-collapse-bar{gap:8px;padding:10px}.tab-collapse-bar strong{font-size:12px}.tab-collapse-bar .collapse-btn{padding:7px 9px;font-size:11px}}
 
   </style>
@@ -371,6 +383,54 @@ function getCollapsedSetting(key){try{const value=JSON.parse(localStorage.getIte
 let collapsedTabs=getCollapsedSetting(TAB_COLLAPSED_KEY);
 let collapsedPanels=getCollapsedSetting(PANEL_COLLAPSED_KEY);
 function saveCollapsedSetting(key,value){try{localStorage.setItem(key,JSON.stringify(value))}catch{/* UI preference remains usable this session */}}
+const TAB_HELP={
+ workouts:'View exercise instructions, start guided workouts, log activity and manage your training schedule.',
+ meals:'Browse recipes, plan meals, track calories and prepare a shopping list.',
+ drinks:'Log water and other drinks, review calories and track fluid intake.',
+ resorts:'Explore ski resorts, save favourites and open the latest official snow and lift reports.'
+};
+const PANEL_HELP={
+ workouts:[
+  [/activity log/i,'Record walks, rowing and other exercise, then review your logged activity.'],
+  [/away from home/i,'Enter travel dates to adapt your workout plan for days without home equipment.'],
+  [/weight.*waist/i,'Save your measurements and review weight and waist trends over time.'],
+  [/health.*wearable/i,'Import health summaries from a CSV file and review your tracker data.'],
+  [/plan progresses/i,'See the stages of your ski fitness plan and where you are now.']
+ ],
+ meals:[
+  [/daily calorie counter/i,'See your logged calories compared with your optional daily target.'],
+  [/meals based on what/i,'Find suitable meals using ingredients you have already bought.'],
+  [/explore more meals/i,'Discover recipes, view instructions and add new favourites.'],
+  [/meal suggestions.*favourites/i,'Choose breakfast, lunch, dinner or snacks and save favourite meals.'],
+  [/weekly plan.*shopping/i,'Plan the week, swap meals and tick off ingredients to buy.'],
+  [/daily food diary/i,'See the meals you have logged today and their calorie totals.'],
+  [/barcode scanner/i,'Scan or look up packaged foods to check nutrition and log portions.'],
+  [/add your own meal/i,'Add a homemade meal with calories, ingredients and optional recipe steps.'],
+  [/food.*drink calories/i,'See a seven-day overview of your food and drink calories.'],
+  [/targets.*optional/i,'Set or change your optional daily calorie and protein goals.']
+ ],
+ drinks:[
+  [/today.s drinks/i,'Log water and other drinks and review your daily fluid intake.'],
+  [/find another drink/i,'Search for packaged drinks and review their nutrition information.'],
+  [/log a drink yourself/i,'Record drinks that are not available in the search results.'],
+  [/drinks recorded today/i,'Review the drinks and water you have logged today.'],
+  [/daily drinks guide/i,'Adjust your daily fluid reminder to suit your preferences.'],
+  [/last 7 days/i,'Compare your daily drinks and water totals over the last week.']
+ ],
+ resorts:[
+  [/ski resorts.*live conditions/i,'Search for popular resorts and follow official lift, piste and snow-condition reports.'],
+  [/^\d+ resorts/i,'Browse available resort links and manage your saved favourites.'],
+  [/all ski resorts.*snow reports/i,'Open additional resort reports and snow information from external sources.']
+ ]
+};
+function panelHelpText(label,panel){
+ const item=(PANEL_HELP[tab]||[]).find(([pattern])=>pattern.test(label));
+ if(item)return item[1];
+ if(tab==='workouts')return "View today's workout, see exercise instructions and track completed exercises.";
+ const intro=(panel.querySelector('.sectionhead p, p.small, p.subdued')?.textContent||'').replace(/\s+/g,' ').trim();
+ return intro ? (intro.length>135?intro.slice(0,132)+'…':intro) : 'Expand to see the information and actions in this section.';
+}
+
 function decoratePanels(){
  const panels=[...document.querySelectorAll('#appMain section.panel')];
  panels.forEach((panel,i)=>{
@@ -381,7 +441,11 @@ function decoratePanels(){
   button.dataset.panelLabel=label;button.setAttribute('aria-label',(collapsedPanels[key]?'Expand ':'Minimise ')+label);
   button.setAttribute('aria-expanded',collapsedPanels[key]?'false':'true');
   button.textContent=collapsedPanels[key]?'＋ Expand section':'− Minimise section';
-  row.appendChild(button);panel.prepend(row);
+  const identity=document.createElement('div');identity.className='section-collapse-identity';
+  const title=document.createElement('strong');title.textContent=label;
+  const summary=document.createElement('small');summary.textContent=panelHelpText(label,panel);
+  identity.append(title,summary);
+  row.append(identity,button);panel.prepend(row);
   panel.classList.toggle('panel-is-collapsed',!!collapsedPanels[key]);
  });
 }
@@ -399,7 +463,7 @@ function render(){
  toggle.textContent=closed?'＋ Expand tab':'− Minimise tab';
  toggle.setAttribute('aria-expanded',closed?'false':'true');
  hint.hidden=!closed;
- hint.textContent=TAB_LABELS[tab]+' is minimised. Select Expand tab above to show its contents.';
+ hint.textContent=TAB_HELP[tab]+' Tap Expand tab above to show it again.';
  area.hidden=closed;
  area.innerHTML=closed?'':tab==='workouts'?workoutsHTML():tab==='meals'?mealsHTML():tab==='resorts'?resortsHTML():drinksHTML();
  if(!closed)decoratePanels();
