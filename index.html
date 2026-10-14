@@ -145,6 +145,11 @@
 
     @media(max-width:460px){.tab-collapse-bar{gap:8px;padding:10px}.tab-collapse-bar strong{font-size:12px}.tab-collapse-bar .collapse-btn{padding:7px 9px;font-size:11px}}
 
+    .drink-undo-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0 2px}
+    .drink-undo-row .btn{min-height:40px}
+    .drink-undo-hint{font-size:12px;color:#d7c6e7;flex:1;min-width:180px}
+    @media(max-width:460px){.drink-undo-row .btn{width:100%}}
+
   </style>
 </head>
 <body>
@@ -764,8 +769,37 @@ function mealsHTML(){const ms=mealDay(currentDate),cal=dailyCalories(currentDate
  <section class="panel"><h3>Targets (optional)</h3><p class="small subdued">Your starting weight isn't known yet. Leave these blank until we can personalise a sensible goal. No restrictive calorie limit is pre-filled.</p><form class="stack" data-form="foodGoals"><div class="fieldrow"><label class="field">Calories / day<input type="number" name="calGoal" min="1000" max="6000" step="50" placeholder="Not set" value="${state.settings.calGoal??''}"></label><label class="field">Protein / day (g)<input type="number" name="proteinGoal" min="1" max="350" placeholder="Not set" value="${state.settings.proteinGoal??''}"></label></div><button class="btn full" type="submit">Save targets</button></form><p class="mutedNote">You cannot choose where fat comes off first. Consistent eating and activity can reduce overall body fat while supporting ski training.</p></section>
  </aside></div>`;
 }
+function lastDrinkEntry(day){
+ const entries=[
+  ...waterDay(day).map(x=>({kind:'water',entry:x})),
+  ...drinkDay(day).map(x=>({kind:'drink',entry:x}))
+ ];
+ function savedAt(x){
+  const timestamp=Date.parse(String(x.loggedAt||''));
+  if(Number.isFinite(timestamp))return timestamp;
+  // Older versions encoded the creation time in the entry ID.
+  const match=/^id([0-9a-z]+)([0-9a-z]{5})$/.exec(String(x.id||''));
+  if(match){const n=parseInt(match[1],36);if(Number.isFinite(n)&&n>1500000000000&&n<4000000000000)return n}
+  const t=Date.parse(String(x.date||'')+'T'+String(x.time||'00:00')+':00');
+  return Number.isFinite(t)?t:0;
+ }
+ return entries.sort((a,b)=>savedAt(b.entry)-savedAt(a.entry))[0]||null;
+}
+function deleteLastDrink(){
+ const last=lastDrinkEntry(currentDate);
+ if(!last){toast('No drinks recorded for this date.');return}
+ const {kind,entry}=last;
+ const description=kind==='water'?'water ('+num(entry.ml)+' ml)':String(entry.name||'Drink').slice(0,90)+' ('+num(entry.ml)+' ml)';
+ if(!confirm('Delete the last recorded drink: '+description+'?\n\nThis updates your fluid and calorie totals.'))return;
+ const field=kind==='water'?'water':'drinks';
+ const before=state[field].length;
+ state[field]=state[field].filter(x=>x.id!==entry.id);
+ if(state[field].length===before){toast('That entry was already removed.');return}
+ save();render();toast('Removed '+description+'. Totals updated.');
+}
+
 function drinksHTML(){
- const ws=waterDay(currentDate),ds=drinkDay(currentDate),wml=total(ws,'ml'),otherMl=total(ds,'ml'),ml=wml+otherMl,drinkKcal=total(ds,'cal'),goal=Math.max(250,num(state.settings.waterGoal)||2000),pct=Math.min(100,ml/goal*100),days=Array.from({length:7},(_,i)=>addDays(currentDate,i-6));
+ const ws=waterDay(currentDate),ds=drinkDay(currentDate),lastLogged=lastDrinkEntry(currentDate),wml=total(ws,'ml'),otherMl=total(ds,'ml'),ml=wml+otherMl,drinkKcal=total(ds,'cal'),goal=Math.max(250,num(state.settings.waterGoal)||2000),pct=Math.min(100,ml/goal*100),days=Array.from({length:7},(_,i)=>addDays(currentDate,i-6));
  const results=drinkResults.length?`<div class="stack" style="margin-top:10px">${drinkResults.map((d,i)=>`<div class="drinkResult"><strong>${esc(d.name)}</strong><p>${esc(d.brand||'')} · ${d.cal100===null?(d.refCal100g===null?'Nutrition unknown':'Listed as '+Math.round(d.refCal100g)+' kcal / 100g; check mixed drink label'):Math.round(d.cal100*10)/10+' kcal / 100ml'}</p><button type="button" data-action="selectdrink" data-index="${i}" class="btn smallbtn">Choose this drink</button></div>`).join('')}</div>`:'';
  const selected=drinkSelected?`<div class="barcodeResult" style="margin-top:12px"><strong>${esc(drinkSelected.name)}</strong><p class="small subdued">${esc(drinkSelected.brand||'')} · ${esc(drinkSelected.code||'')} · ${drinkSelected.basis==='100g'?'Nutrition listed per 100g, NOT per 100ml. Please enter values per 100ml of the drink as prepared, especially for powders.':'Nutrition listed per 100ml'}</p><p class="small subdued"><b>Ingredients:</b> ${esc(drinkSelected.ingredients||'Not listed — check the packaging.')}</p>
  <form data-form="selectedDrink" class="stack"><label class="field">How much did you drink? (ml)<input name="ml" type="number" min="1" max="5000" required value="330"></label><div class="fieldrow"><label class="field">Calories per 100ml<input name="cal100" type="number" min="0" max="900" step="0.1" required value="${drinkSelected.cal100??''}" placeholder="Check label"></label><label class="field">Protein per 100ml (g)<input name="protein100" type="number" min="0" max="100" step="0.1" value="${drinkSelected.protein100??0}"></label></div><p class="mutedNote">Calories are calculated from the quantity you actually drink. Double-check the label, particularly with drink powders and concentrated products.</p><button type="submit" class="btn primary full">+ Log this drink</button></form></div>`:'';
@@ -774,6 +808,7 @@ function drinksHTML(){
  <div class="waterGlass" role="img" aria-label="${ml} ml of ${goal} ml recorded"><div class="waterFill" style="height:${pct}%"></div><strong>${Math.round(ml/goal*100)}%</strong></div>
  ${progress(pct)}<p class="small subdued" style="text-align:center">${ml.toLocaleString('en-GB')} / ${goal.toLocaleString('en-GB')} ml</p>
  <div class="waterButtons"><button type="button" data-action="addwater" data-ml="250" class="waterButton">💧<span>Water · 250 ml</span></button><button type="button" data-action="addwater" data-ml="500" class="waterButton">💧💧<span>Water · 500 ml</span></button><button type="button" data-action="addwater" data-ml="750" class="waterButton">💧💧💧<span>Water · 750 ml</span></button><button type="button" data-action="addwater" data-ml="1180" class="waterButton">🥤<span>1 Stanley 40 oz · 1.18 L water</span></button></div>
+ <div class="drink-undo-row"><button type="button" class="btn warn" data-action="deleteLastDrink" ${lastLogged?'':'disabled'} aria-label="Delete last water or drink entry">↶ Delete last entry</button><span class="drink-undo-hint">${lastLogged?'Last logged: '+esc(lastLogged.kind==='water'?'Water':lastLogged.entry.name||'Drink')+' · '+num(lastLogged.entry.ml)+' ml':'No drinks logged for the selected date.'}</span></div>
  <p class="small subdued">Your 40 oz Stanley holds approximately 1.18 L when full. If filled with ice, record the actual amount of liquid consumed.</p><form data-form="water" class="fieldrow" style="align-items:end"><label class="field">Other water amount (ml)<input required type="number" name="ml" min="1" max="5000" placeholder="e.g. 330"></label><button class="btn primary" type="submit">+ Add water</button></form></section>
  <section class="panel"><div class="sectionhead"><div><h3>🔎 Find another drink</h3><p class="subdued small">Search for Coca-Cola, Sneak Energy or another packaged drink. Results require internet and may vary by flavour.</p></div></div>
  <form class="stack" data-form="drinkSearch"><label class="field">Drink name<input name="query" required minlength="2" maxlength="70" placeholder="e.g. Coca-Cola or Sneak Energy" value="${esc(drinkSearchTerm)}"></label><button type="submit" class="btn primary full">Search drinks</button></form>
@@ -795,9 +830,9 @@ function announceCoach(){if(!coach)return;let e=exerciseList(coach.date)[coach.i
  speak(`Next up: ${x.name}. ${e.sets} sets of ${e.qty} ${e.unit.replaceAll('/','per')}. ${x.cue} ${timed?'Follow the timer, and pause for a breather whenever you need.':'Go at your own pace. Tap done and next when you have finished.'}`)}
 function nextCoach(){if(!coach)return;const exercises=exerciseList(coach.date),e=exercises[coach.index];if(e){state.completed[doneKey(coach.date,coach.kind,e.id,coach.index)]=true;save()}coach.index++;if(coach.index>=exercises.length){stopCoach();toast('Workout logged. Great consistency!')}else announceCoach();render()}
 function renderCoach(){const root=document.getElementById('coachRoot');if(!coach){root.replaceChildren();return}const e=exerciseList(coach.date)[coach.index];if(!e){root.replaceChildren();return}root.innerHTML=`<section class="coachBox" role="region" aria-label="Spoken exercise coach"><div><div class="eyebrow">🔊 Guided workout · ${coach.index+1}/${exerciseList(coach.date).length}</div><strong>${esc(EX[e.id].name)}</strong><p>${e.sets} × ${e.qty} ${esc(e.unit)} ${coach.remaining?'· '+coach.remaining+' seconds left':''} · ${coach.paused?'Paused':'Working at your pace'}</p></div><div class="coachCtrl"><button class="btn smallbtn" data-action="coachrepeat" type="button" title="Repeat the exercise instruction">↻ Repeat</button><button class="btn smallbtn" data-action="coachpause" type="button">${coach.paused?'▶ Resume':'Ⅱ Pause'}</button><button class="btn primary smallbtn" data-action="coachnext" type="button">✓ Done & next</button><button class="btn warn smallbtn" data-action="coachstop" type="button">Stop</button></div></section>`}
-function addWater(ml){state.water.push({id:uid(),date:currentDate,ml,time:new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})});save();render();toast(`Added ${ml} ml`)}
+function addWater(ml){state.water.push({id:uid(),date:currentDate,ml,loggedAt:new Date().toISOString(),time:new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})});save();render();toast(`Added ${ml} ml`)}
 function logDrink(name,ml,cal,protein,ingredients='',barcode=''){
- state.drinks.push({id:uid(),date:currentDate,name:String(name).slice(0,100),ml,cal,protein,ingredients:String(ingredients||'').slice(0,250),barcode,time:new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})});
+ state.drinks.push({id:uid(),date:currentDate,name:String(name).slice(0,100),ml,cal,protein,ingredients:String(ingredients||'').slice(0,250),barcode,loggedAt:new Date().toISOString(),time:new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})});
  save();render();toast(`${name}: ${cal} kcal counted in today's total.`);
 }
 async function searchDrinks(term){
@@ -951,6 +986,7 @@ function onClick(e){const b=e.target.closest('[data-action], [data-tab]');if(!b)
  if(a==='addfood')addFood(b.dataset.id);
  if(a==='logrecipe'){addFood(b.dataset.id,Number(b.dataset.servings));document.getElementById('modalRoot').replaceChildren();}
  if(a==='addwater')addWater(Number(b.dataset.ml));
+ if(a==='deleteLastDrink'){deleteLastDrink();return}
  if(a==='startcoach')startCoach();
  if(a==='coachpause'&&coach){coach.paused=!coach.paused;if('speechSynthesis' in window){if(coach.paused)speechSynthesis.pause();else speechSynthesis.resume()}renderCoach()}
  if(a==='coachrepeat'&&coach)announceCoach();
