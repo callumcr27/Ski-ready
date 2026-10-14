@@ -375,7 +375,7 @@ function decoratePanels(){
  const panels=[...document.querySelectorAll('#appMain section.panel')];
  panels.forEach((panel,i)=>{
   const key=tab+':'+i,heading=panel.querySelector('h2,h3');
-  const label=(heading?.textContent||'section').replace(/\\s+/g,' ').trim().slice(0,70);
+  const label=(heading?.textContent||'section').replace(/\s+/g,' ').trim().slice(0,70);
   const row=document.createElement('div');row.className='section-collapse-tools';
   const button=document.createElement('button');button.type='button';button.className='collapse-btn';button.dataset.action='togglePanel';button.dataset.panelKey=key;
   button.dataset.panelLabel=label;button.setAttribute('aria-label',(collapsedPanels[key]?'Expand ':'Minimise ')+label);
