@@ -819,7 +819,7 @@ function deleteLastDrink(){
  if(!last){toast('No drinks recorded for this date.');return}
  const {kind,entry}=last;
  const description=kind==='water'?'water ('+num(entry.ml)+' ml)':String(entry.name||'Drink').slice(0,90)+' ('+num(entry.ml)+' ml)';
- if(!confirm('Delete the last recorded drink: '+description+'?\\n\\nThis updates your fluid and calorie totals.'))return;
+ if(!confirm('Delete the last recorded drink: '+description+'?\n\nThis updates your fluid and calorie totals.'))return;
  const field=kind==='water'?'water':'drinks';
  const before=state[field].length;
  state[field]=state[field].filter(x=>x.id!==entry.id);
