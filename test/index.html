@@ -171,6 +171,20 @@
     .sneak-estimate strong{color:#ffe371;font-size:19px;display:block}
     .sneak-estimate small{color:#d7c6e9;display:block}
 
+
+    /* Food search: branded ready meals plus labelled staple-food reference entries. */
+    .foodLookupResults{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:10px;margin:14px 0}
+    .foodLookupCard{padding:12px;border:1px solid #634a7c;background:#23182f;border-radius:12px}
+    .foodLookupCard h4{font-size:14px;line-height:1.35;margin:5px 0;color:#ffe371}
+    .foodLookupCard p{font-size:12px;color:#d4c6df;margin:5px 0 12px}
+    .foodLookupCard .btn{min-height:38px;width:100%}
+    .foodLookupChosen{padding:14px;margin:15px 0 2px;border:1px solid #8769a9;border-radius:12px;background:#2b1c3c}
+    .foodLookupChosen h4{color:#ffe371;margin:0 0 7px}
+    .foodLookupTotals{border:1px solid #775a9a;background:#20142d;border-radius:10px;padding:10px;margin:8px 0}
+    .foodLookupTotals strong{color:#ffe371;font-size:17px}
+    .foodLookupTotals small{display:block;color:#dac9eb;margin-top:4px}
+    .foodLookupChips{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0}
+    .foodLookupChips .btn{min-height:35px}
   </style>
 </head>
 <body>
@@ -496,6 +510,7 @@ const PANEL_HELP={
   [/plan progresses/i,'See the stages of your ski fitness plan and where you are now.']
  ],
  meals:[
+  [/search ready meals.*ingredients/i,'Search supermarket ready meals or everyday foods, edit portion sizes and add them to your food diary.'],
   [/daily calorie counter/i,'See your logged calories compared with your optional daily target.'],
   [/meals based on what/i,'Find suitable meals using ingredients you have already bought.'],
   [/explore more meals/i,'Discover recipes, view instructions and add new favourites.'],
@@ -778,12 +793,116 @@ function buildOwnRecipe(form){
  if(!(cal>=0&&cal<=5000&&protein>=0&&protein<=300)){toast('Check estimated calories and protein.');return null}
  return {id:uid(),meal:get('meal'),name:get('name').slice(0,90),desc:get('desc').slice(0,130)||'Your saved recipe',cal,protein,noCook:fd.has('noCook'),userRecipe:true,ingredients:ingredients.map(x=>x.name),recipe:{prep:Number(get('prep'))||0,cook:Number(get('cook'))||0,servings:1,ingredients,steps,tip:'Your own recipe. Check labels and adapt cooking steps for food safety.'},isFavorite:fd.has('fav')};
 }
+
+let foodSearchTerm='',foodSearchStatus='',foodSearchResults=[],foodSearchSelected=null,foodSearchRequest=0;
+const STAPLE_FOODS=[
+ {name:'Chicken thighs · raw, boneless & skinless',brand:'Generic reference · edible meat only',cal100:121,protein100:19.7,kind:'reference',code:'',notes:'Weigh the edible raw meat, not bones. Nutrition is approximate; adjust for the product you bought.'},
+ {name:'Chicken thighs · cooked, roasted, boneless & skinless',brand:'Generic reference · edible meat only',cal100:179,protein100:24.8,kind:'reference',code:'',notes:'Use cooked edible weight. Added oil, sauces and skin are not included. Values are approximate.'}
+];
+function foodNumber(v,upper){
+ if(v===null||v===undefined||v===''||!Number.isFinite(Number(v)))return null;
+ const n=Number(v);return n>=0&&n<=upper?n:null;
+}
+function foodReferenceResults(term){
+ return /\bchicken\b/i.test(term)&&/\bthighs?\b/i.test(term)?STAPLE_FOODS.map(x=>({...x})):[];
+}
+function foodSearchProduct(p){
+ const n=p.nutriments||{};
+ return {name:String(p.product_name||p.product_name_en||'').slice(0,110),brand:String(p.brands||'').slice(0,90),
+  cal100:foodNumber(n['energy-kcal_100g'],1500),protein100:foodNumber(n['proteins_100g'],100),
+  kind:'product',code:String(p.code||'').slice(0,30),
+  notes:'Community-submitted listing. Check calories, protein and allergens against the label.'};
+}
+async function searchFoods(term){
+ term=String(term||'').trim().slice(0,90);
+ if(term.length<2){foodSearchStatus='Enter at least two characters.';render();return}
+ const request=++foodSearchRequest;
+ foodSearchTerm=term;foodSearchResults=foodReferenceResults(term);foodSearchSelected=null;
+ foodSearchStatus='Searching supermarket products…';render();
+ try{
+  const params=new URLSearchParams({search_terms:term,search_simple:'1',action:'process',json:'1',page_size:'18',
+   fields:'code,product_name,product_name_en,brands,nutriments,serving_quantity,quantity'});
+  const response=await fetch(OFF_SEARCH+'?'+params.toString());
+  if(!response.ok)throw Error('Search unavailable');
+  const data=await response.json();
+  if(request!==foodSearchRequest)return;
+  const seen=new Set();
+  const results=(Array.isArray(data.products)?data.products:[])
+   .map(foodSearchProduct).filter(x=>x.name.length>1)
+   .filter(x=>{const key=x.code||x.name.toLowerCase()+'|'+x.brand.toLowerCase();
+    if(seen.has(key))return false;seen.add(key);return true}).slice(0,15);
+  foodSearchResults=[...foodReferenceResults(term),...results];
+  foodSearchStatus=results.length?'Found '+results.length+' packaged food result'+(results.length===1?'':'s')+'. Choose the correct brand and flavour.':
+   foodSearchResults.length?'No matching packaged products found. You can use the generic reference below.':
+    'No products found. Try a more specific name or add the food manually.';
+ }catch(err){
+  if(request!==foodSearchRequest)return;
+  foodSearchStatus=foodSearchResults.length?'Packaged-food search is unavailable; generic references are shown below.':
+   'Could not search online right now. Check your connection or use Add your own meal below.';
+ }
+ render();
+}
+function foodSearchNutrition(grams,cal100,protein100){
+ if(!Number.isFinite(grams)||grams<1||grams>5000||!Number.isFinite(cal100)||cal100<0||cal100>1500||!Number.isFinite(protein100)||protein100<0||protein100>100)return null;
+ return {cal:Math.round(cal100*grams/100),protein:Math.round(protein100*grams/10)/10};
+}
+function foodSearchHTML(){
+ const cards=foodSearchResults.map((x,i)=>`<div class="foodLookupCard">
+  <span class="tag">${x.kind==='reference'?'Generic estimate':'Packaged product'}</span>
+  <h4>${esc(x.name)}</h4><p>${esc(x.brand||'Brand not supplied')}</p>
+  <p>${x.cal100===null?'Calories unknown':x.cal100+' kcal/100g'} · ${x.protein100===null?'Protein unknown':x.protein100+' g protein/100g'}</p>
+  <button type="button" class="btn quiet smallbtn" data-action="selectFoodLookup" data-index="${i}">Choose food</button>
+ </div>`).join('');
+ const chosen=foodSearchSelected;
+ return `<section class="panel" id="foodSearchPanel">
+  <div class="sectionhead"><div><div class="eyebrow">Food finder</div><h3>🔎 Search ready meals & ingredients</h3>
+   <p class="small subdued">Search supermarket ready meals, branded foods or ingredients such as chicken thighs. Choose a result, adjust the portion and log it.</p></div></div>
+  <form data-form="foodSearch" class="stack">
+   <label class="field">Food or product name<input type="search" name="query" required minlength="2" maxlength="90" value="${esc(foodSearchTerm)}" placeholder="e.g. Tesco lasagne or chicken thighs"></label>
+   <button type="submit" class="btn primary">🔎 Search foods</button>
+  </form>
+  <div class="foodLookupChips">
+   <button type="button" class="btn quiet smallbtn" data-action="quickFoodSearch" data-query="ready meal">Ready meals</button>
+   <button type="button" class="btn quiet smallbtn" data-action="quickFoodSearch" data-query="chicken thighs">Chicken thighs</button>
+  </div>
+  ${foodSearchStatus?`<p role="status" class="small subdued">${esc(foodSearchStatus)}</p>`:''}
+  ${foodSearchResults.length?`<div class="foodLookupResults">${cards}</div>`:''}
+  ${chosen?`<div class="foodLookupChosen"><h4>Log: ${esc(chosen.name)}</h4>
+   <p class="small subdued">${esc(chosen.brand||'')} · ${chosen.kind==='reference'?'Generic nutrition estimate':'Open Food Facts listing'}</p>
+   <form data-form="foodLookupLog" class="stack">
+    <div class="fieldrow">
+     <label class="field">Portion eaten (grams)<input name="grams" type="number" min="1" max="5000" step="1" required value="100"></label>
+     <label class="field">Log as<select name="meal"><option>Breakfast</option><option>Lunch</option><option selected>Dinner</option><option>Snack</option></select></label>
+    </div>
+    <div class="fieldrow">
+     <label class="field">Calories per 100 g<input name="cal100" type="number" min="0" max="1500" step="0.1" required value="${chosen.cal100??''}" placeholder="Check food label"></label>
+     <label class="field">Protein (g) per 100 g<input name="protein100" type="number" min="0" max="100" step="0.1" required value="${chosen.protein100??''}" placeholder="Check food label"></label>
+    </div>
+    <div class="foodLookupTotals" data-food-lookup-totals role="status" aria-live="polite"><strong>${chosen.cal100!==null&&chosen.protein100!==null?Math.round(chosen.cal100)+' kcal · '+chosen.protein100+' g protein':'Enter nutrition from the label'}</strong><small>Estimated for 100 g; updates as you enter the portion.</small></div>
+    <p class="small subdued">${esc(chosen.notes)} ${chosen.kind==='reference'?'Raw and cooked values are not interchangeable.':'If the listed nutrition is missing or inaccurate, enter the figures printed on your package.'}</p>
+    <button class="btn primary full" type="submit">+ Add to food diary</button>
+   </form>
+  </div>`:''}
+  <p class="mutedNote">Packaged results come from <a href="https://world.openfoodfacts.org" target="_blank" rel="noopener noreferrer">Open Food Facts</a> and require internet. Generic chicken-thigh values are approximations based on USDA FoodData Central reference data. Check your packaging, edible weight, preparation and allergens. You can also enter any food manually below.</p>
+ </section>`;
+}
+function updateFoodSearchEstimate(form){
+ const box=form.querySelector('[data-food-lookup-totals]');
+ if(!box)return;
+ const grams=Number(form.elements.namedItem('grams')?.value),cal100=Number(form.elements.namedItem('cal100')?.value),protein100=Number(form.elements.namedItem('protein100')?.value);
+ const inputs=[form.elements.namedItem('grams')?.value,form.elements.namedItem('cal100')?.value,form.elements.namedItem('protein100')?.value];
+ const vals=inputs.every(x=>x!==null&&x!==undefined&&x!=='')?foodSearchNutrition(grams,cal100,protein100):null;
+ box.querySelector('strong').textContent=vals?vals.cal+' kcal · '+vals.protein+' g protein':'Enter a valid portion and nutrition values';
+ box.querySelector('small').textContent=vals?'Estimated for '+grams+' g (based on nutrition per 100 g).':'Check the values on your food label.';
+}
+
 function mealsHTML(){const ms=mealDay(currentDate),cal=dailyCalories(currentDate),protein=dailyProtein(currentDate),drinkCal=total(drinkDay(currentDate),'cal'),goal=Number(state.settings.calGoal)||null,pgoal=Number(state.settings.proteinGoal)||null,away=!!awayOn(currentDate),wk=weekStart(currentDate),week=weeklyMeals(),weekTotal=Array.from({length:7},(_,i)=>{const d=addDays(wk,i);return {d,kcal:dailyCalories(d)}});
  const barRes=barcodeProduct?`<div class="barcodeResult"><strong>${esc(barcodeProduct.name)}</strong><p class="small subdued" style="margin:5px 0">Barcode: ${esc(barcodeProduct.code)} · Data from Open Food Facts</p><p class="small"><b>${barcodeProduct.cal100===null?'Calories not available':Math.round(barcodeProduct.cal100)+' kcal'} / 100g</b> · ${barcodeProduct.protein100===null?'Protein not available':barcodeProduct.protein100.toFixed(1)+'g protein'} / 100g</p><p class="small subdued"><b>Ingredients:</b> ${esc(barcodeProduct.ingredients||'Not supplied in this product listing — check packaging.')}</p><form data-form="barcodeMeal" class="stack"><label class="field">Amount eaten (grams or ml if label is per 100ml)<input required name="grams" type="number" min="1" max="5000" step="1" value="${barcodeProduct.serving||100}"></label><div class="fieldrow"><label class="field">Calories per 100g/100ml<input name="cal100" required type="number" min="0" max="1500" step="0.1" value="${barcodeProduct.cal100??''}" placeholder="Read food label"></label><label class="field">Protein per 100g/100ml<input name="protein100" required type="number" min="0" max="100" step="0.1" value="${barcodeProduct.protein100??''}" placeholder="Read food label"></label></div><label class="field">Log as<select name="meal"><option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Snack</option></select></label><label class="small"><input type="checkbox" name="fav" style="width:auto;margin-right:6px"> Save to favourites</label><label class="small"><input type="checkbox" name="noCook" style="width:auto;margin-right:6px"> Can eat without cooking</label><p class="mutedNote">Check the package label. User-submitted barcode data can be incomplete or wrong; amounts are based on the per-100g values above. For drinks, use ml only if values are per 100ml.</p><button class="btn primary full" type="submit">+ Add scanned food to calorie counter</button></form></div>`:'';
  return `<div class="stats">${stat('Calories today',cal+' kcal',goal?Math.max(0,goal-cal)+' kcal remaining':'Target not set yet')}${stat('Protein today',Math.round(protein*10)/10+' g',pgoal?'Goal '+pgoal+' g':'Target not set yet')}${stat('Drinks calories',drinkCal+' kcal','Included in daily total')}</div>
  ${goal?`<section class="panel"><div class="sectionhead"><h3>Daily calorie counter</h3><strong>${cal} / ${goal} kcal</strong></div>${progress(cal/goal*100)}<p class="small subdued">${cal<=goal?goal-cal+' kcal remaining':cal-goal+' kcal above target'}. Targets are optional and are not a requirement to eat less after exercise.</p></section>`:`<div class="notice good">Your calorie counter is active. Enter a calorie goal only after you've worked out an appropriate daily target — we'll leave it blank for now.</div>`}
  ${away?'<div class="notice good">✈ You are away on this date. Meal suggestions and your weekly plan show no-cook choices only, including ready-to-eat supermarket options.</div>':''}
  ${sneakVanillaHTML()}
+ ${foodSearchHTML()}
  <section class="panel"><div class="sectionhead"><div><div class="eyebrow">Shop it → make it</div><h3>Meals based on what you've bought</h3><p class="small subdued">Tick items on your weekly shopping list and recipe suggestions automatically show which ingredients you have. Your chosen meal plan won't be changed without you asking.</p></div></div>
  <div class="inventoryGrid">${['Breakfast','Lunch','Dinner','Snack'].map(meal=>{const matches=optionsFor(meal,currentDate).filter(f=>stockStatus(f,wk).ready);return `<span><b>${esc(meal)}:</b> ${matches.length?esc(matches.slice(0,2).map(f=>f.name).join(' · '))+' ✓':'Tick ingredients to unlock choices'}</span>`}).join('')}</div>
  <button type="button" class="btn primary" data-action="pantryplan" style="margin-top:12px">↻ Update weekly meals using bought ingredients</button><p class="mutedNote">This only replaces planned meals when all their ingredients are ticked as bought; manually selected favourites stay available. Any new ingredients needed will appear in the shopping list. Away days remain no-cook.</p></section>
@@ -981,6 +1100,19 @@ function onSubmit(e){const form=e.target.closest('form[data-form]');if(!form)ret
   save();render();toast('Recipe saved! Find it in meals and weekly-plan swaps.');return;
  }
  if(kind==='customMeal'){const meal={id:uid(),date:currentDate,name:get('name'),meal:get('meal'),cal:Number(get('cal')),protein:Number(get('protein'))};if(fd.has('fave')){const parts=get('ingredients').split(',').map(x=>x.trim()).filter(Boolean),steps=get('steps').split('\n').map(s=>s.trim()).filter(Boolean).slice(0,20);const f={id:uid(),name:meal.name,meal:meal.meal,cal:meal.cal,protein:meal.protein,desc:'Saved personal meal',ingredients:parts,noCook:fd.has('nocook')};if(steps.length)f.recipe={prep:Number(get('prep'))||0,cook:Number(get('cook'))||0,servings:1,ingredients:parts.map(name=>({name,qty:1,unit:'portion'})),steps};state.customFoods.push(f);state.favourites.push(f.id);meal.foodId=f.id}state.meals.push(meal);toast(fd.has('fave')?'Meal logged and saved to favourites.':'Meal logged.')}
+ if(kind==='foodSearch'){searchFoods(get('query'));return}
+ if(kind==='foodLookupLog'){
+  if(!foodSearchSelected){toast('Choose a food from your results first.');return}
+  const grams=Number(get('grams')),cal100=Number(get('cal100')),protein100=Number(get('protein100'));
+  const nutrition=foodSearchNutrition(grams,cal100,protein100);
+  const occasion=get('meal');
+  if(!nutrition||!['Breakfast','Lunch','Dinner','Snack'].includes(occasion)){toast('Check the portion and nutrition values.');return}
+  const chosen=foodSearchSelected;
+  state.meals.push({id:uid(),date:currentDate,meal:occasion,name:chosen.name,
+   cal:nutrition.cal,protein:nutrition.protein,amount:grams,
+   barcode:chosen.code||'',nutritionSource:chosen.kind==='reference'?'Generic reference estimate':'Open Food Facts; values may be edited'});
+  save();render();toast(chosen.name+' added to your food diary.');return;
+ }
  if(kind==='barcodeLookup'){lookupBarcode(get('code'));return}
  if(kind==='barcodeMeal'){if(!barcodeProduct){toast('Look up a barcode first.');return}const grams=Number(get('grams')),cal100=Number(get('cal100')),p100=Number(get('protein100'));if(!(grams>0&&grams<=5000&&cal100>=0&&p100>=0)){toast('Check the portion and nutrition values.');return}const meal={id:uid(),date:currentDate,name:barcodeProduct.name,meal:get('meal'),cal:Math.round(cal100*grams/100),protein:Math.round(p100*grams/10)/10,barcode:barcodeProduct.code,amount:grams};if(fd.has('fav')){const f={id:uid(),meal:meal.meal,name:meal.name,cal:meal.cal,protein:meal.protein,desc:grams+' g portion · scanned barcode',ingredients:barcodeProduct.ingredients?barcodeProduct.ingredients.split(',').map(x=>x.trim()).filter(Boolean):[barcodeProduct.name],noCook:fd.has('noCook'),barcode:barcodeProduct.code};state.customFoods.push(f);state.favourites.push(f.id);meal.foodId=f.id}state.meals.push(meal);barcodeStatus='Added '+meal.cal+' kcal for '+grams+' g of '+meal.name;toast('Scanned food logged.');}
  if(kind==='sneakVanilla'){
@@ -1032,6 +1164,15 @@ function onClick(e){const b=e.target.closest('[data-action], [data-tab]');if(!b)
   collapsedPanels[key]=closing;saveCollapsedSetting(PANEL_COLLAPSED_KEY,collapsedPanels);
   const panel=b.closest('section.panel');if(panel){panel.classList.toggle('panel-is-collapsed',closing);b.textContent=closing?'＋ Expand section':'− Minimise section';b.setAttribute('aria-expanded',closing?'false':'true');b.setAttribute('aria-label',(closing?'Expand ':'Minimise ')+(b.dataset.panelLabel||'section'))}
   return;
+ }
+ if(a==='quickFoodSearch'){searchFoods(b.dataset.query||'');return}
+ if(a==='selectFoodLookup'){
+  const index=Number(b.dataset.index);
+  if(!Number.isInteger(index)||index<0||index>=foodSearchResults.length)return;
+  foodSearchRequest++;
+  foodSearchSelected=foodSearchResults[index];
+  foodSearchStatus='';
+  render();return;
  }
  if(a==='resortfav'){let id=b.dataset.id;if(!RESORTS.some(r=>r.id===id))return;state.resortFavourites=state.resortFavourites.includes(id)?state.resortFavourites.filter(x=>x!==id):[...state.resortFavourites,id];save();render();return}
  if(a==='resortfavfilter'){resortFavOnly=!resortFavOnly;render();return}
@@ -1090,6 +1231,7 @@ function onClick(e){const b=e.target.closest('[data-action], [data-tab]');if(!b)
 }
 function onChange(e){
  if(e.target.closest?.('form[data-form="sneakVanilla"]'))updateSneakEstimate(e.target.closest('form'));
+ if(e.target.closest?.('form[data-form="foodLookupLog"]'))updateFoodSearchEstimate(e.target.closest('form'));
  if(e.target.id==='activeDate'&&e.target.value)changeDate(e.target.value);
  if(e.target.dataset.action==='explorefilter'){discoverFilter=e.target.value;discoverOffset=0;render();return;}
  if(e.target.dataset.action==='shopping'){state.shoppingChecked[e.target.dataset.key]=e.target.checked;save();render()}
@@ -1256,7 +1398,10 @@ cloudPanel.addEventListener('click',async e=>{
 
 async function onImport(e){const file=e.target.files?.[0];if(!file)return;try{const json=JSON.parse(await file.text()),data=json.data||json;if(!data||!Array.isArray(data.trips)||!Array.isArray(data.meals)||!Array.isArray(data.activity)||!Array.isArray(data.water)||!Array.isArray(data.metrics)||typeof data.completed!=='object')throw Error('Invalid format');if(!confirm(cloudMode==='active'?'Replace the records on this device AND the linked cloud copy with this backup? Export a backup first if unsure.':'Replace the records on this device with the contents of this backup?'))return;state={...fresh(),...data,settings:{...fresh().settings,...data.settings}};state.favourites=Array.isArray(state.favourites)?state.favourites:[];state.customFoods=Array.isArray(state.customFoods)?state.customFoods:[];state.weeklyPlan=state.weeklyPlan||{};state.shoppingChecked=state.shoppingChecked||{};state.drinks=Array.isArray(state.drinks)?state.drinks:[];state.resortFavourites=Array.isArray(state.resortFavourites)?state.resortFavourites:[];state.healthRecords=Array.isArray(state.healthRecords)?state.healthRecords:[];save();stopCoach();render();toast('Backup imported.')}catch(err){toast('This does not look like a valid Ski Ready backup.')}finally{e.target.value=''}}
  document.addEventListener('submit',onSubmit);document.addEventListener('click',onClick);document.addEventListener('change',onChange);
- document.addEventListener('input',e=>{const form=e.target.closest?.('form[data-form="sneakVanilla"]');if(form)updateSneakEstimate(form)});document.addEventListener('toggle',e=>{if(e.target.matches?.('[data-plan-details]'))mealPlanExpanded=e.target.open},true);
+ document.addEventListener('input',e=>{
+  const shake=e.target.closest?.('form[data-form="sneakVanilla"]');if(shake)updateSneakEstimate(shake);
+  const food=e.target.closest?.('form[data-form="foodLookupLog"]');if(food)updateFoodSearchEstimate(food);
+ });document.addEventListener('toggle',e=>{if(e.target.matches?.('[data-plan-details]'))mealPlanExpanded=e.target.open},true);
  document.getElementById('importFile').addEventListener('change',onImport);
  document.addEventListener('change',e=>{if(e.target.id==='healthCsvFile')onHealthFile(e)});
  document.addEventListener('keydown',e=>{if(e.key==='Escape')stopScanner()});
