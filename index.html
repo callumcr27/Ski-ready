@@ -408,7 +408,7 @@ function panelCollapseKey(panel,index,label){
  const fixed=tab==='workouts'&&index===0?'training-plan':
              tab==='drinks'&&index===0?'today-drinks':
              tab==='resorts'&&index===0?'resorts-intro':
-             tab==='resorts'&&/^\\d+ resorts/i.test(label)?'resort-list':null;
+             tab==='resorts'&&/^\d+ resorts/i.test(label)?'resort-list':null;
  const slug=fixed||panel.id||label.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,70);
  return tab+':section:'+(slug||String(index));
 }
@@ -425,7 +425,12 @@ function isSubsectionCollapsed(key){
  return hasCollapsePref(collapsedSubsections,key)?!!collapsedSubsections[key]:!!allCollapsedDefaults[tab];
 }
 function setAllSectionsCollapsed(closed){
- if(collapsedTabs[tab])return;
+ if(closed&&collapsedTabs[tab])return;
+ if(!closed&&collapsedTabs[tab]){
+  collapsedTabs[tab]=false;
+  saveCollapsedSetting(TAB_COLLAPSED_KEY,collapsedTabs);
+  render();
+ }
  if(closed){stopScanner();stopCoach()}
  allCollapsedDefaults[tab]=closed;
  document.querySelectorAll('#appMain [data-panel-key]').forEach(b=>{collapsedPanels[b.dataset.panelKey]=closed});
@@ -578,7 +583,7 @@ function render(){
  toggle.textContent=closed?'＋ Expand tab':'− Minimise tab';
  toggle.setAttribute('aria-expanded',closed?'false':'true');
  document.getElementById('minimiseAllButton').disabled=closed;
- document.getElementById('expandAllButton').disabled=closed;
+ document.getElementById('expandAllButton').disabled=false;
  hint.hidden=!closed;
  hint.textContent=TAB_HELP[tab]+' Tap Expand tab above to show it again.';
  area.hidden=closed;
