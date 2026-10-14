@@ -150,6 +150,12 @@
     .drink-undo-hint{font-size:12px;color:#d7c6e7;flex:1;min-width:180px}
     @media(max-width:460px){.drink-undo-row .btn{width:100%}}
 
+    .sneak-mixer-card{border-color:#9162bf!important}
+    .sneak-mixer-card h3{color:#ffe371}
+    .sneak-estimate{margin:12px 0;padding:13px;border:1px solid #8064a4;border-radius:12px;background:#302141}
+    .sneak-estimate strong{color:#ffe371;font-size:19px;display:block}
+    .sneak-estimate small{color:#d7c6e9;display:block}
+
   </style>
 </head>
 <body>
@@ -748,6 +754,7 @@ function mealsHTML(){const ms=mealDay(currentDate),cal=dailyCalories(currentDate
  return `<div class="stats">${stat('Calories today',cal+' kcal',goal?Math.max(0,goal-cal)+' kcal remaining':'Target not set yet')}${stat('Protein today',Math.round(protein*10)/10+' g',pgoal?'Goal '+pgoal+' g':'Target not set yet')}${stat('Drinks calories',drinkCal+' kcal','Included in daily total')}</div>
  ${goal?`<section class="panel"><div class="sectionhead"><h3>Daily calorie counter</h3><strong>${cal} / ${goal} kcal</strong></div>${progress(cal/goal*100)}<p class="small subdued">${cal<=goal?goal-cal+' kcal remaining':cal-goal+' kcal above target'}. Targets are optional and are not a requirement to eat less after exercise.</p></section>`:`<div class="notice good">Your calorie counter is active. Enter a calorie goal only after you've worked out an appropriate daily target — we'll leave it blank for now.</div>`}
  ${away?'<div class="notice good">✈ You are away on this date. Meal suggestions and your weekly plan show no-cook choices only, including ready-to-eat supermarket options.</div>':''}
+ ${sneakVanillaHTML()}
  <section class="panel"><div class="sectionhead"><div><div class="eyebrow">Shop it → make it</div><h3>Meals based on what you've bought</h3><p class="small subdued">Tick items on your weekly shopping list and recipe suggestions automatically show which ingredients you have. Your chosen meal plan won't be changed without you asking.</p></div></div>
  <div class="inventoryGrid">${['Breakfast','Lunch','Dinner','Snack'].map(meal=>{const matches=optionsFor(meal,currentDate).filter(f=>stockStatus(f,wk).ready);return `<span><b>${esc(meal)}:</b> ${matches.length?esc(matches.slice(0,2).map(f=>f.name).join(' · '))+' ✓':'Tick ingredients to unlock choices'}</span>`}).join('')}</div>
  <button type="button" class="btn primary" data-action="pantryplan" style="margin-top:12px">↻ Update weekly meals using bought ingredients</button><p class="mutedNote">This only replaces planned meals when all their ingredients are ticked as bought; manually selected favourites stay available. Any new ingredients needed will appear in the shopping list. Away days remain no-cook.</p></section>
@@ -798,6 +805,53 @@ function deleteLastDrink(){
  save();render();toast('Removed '+description+'. Totals updated.');
 }
 
+// Approximate nutrition for one full serving of Sneak EATS Vanilla plus mixing liquid.
+const SNEAK_LIQUIDS=Object.freeze({
+ water:{label:'Water',cal:0,protein:0},
+ semi:{label:'Semi-skimmed milk',cal:50,protein:3.6},
+ whole:{label:'Full-fat milk',cal:66,protein:3.5}
+});
+function sneakNutrition(liquid,ml){
+ const mix=Object.prototype.hasOwnProperty.call(SNEAK_LIQUIDS,liquid)?SNEAK_LIQUIDS[liquid]:null;
+ if(!mix||!Number.isInteger(ml)||ml<50||ml>1500)return null;
+ return {label:mix.label,cal:400+Math.round(ml*mix.cal/100),
+  protein:Math.round((31+ml*mix.protein/100)*10)/10,ml};
+}
+function sneakVanillaHTML(){
+ return `<section class="panel sneak-mixer-card" id="sneakMixerPanel">
+  <div class="sectionhead"><div><div class="eyebrow">🥤 Shake mixer</div>
+   <h3>Sneak EATS Vanilla · Meal replacement</h3>
+   <p class="small subdued">Choose the liquid you mix it with. Milk adds calories and protein; water adds none.</p></div></div>
+  <form data-form="sneakVanilla" class="stack">
+   <div class="fieldrow">
+    <label class="field">Mix with<select name="liquid" required>
+     <option value="water">Water</option>
+     <option value="semi">Semi-skimmed milk</option>
+     <option value="whole">Full-fat milk (whole)</option>
+    </select></label>
+    <label class="field">Liquid amount (ml)<input name="ml" type="number" min="50" max="1500" step="1" value="500" required></label>
+   </div>
+   <div class="sneak-estimate" data-sneak-estimate role="status" aria-live="polite">
+    <strong>400 kcal · 31 g protein</strong>
+    <small>1 serving Sneak EATS Vanilla + 500 ml water (estimated total)</small>
+   </div>
+   <p class="small subdued">One full powder serving per entry (estimated 400 kcal and 31 g protein). Milk values vary by brand; check your carton and the powder label. This logs the shake once under Drinks; its calories and protein also count towards Meals totals.</p>
+   <button class="btn primary full" type="submit">+ Log Vanilla meal replacement</button>
+  </form>
+  <p class="tiny subdued">Nutrition references: <a href="https://sneakenergy.com/products/sneak-eats-vanilla" target="_blank" rel="noopener noreferrer">Sneak EATS Vanilla ↗</a>; <a href="https://www.tesco.com/shop/en-GB/products/252207537" target="_blank" rel="noopener noreferrer">semi-skimmed milk ↗</a> and <a href="https://www.tesco.com/shop/en-GB/products/254957550" target="_blank" rel="noopener noreferrer">whole milk ↗</a>.</p>
+ </section>`;
+}
+function updateSneakEstimate(form){
+ const container=form.querySelector('[data-sneak-estimate]');
+ if(!container)return;
+ const liquid=form.elements.namedItem('liquid')?.value||'water',ml=Number(form.elements.namedItem('ml')?.value);
+ const result=sneakNutrition(liquid,ml);
+ const strong=container.querySelector('strong'),small=container.querySelector('small');
+ if(!result){strong.textContent='Check liquid amount';small.textContent='Enter 50–1500 ml to see the estimated total.';return}
+ strong.textContent=result.cal+' kcal · '+result.protein+' g protein';
+ small.textContent='1 serving Sneak EATS Vanilla + '+ml+' ml '+result.label.toLowerCase()+' (estimated total)';
+}
+
 function drinksHTML(){
  const ws=waterDay(currentDate),ds=drinkDay(currentDate),lastLogged=lastDrinkEntry(currentDate),wml=total(ws,'ml'),otherMl=total(ds,'ml'),ml=wml+otherMl,drinkKcal=total(ds,'cal'),goal=Math.max(250,num(state.settings.waterGoal)||2000),pct=Math.min(100,ml/goal*100),days=Array.from({length:7},(_,i)=>addDays(currentDate,i-6));
  const results=drinkResults.length?`<div class="stack" style="margin-top:10px">${drinkResults.map((d,i)=>`<div class="drinkResult"><strong>${esc(d.name)}</strong><p>${esc(d.brand||'')} · ${d.cal100===null?(d.refCal100g===null?'Nutrition unknown':'Listed as '+Math.round(d.refCal100g)+' kcal / 100g; check mixed drink label'):Math.round(d.cal100*10)/10+' kcal / 100ml'}</p><button type="button" data-action="selectdrink" data-index="${i}" class="btn smallbtn">Choose this drink</button></div>`).join('')}</div>`:'';
@@ -810,6 +864,7 @@ function drinksHTML(){
  <div class="waterButtons"><button type="button" data-action="addwater" data-ml="250" class="waterButton">💧<span>Water · 250 ml</span></button><button type="button" data-action="addwater" data-ml="500" class="waterButton">💧💧<span>Water · 500 ml</span></button><button type="button" data-action="addwater" data-ml="750" class="waterButton">💧💧💧<span>Water · 750 ml</span></button><button type="button" data-action="addwater" data-ml="1180" class="waterButton">🥤<span>1 Stanley 40 oz · 1.18 L water</span></button></div>
  <div class="drink-undo-row"><button type="button" class="btn warn" data-action="deleteLastDrink" ${lastLogged?'':'disabled'} aria-label="Delete last water or drink entry">↶ Delete last entry</button><span class="drink-undo-hint">${lastLogged?'Last logged: '+esc(lastLogged.kind==='water'?'Water':lastLogged.entry.name||'Drink')+' · '+num(lastLogged.entry.ml)+' ml':'No drinks logged for the selected date.'}</span></div>
  <p class="small subdued">Your 40 oz Stanley holds approximately 1.18 L when full. If filled with ice, record the actual amount of liquid consumed.</p><form data-form="water" class="fieldrow" style="align-items:end"><label class="field">Other water amount (ml)<input required type="number" name="ml" min="1" max="5000" placeholder="e.g. 330"></label><button class="btn primary" type="submit">+ Add water</button></form></section>
+ ${sneakVanillaHTML()}
  <section class="panel"><div class="sectionhead"><div><h3>🔎 Find another drink</h3><p class="subdued small">Search for Coca-Cola, Sneak Energy or another packaged drink. Results require internet and may vary by flavour.</p></div></div>
  <form class="stack" data-form="drinkSearch"><label class="field">Drink name<input name="query" required minlength="2" maxlength="70" placeholder="e.g. Coca-Cola or Sneak Energy" value="${esc(drinkSearchTerm)}"></label><button type="submit" class="btn primary full">Search drinks</button></form>
  ${drinkStatus?`<p class="small subdued" role="status" style="margin:10px 0">${esc(drinkStatus)}</p>`:''}${results}${selected}
@@ -897,6 +952,12 @@ function onSubmit(e){const form=e.target.closest('form[data-form]');if(!form)ret
  if(kind==='customMeal'){const meal={id:uid(),date:currentDate,name:get('name'),meal:get('meal'),cal:Number(get('cal')),protein:Number(get('protein'))};if(fd.has('fave')){const parts=get('ingredients').split(',').map(x=>x.trim()).filter(Boolean),steps=get('steps').split('\n').map(s=>s.trim()).filter(Boolean).slice(0,20);const f={id:uid(),name:meal.name,meal:meal.meal,cal:meal.cal,protein:meal.protein,desc:'Saved personal meal',ingredients:parts,noCook:fd.has('nocook')};if(steps.length)f.recipe={prep:Number(get('prep'))||0,cook:Number(get('cook'))||0,servings:1,ingredients:parts.map(name=>({name,qty:1,unit:'portion'})),steps};state.customFoods.push(f);state.favourites.push(f.id);meal.foodId=f.id}state.meals.push(meal);toast(fd.has('fave')?'Meal logged and saved to favourites.':'Meal logged.')}
  if(kind==='barcodeLookup'){lookupBarcode(get('code'));return}
  if(kind==='barcodeMeal'){if(!barcodeProduct){toast('Look up a barcode first.');return}const grams=Number(get('grams')),cal100=Number(get('cal100')),p100=Number(get('protein100'));if(!(grams>0&&grams<=5000&&cal100>=0&&p100>=0)){toast('Check the portion and nutrition values.');return}const meal={id:uid(),date:currentDate,name:barcodeProduct.name,meal:get('meal'),cal:Math.round(cal100*grams/100),protein:Math.round(p100*grams/10)/10,barcode:barcodeProduct.code,amount:grams};if(fd.has('fav')){const f={id:uid(),meal:meal.meal,name:meal.name,cal:meal.cal,protein:meal.protein,desc:grams+' g portion · scanned barcode',ingredients:barcodeProduct.ingredients?barcodeProduct.ingredients.split(',').map(x=>x.trim()).filter(Boolean):[barcodeProduct.name],noCook:fd.has('noCook'),barcode:barcodeProduct.code};state.customFoods.push(f);state.favourites.push(f.id);meal.foodId=f.id}state.meals.push(meal);barcodeStatus='Added '+meal.cal+' kcal for '+grams+' g of '+meal.name;toast('Scanned food logged.');}
+ if(kind==='sneakVanilla'){
+  const liquid=get('liquid'),ml=Number(get('ml')),mix=sneakNutrition(liquid,ml);
+  if(!mix){toast('Choose water or milk and enter 50–1500 ml.');return}
+  logDrink('Sneak EATS Vanilla · '+mix.label,ml,mix.cal,mix.protein,
+   '1 serving of Sneak EATS Vanilla powder mixed with '+ml+' ml '+mix.label.toLowerCase());return;
+ }
  if(kind==='drinkSearch'){searchDrinks(get('query'));return}
  if(kind==='manualDrink'){
   const ml=Number(get('ml')),cal=Number(get('cal'));if(!get('name')||!(ml>0&&ml<=5000)||!Number.isFinite(cal)||cal<0||cal>4000){toast('Check the drink name, amount and calories.');return;}
@@ -996,7 +1057,9 @@ function onClick(e){const b=e.target.closest('[data-action], [data-tab]');if(!b)
  if(a==='export'){const blob=new Blob([JSON.stringify({app:'Ski Ready',exported:new Date().toISOString(),data:state},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='ski-ready-backup-'+toISO(new Date())+'.json';document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);toast('Backup ready to save.')}
  if(a==='import'){document.getElementById('importFile').click()}
 }
-function onChange(e){if(e.target.id==='activeDate'&&e.target.value)changeDate(e.target.value);
+function onChange(e){
+ if(e.target.closest?.('form[data-form="sneakVanilla"]'))updateSneakEstimate(e.target.closest('form'));
+ if(e.target.id==='activeDate'&&e.target.value)changeDate(e.target.value);
  if(e.target.dataset.action==='explorefilter'){discoverFilter=e.target.value;discoverOffset=0;render();return;}
  if(e.target.dataset.action==='shopping'){state.shoppingChecked[e.target.dataset.key]=e.target.checked;save();render()}
  if(e.target.dataset.action==='recipeservings'){recipeModal(e.target.dataset.id,Number(e.target.value));return}
@@ -1161,7 +1224,8 @@ cloudPanel.addEventListener('click',async e=>{
 });
 
 async function onImport(e){const file=e.target.files?.[0];if(!file)return;try{const json=JSON.parse(await file.text()),data=json.data||json;if(!data||!Array.isArray(data.trips)||!Array.isArray(data.meals)||!Array.isArray(data.activity)||!Array.isArray(data.water)||!Array.isArray(data.metrics)||typeof data.completed!=='object')throw Error('Invalid format');if(!confirm(cloudMode==='active'?'Replace the records on this device AND the linked cloud copy with this backup? Export a backup first if unsure.':'Replace the records on this device with the contents of this backup?'))return;state={...fresh(),...data,settings:{...fresh().settings,...data.settings}};state.favourites=Array.isArray(state.favourites)?state.favourites:[];state.customFoods=Array.isArray(state.customFoods)?state.customFoods:[];state.weeklyPlan=state.weeklyPlan||{};state.shoppingChecked=state.shoppingChecked||{};state.drinks=Array.isArray(state.drinks)?state.drinks:[];state.resortFavourites=Array.isArray(state.resortFavourites)?state.resortFavourites:[];state.healthRecords=Array.isArray(state.healthRecords)?state.healthRecords:[];save();stopCoach();render();toast('Backup imported.')}catch(err){toast('This does not look like a valid Ski Ready backup.')}finally{e.target.value=''}}
- document.addEventListener('submit',onSubmit);document.addEventListener('click',onClick);document.addEventListener('change',onChange);document.addEventListener('toggle',e=>{if(e.target.matches?.('[data-plan-details]'))mealPlanExpanded=e.target.open},true);
+ document.addEventListener('submit',onSubmit);document.addEventListener('click',onClick);document.addEventListener('change',onChange);
+ document.addEventListener('input',e=>{const form=e.target.closest?.('form[data-form="sneakVanilla"]');if(form)updateSneakEstimate(form)});document.addEventListener('toggle',e=>{if(e.target.matches?.('[data-plan-details]'))mealPlanExpanded=e.target.open},true);
  document.getElementById('importFile').addEventListener('change',onImport);
  document.addEventListener('change',e=>{if(e.target.id==='healthCsvFile')onHealthFile(e)});
  document.addEventListener('keydown',e=>{if(e.key==='Escape')stopScanner()});
