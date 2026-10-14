@@ -106,6 +106,10 @@
     /* Collapsible tabs and dashboard sections. */
     .tab-collapse-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 15px;padding:11px 13px;border:1px solid #624783;background:#261939;border-radius:13px}
     .tab-collapse-bar strong{font-size:14px;color:#ffe371}
+    .tab-collapse-actions{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:7px}
+    .tab-collapse-actions .collapse-btn{white-space:nowrap}
+    .tab-collapse-actions .collapse-btn:disabled{opacity:.43;cursor:not-allowed}
+    @media(max-width:650px){.tab-collapse-bar{align-items:flex-start;flex-direction:column}.tab-collapse-actions{width:100%;justify-content:flex-start}.tab-collapse-actions .collapse-btn{flex:1 1 auto}}
     .collapse-btn{border:1px solid #9570be;border-radius:10px;background:#382452;color:#fff0c8;padding:8px 13px;font-size:12px;font-weight:800;min-height:39px}
     .collapse-btn:hover{background:#4d3271}
     .tab-collapsed-note{padding:19px 15px;margin-bottom:18px;border:1px dashed #7956a2;background:#20152f;border-radius:13px;color:#dfcfea}
@@ -152,7 +156,7 @@
     <div id="cloudBody" class="cloudBody"><p>Preparing cloud connection…</p></div></details>
   </section>
   <div class="datebar"><div><div class="eyebrow" id="dateEyebrow">Your daily dashboard</div><h2 id="dayTitle"></h2></div><div class="dateControl"><button class="iconbtn" type="button" data-action="prevday" aria-label="Previous day">‹</button><input type="date" id="activeDate" aria-label="Choose date"><button class="iconbtn" type="button" data-action="nextday" aria-label="Next day">›</button><button class="btn quiet smallbtn" data-action="today" type="button">Today</button></div></div>
-  <div class="tab-collapse-bar" role="group" aria-label="Tab visibility"><strong id="tabCollapseTitle">Workouts tab</strong><button class="collapse-btn" id="tabCollapseButton" data-action="toggleTab" type="button" aria-expanded="true" aria-controls="appMain">− Minimise tab</button></div>
+  <div class="tab-collapse-bar" role="group" aria-label="Tab visibility"><strong id="tabCollapseTitle">Workouts tab</strong><div class="tab-collapse-actions"><button class="collapse-btn" id="minimiseAllButton" data-action="collapseAll" type="button" aria-label="Minimise all sections in this tab">− Minimise all</button><button class="collapse-btn" id="expandAllButton" data-action="expandAll" type="button" aria-label="Expand all sections in this tab">＋ Expand all</button><button class="collapse-btn" id="tabCollapseButton" data-action="toggleTab" type="button" aria-expanded="true" aria-controls="appMain">− Minimise tab</button></div></div>
   <p id="tabCollapsedHint" class="tab-collapsed-note" hidden></p>
   <main id="appMain" aria-live="polite"></main>
   <footer class="footer"><div>🔒 Your data is saved locally first. When signed in and syncing, cloud updates follow automatically. Export backups regularly.</div><div class="meta"><button type="button" class="btn quiet smallbtn" data-action="export">Export backup</button><button type="button" class="btn quiet smallbtn" data-action="import">Import backup</button><input type="file" id="importFile" accept="application/json,.json" class="hidden"></div></footer>
@@ -397,6 +401,40 @@ const PANEL_COLLAPSED_KEY='ski-ready-ui-panels-collapsed-v1';
 function getCollapsedSetting(key){try{const value=JSON.parse(localStorage.getItem(key)||'{}');return value&&typeof value==='object'&&!Array.isArray(value)?value:{}}catch{return {}}}
 let collapsedTabs=getCollapsedSetting(TAB_COLLAPSED_KEY);
 let collapsedPanels=getCollapsedSetting(PANEL_COLLAPSED_KEY);
+const ALL_COLLAPSED_KEY='ski-ready-ui-all-sections-defaults-v1';
+let allCollapsedDefaults=getCollapsedSetting(ALL_COLLAPSED_KEY);
+const hasCollapsePref=(values,key)=>Object.prototype.hasOwnProperty.call(values,key);
+function panelCollapseKey(panel,index,label){
+ const fixed=tab==='workouts'&&index===0?'training-plan':
+             tab==='drinks'&&index===0?'today-drinks':
+             tab==='resorts'&&index===0?'resorts-intro':
+             tab==='resorts'&&/^\\d+ resorts/i.test(label)?'resort-list':null;
+ const slug=fixed||panel.id||label.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,70);
+ return tab+':section:'+(slug||String(index));
+}
+function isPanelCollapsed(key,legacyKey){
+ if(hasCollapsePref(collapsedPanels,key))return !!collapsedPanels[key];
+ if(hasCollapsePref(collapsedPanels,legacyKey)){
+  collapsedPanels[key]=!!collapsedPanels[legacyKey];
+  saveCollapsedSetting(PANEL_COLLAPSED_KEY,collapsedPanels);
+  return collapsedPanels[key];
+ }
+ return !!allCollapsedDefaults[tab];
+}
+function isSubsectionCollapsed(key){
+ return hasCollapsePref(collapsedSubsections,key)?!!collapsedSubsections[key]:!!allCollapsedDefaults[tab];
+}
+function setAllSectionsCollapsed(closed){
+ if(collapsedTabs[tab])return;
+ if(closed){stopScanner();stopCoach()}
+ allCollapsedDefaults[tab]=closed;
+ document.querySelectorAll('#appMain [data-panel-key]').forEach(b=>{collapsedPanels[b.dataset.panelKey]=closed});
+ document.querySelectorAll('#appMain [data-subsection-key]').forEach(b=>{collapsedSubsections[b.dataset.subsectionKey]=closed});
+ saveCollapsedSetting(ALL_COLLAPSED_KEY,allCollapsedDefaults);
+ saveCollapsedSetting(PANEL_COLLAPSED_KEY,collapsedPanels);
+ saveCollapsedSetting(SUB_COLLAPSED_KEY,collapsedSubsections);
+ render();
+}
 function saveCollapsedSetting(key,value){try{localStorage.setItem(key,JSON.stringify(value))}catch{/* UI preference remains usable this session */}}
 const TAB_HELP={
  workouts:'View exercise instructions, start guided workouts, log activity and manage your training schedule.',
@@ -449,20 +487,21 @@ function panelHelpText(label,panel){
 function decoratePanels(){
  const panels=[...document.querySelectorAll('#appMain section.panel')];
  panels.forEach((panel,i)=>{
-  const key=tab+':'+i,heading=panel.querySelector('h2,h3');
+  const heading=panel.querySelector('h2,h3');
   const eyebrow=panel.querySelector(':scope > .sectionhead .eyebrow, :scope > .eyebrow');
   const label=(heading?.textContent||'section').replace(/\s+/g,' ').trim().slice(0,70);
+  const key=panelCollapseKey(panel,i,label),closed=isPanelCollapsed(key,tab+':'+i);
   const row=document.createElement('div');row.className='section-collapse-tools';
   const button=document.createElement('button');button.type='button';button.className='collapse-btn';button.dataset.action='togglePanel';button.dataset.panelKey=key;
-  button.dataset.panelLabel=label;button.setAttribute('aria-label',(collapsedPanels[key]?'Expand ':'Minimise ')+label);
-  button.setAttribute('aria-expanded',collapsedPanels[key]?'false':'true');
-  button.textContent=collapsedPanels[key]?'＋ Expand section':'− Minimise section';
+  button.dataset.panelLabel=label;button.setAttribute('aria-label',(closed?'Expand ':'Minimise ')+label);
+  button.setAttribute('aria-expanded',closed?'false':'true');
+  button.textContent=closed?'＋ Expand section':'− Minimise section';
   const identity=document.createElement('div');identity.className='section-collapse-identity';
   const title=document.createElement('strong');title.textContent=(eyebrow?.textContent||'').trim()||label;
   const summary=document.createElement('small');summary.textContent=(title.textContent===label?'':label+' — ')+panelHelpText(label,panel);
   identity.append(title,summary);
   row.append(identity,button);panel.prepend(row);
-  panel.classList.toggle('panel-is-collapsed',!!collapsedPanels[key]);
+  panel.classList.toggle('panel-is-collapsed',closed);
  });
 }
 
@@ -480,7 +519,7 @@ function wrapSubsection(nodes,id,label,description){
  identity.append(title,help);
  const button=document.createElement('button');button.type='button';button.className='collapse-btn';
  button.dataset.action='toggleSubsection';button.dataset.subsectionKey=id;button.dataset.subsectionLabel=label;
- const closed=!!collapsedSubsections[id];button.setAttribute('aria-expanded',closed?'false':'true');
+ const closed=isSubsectionCollapsed(id);button.setAttribute('aria-expanded',closed?'false':'true');
  button.setAttribute('aria-label',(closed?'Expand ':'Minimise ')+label);
  button.textContent=closed?'＋ Expand subsection':'− Minimise subsection';
  heading.append(identity,button);
@@ -538,6 +577,8 @@ function render(){
  document.getElementById('tabCollapseTitle').textContent=TAB_LABELS[tab]+' tab';
  toggle.textContent=closed?'＋ Expand tab':'− Minimise tab';
  toggle.setAttribute('aria-expanded',closed?'false':'true');
+ document.getElementById('minimiseAllButton').disabled=closed;
+ document.getElementById('expandAllButton').disabled=closed;
  hint.hidden=!closed;
  hint.textContent=TAB_HELP[tab]+' Tap Expand tab above to show it again.';
  area.hidden=closed;
@@ -837,6 +878,7 @@ function onClick(e){const b=e.target.closest('[data-action], [data-tab]');if(!b)
  if(b.dataset.tab){stopScanner();tab=b.dataset.tab;stopCoach();render();window.scrollTo({top:0,behavior:'smooth'});return}
  let a=b.dataset.action;
  if(a==='toggleTab'){const closing=!collapsedTabs[tab];if(closing){stopScanner();stopCoach()}collapsedTabs[tab]=closing;saveCollapsedSetting(TAB_COLLAPSED_KEY,collapsedTabs);render();return}
+ if(a==='collapseAll'||a==='expandAll'){setAllSectionsCollapsed(a==='collapseAll');return}
  if(a==='toggleSubsection'){
   const key=b.dataset.subsectionKey;
   if(!key||!key.startsWith(tab+':'))return;
