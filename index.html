@@ -804,40 +804,77 @@ function foodNumber(v,upper){
 function foodReferenceResults(term){
  return /\bchicken\b/i.test(term)&&/\bthighs?\b/i.test(term)?STAPLE_FOODS.map(x=>({...x})):[];
 }
-function foodSearchProduct(p){
+function foodSearchProduct(p,region='UK'){
  const n=p.nutriments||{};
- return {name:String(p.product_name||p.product_name_en||'').slice(0,110),brand:String(p.brands||'').slice(0,90),
+ // Prefer the English translation; reject explicitly non-English source-only names.
+ const english=String(p.product_name_en||'').trim();
+ const original=String(p.product_name||'').trim();
+ const language=String(p.lang||'').toLowerCase();
+ const name=english||(language&&language!=='en'?'':original);
+ return {name:name.slice(0,110),brand:String(p.brands||'').slice(0,90),
   cal100:foodNumber(n['energy-kcal_100g'],1500),protein100:foodNumber(n['proteins_100g'],100),
-  kind:'product',code:String(p.code||'').slice(0,30),
+  kind:'product',region,code:String(p.code||'').slice(0,30),
   notes:'Community-submitted listing. Check calories, protein and allergens against the label.'};
+}
+function foodSearchQuery(term,ukOnly){
+ const params=new URLSearchParams({search_terms:term,search_simple:'1',action:'process',json:'1',
+  page_size:'25',cc:'gb',lc:'en',fields:'code,product_name,product_name_en,lang,brands,countries_tags,nutriments,serving_quantity,quantity'});
+ if(ukOnly){
+  params.set('tagtype_0','countries');
+  params.set('tag_contains_0','contains');
+  params.set('tag_0','en:united-kingdom');
+ }
+ return OFF_SEARCH+'?'+params.toString();
 }
 async function searchFoods(term){
  term=String(term||'').trim().slice(0,90);
- if(term.length<2){foodSearchStatus='Enter at least two characters.';render();return}
  const request=++foodSearchRequest;
  foodSearchTerm=term;foodSearchResults=foodReferenceResults(term);foodSearchSelected=null;
- foodSearchStatus='Searching supermarket products…';render();
+ if(term.length<2){foodSearchStatus='Enter at least two characters.';render();return}
+ foodSearchStatus='Searching UK supermarket foods…';render();
+ const seen=new Set();
+ let ukCount=0,otherCount=0,ukFailed=false;
+ function ingest(data,region,englishOnly){
+  const found=[];
+  for(const p of (Array.isArray(data?.products)?data.products:[])){
+   if(englishOnly&&!String(p.product_name_en||'').trim()&&String(p.lang||'').toLowerCase()!=='en')continue;
+   const item=foodSearchProduct(p,region);
+   if(item.name.length<2)continue;
+   const key=item.code||item.name.toLowerCase()+'|'+item.brand.toLowerCase();
+   if(seen.has(key))continue;
+   seen.add(key);found.push(item);
+   if(found.length>=15)break;
+  }
+  return found;
+ }
+ let results=[];
  try{
-  const params=new URLSearchParams({search_terms:term,search_simple:'1',action:'process',json:'1',page_size:'18',
-   fields:'code,product_name,product_name_en,brands,nutriments,serving_quantity,quantity'});
-  const response=await fetch(OFF_SEARCH+'?'+params.toString());
-  if(!response.ok)throw Error('Search unavailable');
+  const response=await fetch(foodSearchQuery(term,true));
+  if(!response.ok)throw Error('UK search unavailable');
   const data=await response.json();
   if(request!==foodSearchRequest)return;
-  const seen=new Set();
-  const results=(Array.isArray(data.products)?data.products:[])
-   .map(foodSearchProduct).filter(x=>x.name.length>1)
-   .filter(x=>{const key=x.code||x.name.toLowerCase()+'|'+x.brand.toLowerCase();
-    if(seen.has(key))return false;seen.add(key);return true}).slice(0,15);
-  foodSearchResults=[...foodReferenceResults(term),...results];
-  foodSearchStatus=results.length?'Found '+results.length+' packaged food result'+(results.length===1?'':'s')+'. Choose the correct brand and flavour.':
-   foodSearchResults.length?'No matching packaged products found. You can use the generic reference below.':
-    'No products found. Try a more specific name or add the food manually.';
- }catch(err){
-  if(request!==foodSearchRequest)return;
-  foodSearchStatus=foodSearchResults.length?'Packaged-food search is unavailable; generic references are shown below.':
-   'Could not search online right now. Check your connection or use Add your own meal below.';
+  results=ingest(data,'UK listing',false);
+  ukCount=results.length;
+ }catch(err){if(request!==foodSearchRequest)return;ukFailed=true}
+ // Search worldwide only for English-labelled options when UK matches are scarce.
+ if(results.length<5){
+  try{
+   const response=await fetch(foodSearchQuery(term,false));
+   if(!response.ok)throw Error('Worldwide search unavailable');
+   const data=await response.json();
+   if(request!==foodSearchRequest)return;
+   const more=ingest(data,'International · English name',true);
+   otherCount=more.length;results.push(...more);
+  }catch(err){if(request!==foodSearchRequest)return}
  }
+ if(request!==foodSearchRequest)return;
+ foodSearchResults=[...foodReferenceResults(term),...results.slice(0,15)];
+ foodSearchStatus=results.length?
+  'Found '+results.length+' food listing'+(results.length===1?'':'s')+'. '+(ukCount?'UK products appear first. ':'')+
+  (otherCount?'Other products are shown only when an English name is available. ':'')+'Check packaging before logging.':
+  foodSearchResults.length?'No matching UK or English-labelled packaged foods found. Generic references are available below.':
+  ukFailed?'UK search is temporarily unavailable. Try again later or add the food manually.':
+  'No UK or English-labelled products found. Try a more specific name or add the food manually.';
  render();
 }
 function foodSearchNutrition(grams,cal100,protein100){
@@ -846,7 +883,7 @@ function foodSearchNutrition(grams,cal100,protein100){
 }
 function foodSearchHTML(){
  const cards=foodSearchResults.map((x,i)=>`<div class="foodLookupCard">
-  <span class="tag">${x.kind==='reference'?'Generic estimate':'Packaged product'}</span>
+  <span class="tag">${x.kind==='reference'?'Generic estimate':esc(x.region||'UK listing')}</span>
   <h4>${esc(x.name)}</h4><p>${esc(x.brand||'Brand not supplied')}</p>
   <p>${x.cal100===null?'Calories unknown':x.cal100+' kcal/100g'} · ${x.protein100===null?'Protein unknown':x.protein100+' g protein/100g'}</p>
   <button type="button" class="btn quiet smallbtn" data-action="selectFoodLookup" data-index="${i}">Choose food</button>
@@ -854,7 +891,7 @@ function foodSearchHTML(){
  const chosen=foodSearchSelected;
  return `<section class="panel" id="foodSearchPanel">
   <div class="sectionhead"><div><div class="eyebrow">Food finder</div><h3>🔎 Search ready meals & ingredients</h3>
-   <p class="small subdued">Search supermarket ready meals, branded foods or ingredients such as chicken thighs. Choose a result, adjust the portion and log it.</p></div></div>
+   <p class="small subdued">Search UK supermarket ready meals and foods such as chicken thighs. International products appear only when an English name is available.</p></div></div>
   <form data-form="foodSearch" class="stack">
    <label class="field">Food or product name<input type="search" name="query" required minlength="2" maxlength="90" value="${esc(foodSearchTerm)}" placeholder="e.g. Tesco lasagne or chicken thighs"></label>
    <button type="submit" class="btn primary">🔎 Search foods</button>
@@ -881,7 +918,7 @@ function foodSearchHTML(){
     <button class="btn primary full" type="submit">+ Add to food diary</button>
    </form>
   </div>`:''}
-  <p class="mutedNote">Packaged results come from <a href="https://world.openfoodfacts.org" target="_blank" rel="noopener noreferrer">Open Food Facts</a> and require internet. Generic chicken-thigh values are approximations based on USDA FoodData Central reference data. Check your packaging, edible weight, preparation and allergens. You can also enter any food manually below.</p>
+  <p class="mutedNote">UK results are prioritised, with English-labelled international matches as a fallback. Packaged results come from <a href="https://world.openfoodfacts.org" target="_blank" rel="noopener noreferrer">Open Food Facts</a> and require internet. Generic chicken-thigh values are approximations based on USDA FoodData Central reference data. Check your packaging, edible weight, preparation and allergens. You can also enter any food manually below.</p>
  </section>`;
 }
 function updateFoodSearchEstimate(form){
